@@ -3,11 +3,14 @@ package com.zrlog.admin.business.service;
 import com.google.gson.Gson;
 import com.hibegin.common.util.FileUtils;
 import com.hibegin.common.util.IOUtil;
+import com.hibegin.common.util.LoggerUtil;
 import com.hibegin.common.util.ZipUtil;
 import com.hibegin.http.server.util.PathUtil;
 import com.zrlog.admin.business.rest.response.UpdateRecordResponse;
 import com.zrlog.admin.business.rest.response.UploadTemplateResponse;
+import com.zrlog.admin.web.controller.api.TemplateController;
 import com.zrlog.business.service.TemplateInfoHelper;
+import com.zrlog.business.util.TemplateDownloadUtils;
 import com.zrlog.common.Constants;
 import com.zrlog.common.vo.TemplateVO;
 import com.zrlog.model.WebSite;
@@ -16,13 +19,17 @@ import com.zrlog.util.I18nUtil;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.net.URISyntaxException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.logging.Logger;
 
 public class TemplateService {
+
+    private static final Logger LOGGER = LoggerUtil.getLogger(TemplateController.class);
 
     public UpdateRecordResponse save(String template, Map<String, Object> settingMap) throws SQLException {
         new WebSite().updateTemplateConfigMap(template, settingMap);
@@ -46,6 +53,14 @@ public class TemplateService {
     }
 
     public List<TemplateVO> getAllTemplates(String previewTemplate) throws IOException {
+        String currentTemplate = Constants.zrLogConfig.getCacheService().getPublicWebSiteInfo().getTemplate();
+        if (Objects.equals(currentTemplate, Constants.DEFAULT_TEMPLATE_PATH)) {
+            try {
+                TemplateDownloadUtils.installByTemplateName(currentTemplate, false);
+            } catch (IOException | URISyntaxException | InterruptedException e) {
+                LOGGER.warning("Download template failed " + e.getMessage());
+            }
+        }
         List<TemplateVO> templates = new ArrayList<>();
         TemplateVO defaultTemplateInfo = TemplateInfoHelper.getDefaultTemplateVO();
         if (Objects.nonNull(defaultTemplateInfo)) {

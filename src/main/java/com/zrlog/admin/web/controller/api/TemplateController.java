@@ -18,7 +18,6 @@ import com.zrlog.admin.util.AdminTemplateUtils;
 import com.zrlog.admin.web.annotation.RefreshCache;
 import com.zrlog.admin.web.annotation.RequestLock;
 import com.zrlog.admin.web.token.AdminTokenThreadLocal;
-import com.zrlog.business.util.TemplateDownloadUtils;
 import com.zrlog.common.Constants;
 import com.zrlog.common.controller.BaseController;
 import com.zrlog.common.exception.ArgsException;
@@ -31,15 +30,12 @@ import com.zrlog.util.TemplateHelper;
 import java.io.File;
 import java.io.IOException;
 import java.net.URI;
-import java.net.URISyntaxException;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Objects;
-import java.util.logging.Logger;
 
 public class TemplateController extends BaseController {
 
-    private static final Logger LOGGER = LoggerUtil.getLogger(TemplateController.class);
 
     private final TemplateService templateService = new TemplateService();
 
@@ -121,11 +117,6 @@ public class TemplateController extends BaseController {
 
     @ResponseBody
     public AdminApiPageDataStandardResponse<List<TemplateVO>> index() throws IOException {
-        try {
-            TemplateDownloadUtils.installByTemplateName(Constants.zrLogConfig.getCacheService().getPublicWebSiteInfo().getTemplate(), false);
-        } catch (IOException | URISyntaxException | InterruptedException e) {
-            LOGGER.warning("Download template failed " + e.getMessage());
-        }
         return new AdminApiPageDataStandardResponse<>(templateService.getAllTemplates(TemplateHelper.getTemplatePath(getRequest())),
                 "", request.getUri());
     }
