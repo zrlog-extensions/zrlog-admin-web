@@ -30,7 +30,7 @@ public class AdminConstants {
     public static final String FAVICON_PNG_PWA_512_URI_PATH = "/admin/pwa/icon/favicon-512.png";
     public static final String ATTACHED_FOLDER = "/attached/";
 
-    public static final List<String> adminStaticResources = Arrays.asList("/admin/static", "/admin/pwa", "/assets/images");
+    public static final List<String> adminStaticResources = Arrays.asList("/admin/static", "/admin/pwa");
 
     static {
         TITLE_MAP.put(ADMIN_LOGIN_URI_PATH, "login");

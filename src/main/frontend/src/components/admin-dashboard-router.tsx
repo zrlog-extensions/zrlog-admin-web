@@ -42,6 +42,7 @@ import Version from "./website/version";
 import StaticSite from "./StaticSite";
 import { JSX } from "react/jsx-runtime";
 import IntrinsicAttributes = JSX.IntrinsicAttributes;
+import Dev from "./dev";
 
 const AsyncArticleEdit = lazy(() => import("components/articleEdit"));
 const AsyncOffline = lazy(() => import("common/Offline"));
@@ -78,6 +79,7 @@ const AsyncSystem = lazy(() => import("components/system"));
 const AsyncStaticSite = lazy(() => import("components/StaticSite"));
 
 const AdminManageLayout = lazy(() => import("layout"));
+const DevAsync = lazy(() => import("components/dev"));
 
 type AdminDashboardRouterState = {
     axiosRequesting: boolean;
@@ -393,6 +395,11 @@ const AdminDashboardRouter: FunctionComponent<AdminDashboardRouterProps> = ({ of
             paths: ["static-site", "static-site.html"],
             lazy: AsyncStaticSite,
             fallback: StaticSite,
+        },
+        {
+            paths: ["dev", "dev.html"],
+            lazy: DevAsync,
+            fallback: Dev,
         },
     ];
 

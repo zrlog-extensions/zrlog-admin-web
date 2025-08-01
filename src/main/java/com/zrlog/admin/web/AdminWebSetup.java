@@ -21,10 +21,7 @@ import com.zrlog.common.rest.response.ApiStandardResponse;
 import com.zrlog.common.vo.AdminFullTokenVO;
 import com.zrlog.common.vo.AdminTokenVO;
 import com.zrlog.common.vo.TemplateVO;
-import com.zrlog.data.dto.CommentDTO;
-import com.zrlog.data.dto.LinkDTO;
-import com.zrlog.data.dto.LogNavDTO;
-import com.zrlog.data.dto.TypeDTO;
+import com.zrlog.data.dto.*;
 import com.zrlog.plugin.Plugins;
 import com.zrlog.web.WebSetup;
 
@@ -88,6 +85,7 @@ public class AdminWebSetup implements WebSetup {
         new Gson().toJson(new UploadTemplateResponse());
         new Gson().toJson(new DeleteLogResponse(true));
         new Gson().toJson(new LoadEditArticleResponse());
+        new Gson().toJson(new LockDTO());
         new Gson().toJson(new UserBasicInfoResponse());
         new Gson().toJson(new ServerInfo("1", "1", ""));
         new Gson().toJson(new SystemResponse(new ArrayList<>(), new ArrayList<>(), false, false));

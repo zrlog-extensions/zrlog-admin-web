@@ -39,7 +39,7 @@ public class AdminUserController extends BaseController {
         if (Objects.isNull(adminTokenVO)) {
             throw new AdminAuthException();
         }
-        return new AdminApiPageDataStandardResponse<>(userService.getUserInfo(adminTokenVO.getUserId(), adminTokenVO.getSessionId(), request), "", request.getUri());
+        return new AdminApiPageDataStandardResponse<>(userService.getUserInfo(adminTokenVO.getUserId(), adminTokenVO.getSessionId()), "", request.getUri());
     }
 
     @RefreshCache

@@ -46,7 +46,7 @@ public class AdminController extends BaseController {
             throw new MissingInstallException();
         }
         LoginRequest loginRequest = getRequestBodyWithNullCheck(LoginRequest.class);
-        UserLoginDTO dto = userService.login(loginRequest, request);
+        UserLoginDTO dto = userService.login(loginRequest);
         Constants.zrLogConfig.getTokenService().setAdminToken(dto.getId(), dto.getSecretKey(), dto.getUserBasicInfoResponse().getKey(),
                 Objects.equals(loginRequest.getHttps(), true) ? "https" : "http", getRequest(), getResponse());
         return new AdminApiPageDataStandardResponse<>(dto.getUserBasicInfoResponse());
@@ -100,15 +100,6 @@ public class AdminController extends BaseController {
     public AdminApiPageDataStandardResponse<PluginInfoResponse> plugin() {
         String page = getRequest().getParaToStr("page", "");
         return new AdminApiPageDataStandardResponse<>(new PluginInfoResponse("admin/plugins/" + page), "", request.getUri());
-    }
-
-    @ResponseBody
-    public AdminApiPageDataStandardResponse<Void> dev() {
-        if (!request.getServerConfig().isNativeImageAgent()) {
-            System.getProperties().put("sws.run.mode", "dev");
-        }
-        DevKit.configDev(request.getServerConfig());
-        return new AdminApiPageDataStandardResponse<>();
     }
 
     @ResponseBody

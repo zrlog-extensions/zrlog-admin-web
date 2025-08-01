@@ -28,3 +28,4 @@ admin/500
 admin/login
 admin/website/version
 admin/static-site
+admin/dev

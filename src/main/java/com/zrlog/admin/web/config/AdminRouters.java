@@ -48,6 +48,7 @@ public class AdminRouters {
         router.addMapper("/api" + AdminConstants.ADMIN_URI_BASE_PATH + "/user", AdminUserController.class);
         router.addMapper("/api" + AdminConstants.ADMIN_URI_BASE_PATH + "/system", AdminSystemController.class);
         router.addMapper("/api" + AdminConstants.ADMIN_URI_BASE_PATH + "/static-site", AdminStaticSiteController.class);
+        router.addMapper("/api" + AdminConstants.ADMIN_DEV_URI_BASE_PATH, AdminDevController.class);
 
         router.addMapper("/api/public/adminResource", AdminPublicController.class, "adminResource");
         router.addMapper("/api/public/version", AdminPublicController.class, "version");

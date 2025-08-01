@@ -22,10 +22,7 @@ import com.zrlog.util.I18nUtil;
 import com.zrlog.util.ZrLogUtil;
 
 import java.sql.SQLException;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Objects;
-import java.util.UUID;
+import java.util.*;
 
 public class UserService {
 
@@ -57,15 +54,16 @@ public class UserService {
         }
     }
 
-    public UserBasicInfoResponse getUserInfo(int userId, String sessionId, HttpRequest request) throws SQLException {
+    public UserBasicInfoResponse getUserInfo(int userId, String sessionId) throws SQLException {
         Map<String, Object> byId = new User().loadById(userId);
-        return getUserInfoByUser(byId, sessionId, request);
+        return getUserInfoByUser(byId, sessionId);
     }
 
-    private UserBasicInfoResponse getUserInfoByUser(Map<String, Object> byId, String sessionId, HttpRequest request) {
+    private UserBasicInfoResponse getUserInfoByUser(Map<String, Object> byId, String sessionId) {
         UserBasicInfoResponse basicInfoResponse = ObjectUtil.requireNonNullElse(BeanUtil.convert(byId, UserBasicInfoResponse.class), new UserBasicInfoResponse());
         if (StringUtils.isEmpty(basicInfoResponse.getHeader())) {
-            basicInfoResponse.setHeader(WebTools.buildEncodedUrl(request, "assets/images/default-portrait.gif"));
+            byte[] byteByInputStream = IOUtil.getByteByInputStream(UserService.class.getResourceAsStream("/assets/images/default-portrait.gif"));
+            basicInfoResponse.setHeader("data:image/gif;base64," + Base64.getEncoder().encodeToString(byteByInputStream));
         }
         UpdateVersionInfoPlugin plugin = Constants.zrLogConfig.getPlugin(UpdateVersionInfoPlugin.class);
         basicInfoResponse.setLastVersion(AdminStaticService.getInstance().getUpgradeService().getCheckVersionResponse(false, plugin));
@@ -78,7 +76,7 @@ public class UserService {
         return basicInfoResponse;
     }
 
-    public UserLoginDTO login(LoginRequest loginRequest, HttpRequest request) throws SQLException {
+    public UserLoginDTO login(LoginRequest loginRequest) throws SQLException {
         if (StringUtils.isNotEmpty(loginRequest.getUserName()) && StringUtils.isNotEmpty(loginRequest.getPassword())) {
             Map<String, Object> user = new User().getUserByUserName(loginRequest.getUserName().toLowerCase());
             if (Objects.isNull(user)) {
@@ -88,7 +86,7 @@ public class UserService {
             if (dbPassword == null || !Objects.equals(dbPassword.toLowerCase(), loginRequest.getPassword().toLowerCase())) {
                 throw new UserNameOrPasswordException();
             }
-            UserBasicInfoResponse userInfoByUser = getUserInfoByUser(user, UUID.randomUUID().toString(), request);
+            UserBasicInfoResponse userInfoByUser = getUserInfoByUser(user, UUID.randomUUID().toString());
             UserLoginDTO userLoginDTO = new UserLoginDTO();
             userLoginDTO.setSecretKey((String) user.get("secretKey"));
             userLoginDTO.setUserBasicInfoResponse(userInfoByUser);
