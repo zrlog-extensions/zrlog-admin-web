@@ -149,7 +149,11 @@ public class AdminArticleService {
                 dbLog.getAttrs().putAll(log);
                 dbLog.save();
             }
-            return BeanUtil.convert(log, CreateOrUpdateArticleResponse.class);
+            CreateOrUpdateArticleResponse response = new CreateOrUpdateArticleResponse();
+            response.setLogId((long) Double.parseDouble(log.get("logId") + ""));
+            response.setPrivacy(createArticleRequest.isPrivacy());
+            response.setRubbish(createArticleRequest.isRubbish());
+            return response;
         } finally {
             lock.unlock();
         }
