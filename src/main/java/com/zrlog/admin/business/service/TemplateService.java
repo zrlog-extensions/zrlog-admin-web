@@ -54,7 +54,7 @@ public class TemplateService {
 
     public List<TemplateVO> getAllTemplates(String previewTemplate) throws IOException {
         String currentTemplate = Constants.zrLogConfig.getCacheService().getPublicWebSiteInfo().getTemplate();
-        if (Objects.equals(currentTemplate, Constants.DEFAULT_TEMPLATE_PATH)) {
+        if (!Objects.equals(currentTemplate, Constants.DEFAULT_TEMPLATE_PATH)) {
             try {
                 TemplateDownloadUtils.installByTemplateName(currentTemplate, false);
             } catch (IOException | URISyntaxException | InterruptedException e) {

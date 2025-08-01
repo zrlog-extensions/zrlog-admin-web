@@ -39,8 +39,8 @@ public class WebSiteService {
     }
 
     public AdminWebSiteInfo adminWebSiteInfo() {
-        AdminWebSiteInfo admin = queryToMap(Arrays.asList(WebSite.admin_darkMode, WebSite.language, WebSite.admin_color_primary, WebSite.session_timeout,
-                AdminConstants.ARTICLE_AUTO_DIGEST_LENGTH_KEY,
+        AdminWebSiteInfo admin = queryToMap(Arrays.asList(WebSite.admin_darkMode, WebSite.language,
+                WebSite.admin_color_primary, WebSite.session_timeout, WebSite.article_auto_digest_length,
                 "favicon_png_pwa_512_base64", "favicon_png_pwa_192_base64",
                 "admin_article_page_size", "admin_static_resource_base_url"), AdminWebSiteInfo.class);
         if (StringUtils.isEmpty(admin.getAdmin_color_primary())) {
