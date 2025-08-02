@@ -1,5 +1,6 @@
 package com.zrlog.admin.util;
 
+import com.hibegin.common.util.EnvKit;
 import com.hibegin.common.util.StringUtils;
 import com.hibegin.http.server.api.HttpRequest;
 import com.hibegin.http.server.api.HttpResponse;
@@ -41,7 +42,7 @@ public class AdminWebTools {
         if (Objects.isNull(Constants.zrLogConfig)) {
             return "";
         }
-        if (BaseStaticSitePlugin.isStaticPluginRequest(request)) {
+        if (BaseStaticSitePlugin.isStaticPluginRequest(request) || EnvKit.isDevMode()) {
             return request.getContextPath();
         }
         String websiteHost = new WebSite().getStringValueByName("admin_static_resource_base_url");

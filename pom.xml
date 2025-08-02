@@ -4,7 +4,7 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <artifactId>zrlog-admin-web</artifactId>
     <groupId>com.hibegin</groupId>
-    <version>3.2.71-SNAPSHOT</version>
+    <version>3.2.71</version>
     <modelVersion>4.0.0</modelVersion>
 
 
@@ -15,7 +15,7 @@
         <maven.compiler.target>${java.version}</maven.compiler.target>
         <finalName>zrlog-admin-web</finalName>
         <libOutputPath>lib</libOutputPath>
-        <zrlog-base.version>3.2.70-SNAPSHOT</zrlog-base.version>
+        <zrlog-base.version>3.2.71</zrlog-base.version>
         <gpg.passphrase/>
     </properties>
 
