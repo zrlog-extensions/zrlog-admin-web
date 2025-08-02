@@ -9,6 +9,9 @@ import com.zrlog.admin.business.service.AdminStaticService;
 import com.zrlog.admin.web.plugin.UpdateVersionInfoPlugin;
 import com.zrlog.common.Constants;
 import com.zrlog.common.controller.BaseController;
+import com.zrlog.util.I18nUtil;
+
+import java.util.Objects;
 
 public class UpgradeController extends BaseController {
 
@@ -20,7 +23,9 @@ public class UpgradeController extends BaseController {
 
     @ResponseBody
     public AdminApiPageDataStandardResponse<PreCheckVersionResponse> index() {
-        return new AdminApiPageDataStandardResponse<>(AdminStaticService.getInstance().getUpgradeService().preUpgradeVersion(true, Constants.zrLogConfig.getPlugin(UpdateVersionInfoPlugin.class), System.currentTimeMillis() + ""), "", request.getUri());
+        PreCheckVersionResponse preCheckVersionResponse = AdminStaticService.getInstance().getUpgradeService().preUpgradeVersion(true, Constants.zrLogConfig.getPlugin(UpdateVersionInfoPlugin.class), System.currentTimeMillis() + "");
+        return new AdminApiPageDataStandardResponse<>(preCheckVersionResponse,
+                Objects.equals(preCheckVersionResponse.getUpgrade(), true) ? "" : I18nUtil.getBackendStringFromRes("notFoundNewVersion"), request.getUri());
     }
 
 

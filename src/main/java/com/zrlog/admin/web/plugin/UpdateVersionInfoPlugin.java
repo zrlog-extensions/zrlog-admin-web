@@ -5,7 +5,6 @@ import com.hibegin.common.util.StringUtils;
 import com.hibegin.common.util.http.HttpUtil;
 import com.zrlog.admin.business.rest.base.UpgradeWebSiteInfo;
 import com.zrlog.admin.business.service.WebSiteService;
-import com.zrlog.admin.util.MarkdownUtil;
 import com.zrlog.admin.web.type.AutoUpgradeVersionType;
 import com.zrlog.common.Constants;
 import com.zrlog.common.vo.Version;
@@ -42,14 +41,14 @@ public class UpdateVersionInfoPlugin implements IPlugin {
                     version + "-" + BlogBuildInfoUtil.getBuildId() + ".md?lang=" +
                     I18nUtil.getCurrentLocale() + "&v=" + BlogBuildInfoUtil.getBuildId());
             if (StringUtils.isNotEmpty(changeLogMd) && !UpdateVersionTimerTask.isHtml(changeLogMd)) {
-                return MarkdownUtil.renderMd(changeLogMd);
+                return changeLogMd;
             }
         } catch (IOException | InterruptedException | URISyntaxException e) {
             LOGGER.log(Level.SEVERE, "", e);
         }
         String uriPath = "94fzb/zrlog/commits/" + BlogBuildInfoUtil.getBuildId();
         String changeUrl = "https://github.com/" + uriPath;
-        return MarkdownUtil.renderMd(res.get("upgradeNoChangeLog") + "\n[" + uriPath + "](" + changeUrl + ")").replace("diff", "commit");
+        return (res.get("upgradeNoChangeLog") + "\n[" + uriPath + "](" + changeUrl + ")").replace("diff", "commit");
     }
 
     private void initExecutorService() {

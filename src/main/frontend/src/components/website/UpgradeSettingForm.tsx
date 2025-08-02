@@ -79,6 +79,7 @@ const UpgradeSettingForm = ({
             if (data.data.upgrade) {
                 const title = `${getRes()["newVersion"]} - #${data.data.version.type}`;
                 modal.info({
+                    width: 682,
                     title: title,
                     content: <UpgradeContent data={data.data} />,
                     closable: true,
@@ -90,7 +91,7 @@ const UpgradeSettingForm = ({
             } else {
                 if (data.error === 0) {
                     setChecking(false);
-                    await messageApi.info(getRes()["notFoundNewVersion"]);
+                    await messageApi.info(data.message);
                 }
             }
         } finally {

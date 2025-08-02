@@ -12,7 +12,7 @@ import { markdown } from "@codemirror/lang-markdown";
 
 import PasteUpload from "./paste-upload";
 import ScrollSync from "./scroll-sync";
-import EditorPreview from "./editor-preview";
+import HtmlPreviewPanel from "./html-preview-panel";
 import { markdownToHtml } from "./utils/marked-utils";
 import { addToCache, getCacheByKey } from "../../utils/cache";
 
@@ -182,7 +182,7 @@ const MarkedEditor: FunctionComponent<MarkdownEditorProps> = ({
                             overflow: "auto",
                         }}
                     />
-                    <EditorPreview
+                    <HtmlPreviewPanel
                         previewRef={previewRef}
                         style={{
                             display: state.preview ? "block" : "none",

@@ -8,7 +8,6 @@ import com.zrlog.admin.business.rest.response.CheckVersionResponse;
 import com.zrlog.admin.business.rest.response.DownloadUpdatePackageResponse;
 import com.zrlog.admin.business.rest.response.PreCheckVersionResponse;
 import com.zrlog.admin.business.rest.response.UpgradeProcessResponse;
-import com.zrlog.admin.util.MarkdownUtil;
 import com.zrlog.admin.web.plugin.*;
 import com.zrlog.common.Constants;
 import com.zrlog.common.vo.Version;
@@ -142,7 +141,7 @@ public class UpgradeService {
     public UpgradeProcessResponse doUpgrade(String preUpgradeKey) {
         UpdateVersionHandler updateVersionHandler = updateVersionThreadMap.get(preUpgradeKey);
         if (Objects.nonNull(updateVersionHandler)) {
-            return new UpgradeProcessResponse(updateVersionHandler.isFinish(), MarkdownUtil.renderMd(updateVersionHandler.getMessage()));
+            return new UpgradeProcessResponse(updateVersionHandler.isFinish(), updateVersionHandler.getMessage());
         }
         if (ZrLogUtil.isDockerMode()) {
             updateVersionHandler = new DockerUpdateVersionHandle(I18nUtil.getBackend());
@@ -163,7 +162,7 @@ public class UpgradeService {
         }
         updateVersionHandler.doHandle();
         updateVersionThreadMap.put(preUpgradeKey, updateVersionHandler);
-        return new UpgradeProcessResponse(updateVersionHandler.isFinish(), MarkdownUtil.renderMd(updateVersionHandler.getMessage()));
+        return new UpgradeProcessResponse(updateVersionHandler.isFinish(), updateVersionHandler.getMessage());
 
     }
 }

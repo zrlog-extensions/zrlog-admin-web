@@ -5,7 +5,6 @@ import com.hibegin.common.util.EnvKit;
 import com.hibegin.common.util.LoggerUtil;
 import com.hibegin.common.util.StringUtils;
 import com.hibegin.common.util.http.HttpUtil;
-import com.zrlog.admin.util.MarkdownUtil;
 import com.zrlog.business.util.NativeUtils;
 import com.zrlog.common.Constants;
 import com.zrlog.common.vo.Version;
@@ -50,7 +49,7 @@ public class UpdateVersionTimerTask extends TimerTask {
                     version + "-" + buildId + ".md?lang=" +
                     lang + "&v=" + BlogBuildInfoUtil.getBuildId());
             if (StringUtils.isNotEmpty(changeLogMd) && !isHtml(changeLogMd)) {
-                return MarkdownUtil.renderMd(changeLogMd);
+                return changeLogMd;
             }
         } catch (IOException | InterruptedException | URISyntaxException e) {
             if (Constants.debugLoggerPrintAble()) {
@@ -58,11 +57,11 @@ public class UpdateVersionTimerTask extends TimerTask {
             }
         }
         if (Objects.equals(BlogBuildInfoUtil.getBuildId(), buildId)) {
-            return MarkdownUtil.renderMd((String) res.get("upgradeNoChange"));
+            return (String) res.get("upgradeNoChange");
         }
         String uriPath = "94fzb/zrlog/compare/" + BlogBuildInfoUtil.getBuildId() + "..." + buildId;
         String changeUrl = "https://github.com/" + uriPath;
-        return MarkdownUtil.renderMd("### " + version + " (" + new SimpleDateFormat("yyyy-MM-dd HH:mm").format(releaseDate) + ")\n" + res.get("upgradeNoChangeLog") + "\n[" + uriPath + "](" + changeUrl + ")");
+        return "### " + version + " (" + new SimpleDateFormat("yyyy-MM-dd HH:mm").format(releaseDate) + ")\n" + res.get("upgradeNoChangeLog") + "\n[" + uriPath + "](" + changeUrl + ")";
     }
 
     @Override

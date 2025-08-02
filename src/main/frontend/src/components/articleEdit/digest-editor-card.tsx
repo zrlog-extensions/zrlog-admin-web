@@ -1,7 +1,7 @@
 import { getColorPrimary, getRes } from "../../utils/constants";
 import { CheckOutlined, EditOutlined } from "@ant-design/icons";
 import BaseTextArea from "../../common/BaseTextArea";
-import EditorPreview from "../../common/editor/editor-preview";
+import HtmlPreviewPanel from "../../common/editor/html-preview-panel";
 import Card from "antd/es/card";
 import { FunctionComponent, memo, RefObject, useEffect, useRef, useState } from "react";
 import { InputRef } from "antd";
@@ -54,7 +54,7 @@ const DigestEditorCard: FunctionComponent<DigestEditorCardProps> = memo(
                 );
             }
             return (
-                <EditorPreview
+                <HtmlPreviewPanel
                     style={{ maxHeight: 264, overflowY: "auto", overflowX: "hidden" }}
                     onContentChange={(text: string) => {
                         setDigest(text);

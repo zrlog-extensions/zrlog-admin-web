@@ -12,7 +12,7 @@ export type EditorPreviewProps = {
     style?: CSSProperties;
 };
 
-const EditorPreview: FunctionComponent<EditorPreviewProps> = ({
+const HtmlPreviewPanel: FunctionComponent<EditorPreviewProps> = ({
     htmlContent,
     previewRef,
     editable,
@@ -62,4 +62,4 @@ const EditorPreview: FunctionComponent<EditorPreviewProps> = ({
     );
 };
 
-export default EditorPreview;
+export default HtmlPreviewPanel;

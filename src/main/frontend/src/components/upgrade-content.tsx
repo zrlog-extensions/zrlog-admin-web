@@ -1,6 +1,8 @@
 import { FunctionComponent } from "react";
 import Divider from "antd/es/divider";
 import { UpgradeData } from "../type";
+import HtmlPreviewPanel from "../common/editor/html-preview-panel";
+import { marked } from "marked";
 
 export type UpgradeContentProps = {
     data: UpgradeData;
@@ -9,16 +11,13 @@ export type UpgradeContentProps = {
 const UpgradeContent: FunctionComponent<UpgradeContentProps> = ({ data }) => {
     return (
         <>
-            <div
-                style={{ overflowWrap: "break-word" }}
-                dangerouslySetInnerHTML={{ __html: data.version ? data.version.changeLog : "" }}
-            />
+            <HtmlPreviewPanel htmlContent={data.version ? (marked(data.version.changeLog) as string) : ""} />
             {!data.onlineUpgradable && (
                 <>
                     <Divider />
-                    <div
+                    <HtmlPreviewPanel
                         style={{ overflowWrap: "break-word" }}
-                        dangerouslySetInnerHTML={{ __html: data.disableUpgradeReason }}
+                        htmlContent={marked(data.disableUpgradeReason) as string}
                     />
                 </>
             )}
