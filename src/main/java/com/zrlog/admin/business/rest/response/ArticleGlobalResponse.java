@@ -4,7 +4,6 @@ import com.zrlog.common.cache.dto.TagDTO;
 import com.zrlog.common.cache.dto.TypeDTO;
 
 import java.util.List;
-import java.util.Map;
 
 public class ArticleGlobalResponse {
 
