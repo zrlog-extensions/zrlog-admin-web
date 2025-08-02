@@ -18,6 +18,7 @@ import com.zrlog.admin.business.rest.response.*;
 import com.zrlog.business.plugin.StaticSitePlugin;
 import com.zrlog.business.util.ArticleHelpers;
 import com.zrlog.common.Constants;
+import com.zrlog.common.cache.dto.TypeDTO;
 import com.zrlog.common.exception.NotFindDbEntryException;
 import com.zrlog.common.exception.ResourceLockedException;
 import com.zrlog.common.exception.UnknownException;
@@ -265,7 +266,7 @@ public class AdminArticleService {
             CompletableFuture<PageData<ArticleBasicDTO>> dataCompletableFuture = CompletableFuture.supplyAsync(() -> {
                 return new Log().adminFind(pageRequest, keywords, typeAlias);
             }, executorService);
-            CompletableFuture<List<Map<String, Object>>> listCompletableFuture = CompletableFuture.supplyAsync(() -> {
+            CompletableFuture<List<TypeDTO>> listCompletableFuture = CompletableFuture.supplyAsync(() -> {
                 return Constants.zrLogConfig.getCacheService().getArticleTypes();
             }, executorService);
             CompletableFuture.allOf(listCompletableFuture, dataCompletableFuture).join();

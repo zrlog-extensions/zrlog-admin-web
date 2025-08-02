@@ -3,7 +3,7 @@ package com.zrlog.admin.business.service;
 import com.hibegin.common.dao.dto.PageData;
 import com.hibegin.common.dao.dto.PageRequest;
 import com.hibegin.common.util.UrlEncodeUtils;
-import com.zrlog.data.dto.TypeDTO;
+import com.zrlog.common.cache.dto.TypeDTO;
 import com.zrlog.model.Type;
 
 import java.sql.SQLException;

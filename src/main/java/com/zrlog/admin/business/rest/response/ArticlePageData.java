@@ -1,6 +1,8 @@
 package com.zrlog.admin.business.rest.response;
 
 import com.hibegin.common.dao.dto.PageData;
+import com.zrlog.common.cache.dto.TypeDTO;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -13,13 +15,13 @@ public class ArticlePageData extends PageData<ArticleResponseEntry> implements S
     public ArticlePageData() {
     }
 
-    private List<Map<String, Object>> types = new ArrayList<>();
+    private List<TypeDTO> types = new ArrayList<>();
 
-    public List<Map<String, Object>> getTypes() {
+    public List<TypeDTO> getTypes() {
         return types;
     }
 
-    public void setTypes(List<Map<String, Object>> types) {
+    public void setTypes(List<TypeDTO> types) {
         this.types = types;
     }
 

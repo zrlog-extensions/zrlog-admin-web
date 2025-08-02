@@ -9,14 +9,13 @@ import com.zrlog.admin.business.rest.response.UpdateRecordResponse;
 import com.zrlog.admin.web.annotation.RefreshCache;
 import com.zrlog.admin.web.annotation.RequestLock;
 import com.zrlog.business.util.ControllerUtil;
+import com.zrlog.common.cache.dto.LinkDTO;
 import com.zrlog.common.controller.BaseController;
 import com.zrlog.common.exception.ArgsException;
-import com.zrlog.data.dto.LinkDTO;
 import com.zrlog.model.Link;
 
 import java.io.IOException;
 import java.sql.SQLException;
-import java.util.Map;
 import java.util.Objects;
 
 public class LinkController extends BaseController {

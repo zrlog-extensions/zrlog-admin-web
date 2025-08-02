@@ -15,11 +15,11 @@ import com.zrlog.admin.web.annotation.RequestLock;
 import com.zrlog.admin.web.token.AdminTokenThreadLocal;
 import com.zrlog.business.plugin.PluginCorePlugin;
 import com.zrlog.common.Constants;
+import com.zrlog.common.cache.vo.BaseDataInitVO;
 import com.zrlog.common.exception.ArgsException;
 import com.zrlog.common.exception.ResourceLockedException;
 import com.zrlog.common.vo.AdminFullTokenVO;
 import com.zrlog.common.vo.AdminTokenVO;
-import com.zrlog.data.cache.vo.BaseDataInitVO;
 import com.zrlog.data.service.DistributedLock;
 import com.zrlog.plugin.BaseStaticSitePlugin;
 import com.zrlog.util.ThreadUtils;
@@ -67,7 +67,7 @@ public class AdminInterceptor implements HandleAbleInterceptor {
 
     private void updateCache(boolean async, HttpRequest request) {
         try {
-            BaseDataInitVO initVO = (BaseDataInitVO) Constants.zrLogConfig.getCacheService().refreshInitData();
+            BaseDataInitVO initVO = Constants.zrLogConfig.getCacheService().refreshInitData();
             if (async) {
                 ThreadUtils.start(() -> {
                     Constants.zrLogConfig.refreshPluginCacheData(initVO.getVersion() + "", request);

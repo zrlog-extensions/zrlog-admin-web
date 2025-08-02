@@ -7,7 +7,7 @@ import com.zrlog.admin.business.rest.response.AdminApiPageDataStandardResponse;
 import com.zrlog.admin.business.rest.response.DevInfoResponse;
 import com.zrlog.admin.business.rest.response.UpdateRecordResponse;
 import com.zrlog.admin.util.DevKit;
-import com.zrlog.data.dto.LockDTO;
+import com.zrlog.common.vo.LockVO;
 import com.zrlog.data.util.DistributedLockManager;
 
 import java.util.List;
@@ -17,8 +17,8 @@ public class AdminDevController extends Controller {
     @ResponseBody
     @RequestMethod
     public UpdateRecordResponse releaseLocks() throws Exception {
-        List<LockDTO> lockDTOS = DistributedLockManager.getInstance().getLocks();
-        for (LockDTO lockDTO : lockDTOS) {
+        List<LockVO> lockDTOS = DistributedLockManager.getInstance().getLocks();
+        for (LockVO lockDTO : lockDTOS) {
             DistributedLockManager.getInstance().releaseLock(lockDTO.getName());
         }
         return new UpdateRecordResponse(true);

@@ -12,8 +12,8 @@ import com.zrlog.admin.web.annotation.RequestLock;
 import com.zrlog.admin.web.plugin.UpdateVersionInfoPlugin;
 import com.zrlog.admin.web.type.AutoUpgradeVersionType;
 import com.zrlog.common.Constants;
+import com.zrlog.common.cache.vo.BaseDataInitVO;
 import com.zrlog.common.controller.BaseController;
-import com.zrlog.data.cache.vo.BaseDataInitVO;
 import com.zrlog.model.WebSite;
 import com.zrlog.util.BlogBuildInfoUtil;
 import com.zrlog.util.I18nUtil;
@@ -62,7 +62,7 @@ public class WebSiteController extends BaseController {
         AdminApiPageDataStandardResponse<Void> updateResponse = new AdminApiPageDataStandardResponse<>();
         updateResponse.setError(0);
         updateResponse.setMessage(I18nUtil.getBackendStringFromRes("updateSuccess"));
-        BaseDataInitVO dataInitVO = (BaseDataInitVO) Constants.zrLogConfig.getCacheService().getInitData();
+        BaseDataInitVO dataInitVO = Constants.zrLogConfig.getCacheService().getInitData();
         if (Objects.nonNull(dataInitVO)) {
             dataInitVO.setWebSite(new WebSite().getPublicWebSite());
         }

@@ -109,7 +109,7 @@ public class AdminResourceImpl implements AdminResource {
 
     @Override
     public String getStaticResourceBuildId() {
-        CacheService<?> cacheService = Constants.zrLogConfig.getCacheService();
+        CacheService cacheService = Constants.zrLogConfig.getCacheService();
         if (Objects.isNull(cacheService)) {
             return Math.abs(fileBuildId) + "";
         }

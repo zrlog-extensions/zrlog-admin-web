@@ -15,7 +15,7 @@
         <maven.compiler.target>${java.version}</maven.compiler.target>
         <finalName>zrlog-admin-web</finalName>
         <libOutputPath>lib</libOutputPath>
-        <zrlog-base.version>3.2.68</zrlog-base.version>
+        <zrlog-base.version>3.2.70-SNAPSHOT</zrlog-base.version>
         <gpg.passphrase/>
     </properties>
 

@@ -1,12 +1,15 @@
 package com.zrlog.admin.business.rest.response;
 
+import com.zrlog.common.cache.dto.TagDTO;
+import com.zrlog.common.cache.dto.TypeDTO;
+
 import java.util.List;
 import java.util.Map;
 
 public class ArticleGlobalResponse {
 
-    private List<Map<String, Object>> tags;
-    private List<Map<String, Object>> types;
+    private List<TagDTO> tags;
+    private List<TypeDTO> types;
     private LoadEditArticleResponse article;
 
     public LoadEditArticleResponse getArticle() {
@@ -17,19 +20,19 @@ public class ArticleGlobalResponse {
         this.article = article;
     }
 
-    public List<Map<String, Object>> getTags() {
+    public List<TagDTO> getTags() {
         return tags;
     }
 
-    public void setTags(List<Map<String, Object>> tags) {
+    public void setTags(List<TagDTO> tags) {
         this.tags = tags;
     }
 
-    public List<Map<String, Object>> getTypes() {
+    public List<TypeDTO> getTypes() {
         return types;
     }
 
-    public void setTypes(List<Map<String, Object>> types) {
+    public void setTypes(List<TypeDTO> types) {
         this.types = types;
     }
 }

@@ -9,8 +9,8 @@ import com.zrlog.admin.business.rest.response.UpdateRecordResponse;
 import com.zrlog.admin.web.annotation.RefreshCache;
 import com.zrlog.admin.web.annotation.RequestLock;
 import com.zrlog.business.util.ControllerUtil;
+import com.zrlog.common.cache.dto.LogNavDTO;
 import com.zrlog.common.controller.BaseController;
-import com.zrlog.data.dto.LogNavDTO;
 import com.zrlog.model.LogNav;
 
 import java.io.IOException;

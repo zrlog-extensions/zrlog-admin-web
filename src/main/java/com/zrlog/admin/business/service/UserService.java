@@ -1,7 +1,6 @@
 package com.zrlog.admin.business.service;
 
 import com.hibegin.common.util.*;
-import com.hibegin.http.server.api.HttpRequest;
 import com.zrlog.admin.business.AdminConstants;
 import com.zrlog.admin.business.dto.UserLoginDTO;
 import com.zrlog.admin.business.exception.OldPasswordException;
@@ -14,7 +13,6 @@ import com.zrlog.admin.business.rest.request.UpdatePasswordRequest;
 import com.zrlog.admin.business.rest.response.UpdateRecordResponse;
 import com.zrlog.admin.business.rest.response.UserBasicInfoResponse;
 import com.zrlog.admin.web.plugin.UpdateVersionInfoPlugin;
-import com.zrlog.blog.web.util.WebTools;
 import com.zrlog.common.Constants;
 import com.zrlog.common.exception.ArgsException;
 import com.zrlog.model.User;
@@ -62,7 +60,7 @@ public class UserService {
     private UserBasicInfoResponse getUserInfoByUser(Map<String, Object> byId, String sessionId) {
         UserBasicInfoResponse basicInfoResponse = ObjectUtil.requireNonNullElse(BeanUtil.convert(byId, UserBasicInfoResponse.class), new UserBasicInfoResponse());
         if (StringUtils.isEmpty(basicInfoResponse.getHeader())) {
-            byte[] byteByInputStream = IOUtil.getByteByInputStream(UserService.class.getResourceAsStream("/assets/images/default-portrait.gif"));
+            byte[] byteByInputStream = IOUtil.getByteByInputStream(UserService.class.getResourceAsStream("/assets/admin/images/default-portrait.gif"));
             basicInfoResponse.setHeader("data:image/gif;base64," + Base64.getEncoder().encodeToString(byteByInputStream));
         }
         UpdateVersionInfoPlugin plugin = Constants.zrLogConfig.getPlugin(UpdateVersionInfoPlugin.class);

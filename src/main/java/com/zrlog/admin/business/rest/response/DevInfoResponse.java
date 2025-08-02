@@ -1,18 +1,19 @@
 package com.zrlog.admin.business.rest.response;
 
-import com.zrlog.data.dto.LockDTO;
+
+import com.zrlog.common.vo.LockVO;
 
 import java.util.List;
 
 public class DevInfoResponse {
 
-    private List<LockDTO> locks;
+    private List<LockVO> locks;
 
-    public List<LockDTO> getLocks() {
+    public List<LockVO> getLocks() {
         return locks;
     }
 
-    public void setLocks(List<LockDTO> locks) {
+    public void setLocks(List<LockVO> locks) {
         this.locks = locks;
     }
 }
