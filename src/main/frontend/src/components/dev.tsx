@@ -4,6 +4,7 @@ import { Button, message, Table } from "antd";
 import { useAxiosBaseInstance } from "../base/AppBase";
 import BaseTitle from "../base/BaseTitle";
 import Divider from "antd/es/divider";
+import { getRes } from "../utils/constants";
 
 type Lock = {
     name: string;
@@ -24,7 +25,7 @@ const Dev: FunctionComponent<AdminCommonProps<DevResponse>> = ({ data }) => {
     return (
         <>
             {messageContextHolder}
-            <BaseTitle title={"Dev"} />
+            <BaseTitle title={getRes().dev} />
             <Button
                 type={"primary"}
                 onClick={async () => {
@@ -42,12 +43,12 @@ const Dev: FunctionComponent<AdminCommonProps<DevResponse>> = ({ data }) => {
             <Table
                 columns={[
                     {
-                        title: "name",
+                        title: getRes().key,
                         dataIndex: "name",
                         key: "name",
                     },
                     {
-                        title: "remark",
+                        title: getRes().value,
                         dataIndex: "remark",
                         key: "remark",
                     },
