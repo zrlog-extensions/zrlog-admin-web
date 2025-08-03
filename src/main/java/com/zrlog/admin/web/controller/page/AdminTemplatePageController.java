@@ -34,17 +34,17 @@ public class AdminTemplatePageController extends BaseController {
             response.renderCode(404);
             return;
         }
-        if (templateVO.getPreviewImage().startsWith(Constants.TEMPLATE_BASE_PATH)) {
-            ZrLogUtil.putLongTimeCache(response);
-            response.addHeader("Content-Type", MimeTypeUtil.getMimeStrByExt(FileUtils.getFileExt(templateVO.getPreviewImage())));
-            if (Objects.equals(templateVO.getTemplate(), Constants.DEFAULT_TEMPLATE_PATH)) {
-                response.write(AdminTemplatePageController.class.getResourceAsStream(templateVO.getPreviewImage()));
-            } else {
-                response.writeFile(PathUtil.getStaticFile(templateVO.getPreviewImage()));
-            }
-        } else {
+        if (!templateVO.getPreviewImage().startsWith(Constants.TEMPLATE_BASE_PATH)) {
             response.renderCode(403);
+            return;
         }
+        ZrLogUtil.putLongTimeCache(response);
+        response.addHeader("Content-Type", MimeTypeUtil.getMimeStrByExt(FileUtils.getFileExt(templateVO.getPreviewImage())));
+        if (Objects.equals(templateVO.getTemplate(), Constants.DEFAULT_TEMPLATE_PATH)) {
+            response.write(AdminTemplatePageController.class.getResourceAsStream(templateVO.getPreviewImage()));
+            return;
+        }
+        response.writeFile(PathUtil.getStaticFile(templateVO.getPreviewImage()));
     }
 
 
