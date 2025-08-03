@@ -19,7 +19,7 @@
         <gpg.passphrase/>
     </properties>
 
-    <name>Zrlog Admin Web</name>
+    <name>ZrLog Admin Web</name>
     <url>https://github.com/zrlog-extensions/zrlog-admin-web</url>
     <description>ZrLog admin web</description>
 
