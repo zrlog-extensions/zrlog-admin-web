@@ -9,6 +9,8 @@ import { getCsrData, getVersion } from "../api";
 import BaseTitle from "../base/BaseTitle";
 import { UpgradeData } from "../type";
 import UpgradeContent from "./upgrade-content";
+import HtmlPreviewPanel from "../common/editor/html-preview-panel";
+import { markdownToHtml } from "../common/editor/utils/marked-utils";
 
 const { Step } = Steps;
 export const API_VERSION_PATH = "/api/public/version";
@@ -133,10 +135,11 @@ const Upgrade: FunctionComponent<UpgradeProps> = ({ data, offline, offlineData }
         try {
             const { data } = await getCsrData("/upgrade/doUpgrade?preUpgradeKey=" + preUpgradeKey, axiosInstance);
             if (data && data.message) {
+                const htmlContent = await markdownToHtml(data.message);
                 setState((prevState) => {
                     return {
                         ...prevState,
-                        upgradeMessage: data.message,
+                        upgradeMessage: htmlContent,
                         current: current,
                     };
                 });
@@ -224,10 +227,7 @@ const Upgrade: FunctionComponent<UpgradeProps> = ({ data, offline, offlineData }
                     {state.current === 2 && (
                         <>
                             <Title level={4}>正在执行更新...</Title>
-                            <div
-                                style={{ overflowWrap: "break-word" }}
-                                dangerouslySetInnerHTML={{ __html: state.upgradeMessage }}
-                            />
+                            <HtmlPreviewPanel htmlContent={state.upgradeMessage} />
                         </>
                     )}
                 </div>

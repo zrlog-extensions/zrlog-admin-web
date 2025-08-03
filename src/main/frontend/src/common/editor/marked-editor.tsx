@@ -193,6 +193,7 @@ const MarkedEditor: FunctionComponent<MarkdownEditorProps> = ({
                             paddingLeft: 5,
                             overflowY: "auto",
                             wordBreak: "break-word",
+                            background: EnvUtils.isDarkMode() ? "#1a1a17" : "inherit",
                         }}
                         htmlContent={state.content}
                     />

@@ -31,7 +31,7 @@ public class FaasUpdateVersionHandler implements UpdateVersionHandler {
     public String getMessage() {
         String downloadUrl = version.getZipDownloadUrl().replaceFirst(".zip", "-faas.zip");
         if (EnvKit.isLambda()) {
-            return "#### Update by aws-cli \n```shell\n" +
+            return "#### Update by aws-cli (CloudShell) \n```bash\n" +
                     getS3UpdateShell(downloadUrl, System.getenv("AWS_LAMBDA_FUNCTION_NAME")) +
                     "```";
         }

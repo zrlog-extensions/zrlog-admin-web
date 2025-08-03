@@ -1,7 +1,7 @@
 {
   "files": {
-    "main.js": "/admin/static/js/main.5478cacc.js",
-    "static/js/4868.d8fb8997.chunk.js": "/admin/static/js/4868.d8fb8997.chunk.js",
+    "main.js": "/admin/static/js/main.7ed05a74.js",
+    "static/js/4868.53038cd6.chunk.js": "/admin/static/js/4868.53038cd6.chunk.js",
     "static/js/6930.c730c2ce.chunk.js": "/admin/static/js/6930.c730c2ce.chunk.js",
     "static/js/6766.f28e31be.chunk.js": "/admin/static/js/6766.f28e31be.chunk.js",
     "static/js/3219.906653ae.chunk.js": "/admin/static/js/3219.906653ae.chunk.js",
@@ -116,9 +116,9 @@
     "static/js/1799.86f77618.chunk.js": "/admin/static/js/1799.86f77618.chunk.js",
     "static/js/3605.207dabb2.chunk.js": "/admin/static/js/3605.207dabb2.chunk.js",
     "vendor.js": "/admin/static/js/vendor.1d23b097.js",
-    "static/css/1496.304b9168.chunk.css": "/admin/static/css/1496.304b9168.chunk.css",
-    "static/js/1496.6131079e.chunk.js": "/admin/static/js/1496.6131079e.chunk.js",
-    "static/js/7820.47463910.js": "/admin/static/js/7820.47463910.js",
+    "static/css/886.304b9168.css": "/admin/static/css/886.304b9168.css",
+    "static/js/886.8b43dc3a.js": "/admin/static/js/886.8b43dc3a.js",
+    "static/js/2816.0437b7b1.chunk.js": "/admin/static/js/2816.0437b7b1.chunk.js",
     "static/media/KaTeX_AMS-Regular.ttf": "/admin/static/media/KaTeX_AMS-Regular.853be92419a6c3766b9a.ttf",
     "static/media/KaTeX_Main-Regular.ttf": "/admin/static/media/KaTeX_Main-Regular.9eba1d77abcf2aa6e94e.ttf",
     "static/media/KaTeX_Main-Bold.ttf": "/admin/static/media/KaTeX_Main-Bold.8169508bf58f8bd92ad8.ttf",
@@ -183,7 +183,8 @@
   },
   "entrypoints": [
     "static/js/vendor.1d23b097.js",
-    "static/js/7820.47463910.js",
-    "static/js/main.5478cacc.js"
+    "static/css/886.304b9168.css",
+    "static/js/886.8b43dc3a.js",
+    "static/js/main.7ed05a74.js"
   ]
 }

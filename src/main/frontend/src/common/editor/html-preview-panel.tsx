@@ -46,13 +46,7 @@ const HtmlPreviewPanel: FunctionComponent<EditorPreviewProps> = ({
     };
 
     return (
-        <StyledPreview
-            ref={previewRef}
-            style={{
-                ...style,
-                background: EnvUtils.isDarkMode() ? "#1a1a17" : "inherit",
-            }}
-        >
+        <StyledPreview ref={previewRef} style={style}>
             {EnvUtils.isDarkMode() ? (
                 <StyledHighlightDark {...commonProps} />
             ) : (

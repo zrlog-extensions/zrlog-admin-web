@@ -76,12 +76,25 @@ async function hydrateCodeBlocks(virtualElement: HTMLElement) {
     await Promise.all(tasks);
 }
 
-export const markdownToHtml = async (markdownValue: string) => {
+const markdownRenderToDiv = (markdownValue: string) => {
     const text = marked(markdownValue) as string;
     const rawHtml = renderTex(text);
     // 创建离屏容器（不挂载到页面）
     const container = document.createElement("div");
     container.innerHTML = rawHtml;
+    return container;
+};
+
+export const markdownToHtml = async (markdownValue: string) => {
+    const container = markdownRenderToDiv(markdownValue);
     await hydrateCodeBlocks(container);
+    return container.innerHTML;
+};
+
+export const markdownToHtmlSyncWithCallback = (markdownValue: string, onSuccess: (realHtmlStr: string) => void) => {
+    const container = markdownRenderToDiv(markdownValue);
+    hydrateCodeBlocks(container).then(() => {
+        onSuccess(container.innerHTML);
+    });
     return container.innerHTML;
 };
