@@ -10,6 +10,7 @@ import com.hibegin.http.server.api.HttpResponse;
 import com.hibegin.http.server.web.MethodInterceptor;
 import com.zrlog.admin.business.AdminConstants;
 import com.zrlog.admin.util.AdminWebTools;
+import com.zrlog.admin.util.PluginUtils;
 import com.zrlog.admin.web.annotation.RefreshCache;
 import com.zrlog.admin.web.annotation.RequestLock;
 import com.zrlog.admin.web.token.AdminTokenThreadLocal;
@@ -70,10 +71,10 @@ public class AdminInterceptor implements HandleAbleInterceptor {
             BaseDataInitVO initVO = Constants.zrLogConfig.getCacheService().refreshInitData();
             if (async) {
                 ThreadUtils.start(() -> {
-                    Constants.zrLogConfig.refreshPluginCacheData(initVO.getVersion() + "", request);
+                    PluginUtils.refreshPluginCacheData(initVO.getVersion() + "", request);
                 });
             } else {
-                Constants.zrLogConfig.refreshPluginCacheData(initVO.getVersion() + "", request);
+                PluginUtils.refreshPluginCacheData(initVO.getVersion() + "", request);
             }
         } catch (Exception e) {
             LOGGER.log(Level.SEVERE, "Refresh cache error ", e);

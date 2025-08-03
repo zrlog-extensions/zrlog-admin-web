@@ -79,14 +79,6 @@ class DevZrLogConfig extends ZrLogConfig {
     }
 
     @Override
-    public void refreshPluginCacheData(String version, HttpRequest request) {
-        AdminStaticResourcePlugin adminStaticResourcePlugin = getPlugin(AdminStaticResourcePlugin.class);
-        if (adminStaticResourcePlugin != null) {
-            adminStaticResourcePlugin.start();
-        }
-    }
-
-    @Override
     public List<IPlugin> getBasePluginList() {
         Plugins plugins1 = new Plugins();
         plugins1.add(new PluginCorePluginImpl(dbPropertiesFile));
