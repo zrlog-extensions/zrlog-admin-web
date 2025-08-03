@@ -24,7 +24,7 @@ public class FaasUpdateVersionHandler implements UpdateVersionHandler {
                 "aws lambda update-function-code \\\n" +
                 "  --function-name " + functionName + " \\\n" +
                 "  --s3-bucket " + lambdaRepoName + " \\\n" +
-                "  --s3-key " + finalName + "\n\n";
+                "  --s3-key " + finalName + "\n\n\n";
     }
 
     @Override
