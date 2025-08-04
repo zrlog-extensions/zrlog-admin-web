@@ -148,13 +148,18 @@ const MarkedEditor: FunctionComponent<MarkdownEditorProps> = ({
                         height={height}
                         width={"100%"}
                         onUpdate={(viewUpdate) => {
+                            console.info(viewUpdate);
                             if (viewUpdate.viewportChanged) {
-                                /*setState((prevState) => {
-                                return {
-                                    ...prevState,
-                                    preview: window.innerWidth > 600,
+                                const gutters = viewUpdate.view.dom.querySelector(".cm-gutters-before") as HTMLElement;
+                                //console.info( gutters.offsetWidth);
+                                if (gutters) {
+                                    setState((prevState) => {
+                                        return {
+                                            ...prevState,
+                                            guttersWidth: gutters.offsetWidth,
+                                        };
+                                    });
                                 }
-                            })*/
                             }
                         }}
                         theme={EnvUtils.isDarkMode() ? "dark" : "light"}
@@ -176,8 +181,8 @@ const MarkedEditor: FunctionComponent<MarkdownEditorProps> = ({
                             });
                         }}
                         style={{
-                            minWidth: state.preview ? `calc(50% + ${state.guttersWidth / 2}px)` : "100%",
-                            width: state.preview ? `calc(50% + ${state.guttersWidth / 2}px)` : "100%",
+                            minWidth: state.preview ? `calc((50% + ${state.guttersWidth / 2}px)` : "100%",
+                            width: state.preview ? `calc((50% + ${state.guttersWidth / 2}px)` : "100%",
                             borderRight: getBorder(),
                             overflow: "auto",
                         }}
@@ -186,14 +191,16 @@ const MarkedEditor: FunctionComponent<MarkdownEditorProps> = ({
                         previewRef={previewRef}
                         style={{
                             display: state.preview ? "block" : "none",
-                            width: `calc(50% - ${state.guttersWidth / 2}px)`,
+                            minWidth: `calc((100% - ${state.guttersWidth}px) / 2)`,
+                            width: `calc((100% - ${state.guttersWidth}px) / 2)`,
+                            background: EnvUtils.isDarkMode() ? "#1a1a17" : "inherit",
                             paddingTop: 4,
                             paddingBottom: 4,
-                            paddingRight: 8,
-                            paddingLeft: 5,
+                            paddingRight: 2,
+                            paddingLeft: 6,
                             overflowY: "auto",
                             wordBreak: "break-word",
-                            background: EnvUtils.isDarkMode() ? "#1a1a17" : "inherit",
+                            boxSizing: "border-box",
                         }}
                         htmlContent={state.content}
                     />
