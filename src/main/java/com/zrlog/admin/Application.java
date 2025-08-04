@@ -49,10 +49,6 @@ public class Application {
         System.getProperties().put("sws.run.mode", "dev");
         Constants.zrLogConfig = new DevZrLogConfig(17080, getZipUpdater(args), "/sub");
         WebServerBuilder build = new WebServerBuilder.Builder().config(Constants.zrLogConfig).build();
-        build.addCreateSuccessHandle(() -> {
-            Constants.zrLogConfig.startPluginsAsync();
-            return null;
-        });
         build.start();
     }
 }
@@ -80,9 +76,9 @@ class DevZrLogConfig extends ZrLogConfig {
 
     @Override
     public List<IPlugin> getBasePluginList() {
-        Plugins plugins1 = new Plugins();
-        plugins1.add(new PluginCorePluginImpl(dbPropertiesFile));
-        plugins1.add(new CacheManagerPlugin(this));
-        return plugins1;
+        Plugins basePlugins = new Plugins();
+        basePlugins.add(new PluginCorePluginImpl(dbPropertiesFile));
+        basePlugins.add(new CacheManagerPlugin(this));
+        return basePlugins;
     }
 }

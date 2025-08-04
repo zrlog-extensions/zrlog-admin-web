@@ -557,49 +557,34 @@ const Index: FunctionComponent<ArticleEditProps> = ({
                         />
                     </Col>
                 </Row>
-                <Row gutter={[fullScreen ? 0 : 8, fullScreen ? 0 : 8]}>
-                    <Col
-                        md={24}
-                        sm={24}
-                        xs={24}
-                        style={{
-                            paddingLeft: 0,
-                            paddingRight: 4,
-                        }}
-                    >
-                        <MarkedEditor
-                            fullscreen={fullScreen}
-                            height={getEditorHeight()}
-                            loadSuccess={() => {
-                                //ignore
-                            }}
-                            content={state.article.content ? state.article.content : ""}
-                            getContainer={() => {
-                                return editCardRef.current as HTMLDivElement;
-                            }}
-                            value={state.article.markdown}
-                            onChange={(v) => {
-                                if (
-                                    v.markdown === "" &&
-                                    (state.article.markdown === "" ||
-                                        state.article.markdown === undefined ||
-                                        state.article.markdown === null)
-                                ) {
-                                    return;
-                                }
-                                //不检查 content，避免因为 markdown 渲染库升级，载入文章时自动更新为草稿
-                                if (v.markdown === state.article.markdown) {
-                                    return;
-                                }
-                                handleValuesChange(v);
-                            }}
-                        />
-                        <EditorStatistics
-                            data={toStatisticsByMarkdown(state.article.markdown)}
-                            fullScreen={fullScreen}
-                        />
-                    </Col>
-                </Row>
+                <MarkedEditor
+                    fullscreen={fullScreen}
+                    height={getEditorHeight()}
+                    loadSuccess={() => {
+                        //ignore
+                    }}
+                    content={state.article.content ? state.article.content : ""}
+                    getContainer={() => {
+                        return editCardRef.current as HTMLDivElement;
+                    }}
+                    value={state.article.markdown}
+                    onChange={(v) => {
+                        if (
+                            v.markdown === "" &&
+                            (state.article.markdown === "" ||
+                                state.article.markdown === undefined ||
+                                state.article.markdown === null)
+                        ) {
+                            return;
+                        }
+                        //不检查 content，避免因为 markdown 渲染库升级，载入文章时自动更新为草稿
+                        if (v.markdown === state.article.markdown) {
+                            return;
+                        }
+                        handleValuesChange(v);
+                    }}
+                />
+                <EditorStatistics data={toStatisticsByMarkdown(state.article.markdown)} fullScreen={fullScreen} />
             </Card>
         </StyledArticleEdit>
     );
