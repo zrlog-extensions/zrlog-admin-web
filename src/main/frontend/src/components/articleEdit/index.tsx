@@ -450,11 +450,11 @@ const Index: FunctionComponent<ArticleEditProps> = ({
                 ref={editCardRef}
                 style={{
                     borderRadius: fullScreen ? 0 : 8,
+                    overflow: "hidden",
                 }}
                 styles={{
                     body: {
                         padding: 0,
-                        overflow: "hidden",
                     },
                 }}
             >

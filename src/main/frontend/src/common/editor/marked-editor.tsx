@@ -183,7 +183,7 @@ const MarkedEditor: FunctionComponent<MarkdownEditorProps> = ({
                         style={{
                             minWidth: state.preview ? `calc((50% + ${state.guttersWidth / 2}px)` : "100%",
                             width: state.preview ? `calc((50% + ${state.guttersWidth / 2}px)` : "100%",
-                            borderRight: getBorder(),
+                            borderRight: state.preview ? getBorder() : "none",
                             overflow: "auto",
                         }}
                     />
