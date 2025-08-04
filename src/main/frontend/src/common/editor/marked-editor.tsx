@@ -48,7 +48,7 @@ const MarkedEditor: FunctionComponent<MarkdownEditorProps> = ({
         //默认开启
         preview: getDefaultConfig().preview,
         content: content,
-        guttersWidth: 29,
+        guttersWidth: 27,
     });
 
     const editorRef = useRef<EditorView | null>(null);
@@ -108,6 +108,21 @@ const MarkedEditor: FunctionComponent<MarkdownEditorProps> = ({
         });
     }, [state.markdownValue]);
 
+    const onViewChange = () => {
+        if (editorRef.current && editorRef.current.dom) {
+            const gutters = editorRef.current.dom.querySelector(".cm-gutters-before") as HTMLElement;
+            //console.info( gutters.offsetWidth);
+            if (gutters) {
+                setState((prevState) => {
+                    return {
+                        ...prevState,
+                        guttersWidth: gutters.offsetWidth,
+                    };
+                });
+            }
+        }
+    };
+
     return (
         <StyledEditor style={{ paddingBottom: 30 }}>
             {editorRef.current && (
@@ -148,24 +163,15 @@ const MarkedEditor: FunctionComponent<MarkdownEditorProps> = ({
                         height={height}
                         width={"100%"}
                         onUpdate={(viewUpdate) => {
-                            console.info(viewUpdate);
                             if (viewUpdate.viewportChanged) {
-                                const gutters = viewUpdate.view.dom.querySelector(".cm-gutters-before") as HTMLElement;
-                                //console.info( gutters.offsetWidth);
-                                if (gutters) {
-                                    setState((prevState) => {
-                                        return {
-                                            ...prevState,
-                                            guttersWidth: gutters.offsetWidth,
-                                        };
-                                    });
-                                }
+                                onViewChange();
                             }
                         }}
                         theme={EnvUtils.isDarkMode() ? "dark" : "light"}
                         extensions={[markdown({ codeLanguages: languages }), EditorView.lineWrapping]}
                         onCreateEditor={(view) => {
                             editorRef.current = view;
+                            onViewChange();
                         }}
                         onChange={async (val, viewUpdate) => {
                             const gutter = viewUpdate.view.dom.querySelector(".cm-gutters") as HTMLElement;
@@ -183,7 +189,6 @@ const MarkedEditor: FunctionComponent<MarkdownEditorProps> = ({
                         style={{
                             minWidth: state.preview ? `calc((50% + ${state.guttersWidth / 2}px)` : "100%",
                             width: state.preview ? `calc((50% + ${state.guttersWidth / 2}px)` : "100%",
-                            borderRight: state.preview ? getBorder() : "none",
                             overflow: "auto",
                         }}
                     />
@@ -197,8 +202,10 @@ const MarkedEditor: FunctionComponent<MarkdownEditorProps> = ({
                             paddingTop: 4,
                             paddingBottom: 4,
                             paddingRight: 2,
-                            paddingLeft: 6,
+                            paddingLeft: 5,
+                            borderLeft: getBorder(),
                             overflowY: "auto",
+                            lineHeight: 1.4,
                             wordBreak: "break-word",
                             boxSizing: "border-box",
                         }}
