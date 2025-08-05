@@ -36,6 +36,9 @@ export interface Admin {
 
 export interface Blog {
     host: string;
+    system_notification: string;
+    article_thumbnail_status: boolean;
+    disable_comment_status: boolean;
     generator_html_status: boolean;
 }
 

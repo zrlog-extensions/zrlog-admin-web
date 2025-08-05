@@ -16,8 +16,9 @@ public class BlogWebSiteInfo implements Validator {
 
     private Boolean disable_comment_status;
 
-
     private Boolean article_thumbnail_status;
+
+    private String system_notification;
 
     public Boolean getArticle_thumbnail_status() {
         return article_thumbnail_status;
@@ -63,5 +64,16 @@ public class BlogWebSiteInfo implements Validator {
         if (StringUtils.isNotEmpty(host)) {
             this.host = Jsoup.clean(host, Safelist.none());
         }
+        if (StringUtils.isNotEmpty(system_notification)) {
+            this.system_notification = Jsoup.clean(system_notification, Safelist.none());
+        }
+    }
+
+    public String getSystem_notification() {
+        return system_notification;
+    }
+
+    public void setSystem_notification(String system_notification) {
+        this.system_notification = system_notification;
     }
 }

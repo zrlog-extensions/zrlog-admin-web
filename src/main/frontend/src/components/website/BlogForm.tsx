@@ -9,6 +9,7 @@ import { message } from "antd";
 import { Blog } from "./index";
 import Title from "antd/es/typography/Title";
 import { useAxiosBaseInstance } from "../../base/AppBase";
+import TextArea from "antd/es/input/TextArea";
 
 const layout = {
     labelCol: { span: 8 },
@@ -89,6 +90,9 @@ const BlogForm = ({
                 </Form.Item>
                 <Form.Item valuePropName="checked" name="article_thumbnail_status" label={getRes()["articleCover"]}>
                     <Switch size={"small"} />
+                </Form.Item>
+                <Form.Item name="system_notification" label={"系统通知"}>
+                    <TextArea />
                 </Form.Item>
                 <Divider />
                 <Button loading={loading} type="primary" disabled={offline || offlineData} htmlType="submit">

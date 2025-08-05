@@ -27,7 +27,8 @@ public class WebSiteService {
     }
 
     public BlogWebSiteInfo blogWebSiteInfo() {
-        BlogWebSiteInfo blog = queryToMap(Arrays.asList(WebSite.generator_html_status, WebSite.host, WebSite.disable_comment_status, WebSite.article_thumbnail_status), BlogWebSiteInfo.class);
+        BlogWebSiteInfo blog = queryToMap(Arrays.asList(WebSite.generator_html_status, WebSite.host, WebSite.disable_comment_status,
+                WebSite.article_thumbnail_status, WebSite.system_notification), BlogWebSiteInfo.class);
         blog.setGenerator_html_status(Objects.equals(blog.getGenerator_html_status(), true));
         blog.setDisable_comment_status(Objects.equals(blog.getDisable_comment_status(), true));
         blog.setArticle_thumbnail_status(Objects.equals(blog.getArticle_thumbnail_status(), true));
