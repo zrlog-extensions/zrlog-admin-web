@@ -1,4 +1,4 @@
-import CodeMirror, { EditorSelection, EditorView } from "@uiw/react-codemirror";
+import CodeMirror, { EditorSelection, EditorState, EditorView } from "@uiw/react-codemirror";
 import { FunctionComponent, useEffect, useRef, useState } from "react";
 import { EditorConfig, MarkdownEditorProps } from "./editor.types";
 import EnvUtils from "../../utils/env-utils";
@@ -106,6 +106,23 @@ const MarkedEditor: FunctionComponent<MarkdownEditorProps> = ({
         }
     };
 
+    // 中文翻译对象
+    const phrases = {
+        Find: "查找",
+        Replace: "替换",
+        next: "下一个",
+        previous: "上一个",
+        replace: "替换",
+        "replace all": "全部替换",
+        "match case": "区分大小写",
+        regexp: "正则表达式",
+        "by word": "整词匹配",
+        close: "关闭",
+        all: "全部",
+        "No matches": "没有匹配项",
+        "replaced X matches": "替换了 $X 条匹配项",
+    };
+
     return (
         <StyledEditor style={{ paddingBottom: 30 }}>
             {editorRef.current && (
@@ -140,7 +157,7 @@ const MarkedEditor: FunctionComponent<MarkdownEditorProps> = ({
                 />
                 <div style={{ height: height, display: "flex", width: "100%" }}>
                     <CodeMirror
-                        basicSetup={{ searchKeymap: false }}
+                        basicSetup={{ searchKeymap: true }}
                         placeholder={getRes()["editorPlaceholder"]}
                         value={state.markdownValue}
                         height={height}
@@ -151,7 +168,11 @@ const MarkedEditor: FunctionComponent<MarkdownEditorProps> = ({
                             }
                         }}
                         theme={EnvUtils.isDarkMode() ? "dark" : "light"}
-                        extensions={[markdown({ codeLanguages: languages }), EditorView.lineWrapping]}
+                        extensions={[
+                            markdown({ codeLanguages: languages }),
+                            EditorView.lineWrapping,
+                            EditorState.phrases.of(getRes()["lang"] === "zh_CN" ? phrases : {}), // 💥 核心 i18n 配置
+                        ]}
                         onCreateEditor={(view) => {
                             editorRef.current = view;
                             onViewChange();
