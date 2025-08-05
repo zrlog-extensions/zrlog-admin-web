@@ -1,5 +1,5 @@
 import CodeMirror, { EditorSelection, EditorState, EditorView } from "@uiw/react-codemirror";
-import { FunctionComponent, useEffect, useRef, useState } from "react";
+import { FunctionComponent, useEffect, useMemo, useRef, useState } from "react";
 import { EditorConfig, MarkdownEditorProps } from "./editor.types";
 import EnvUtils from "../../utils/env-utils";
 import { StyledEditor } from "./styles/styled-editor";
@@ -123,6 +123,12 @@ const MarkedEditor: FunctionComponent<MarkdownEditorProps> = ({
         "replaced X matches": "替换了 $X 条匹配项",
     };
 
+    const lang = getRes()["lang"];
+
+    const i18nExtension = useMemo(() => {
+        return EditorState.phrases.of(lang === "zh_CN" ? phrases : {});
+    }, [lang]);
+
     return (
         <StyledEditor style={{ paddingBottom: 30 }}>
             {editorRef.current && (
@@ -168,19 +174,12 @@ const MarkedEditor: FunctionComponent<MarkdownEditorProps> = ({
                             }
                         }}
                         theme={EnvUtils.isDarkMode() ? "dark" : "light"}
-                        extensions={[
-                            markdown({ codeLanguages: languages }),
-                            EditorView.lineWrapping,
-                            EditorState.phrases.of(getRes()["lang"] === "zh_CN" ? phrases : {}), // 💥 核心 i18n 配置
-                        ]}
+                        extensions={[markdown({ codeLanguages: languages }), EditorView.lineWrapping, i18nExtension]}
                         onCreateEditor={(view) => {
                             editorRef.current = view;
                             onViewChange();
                         }}
                         onChange={async (md) => {
-                            if (md === state.markdownValue) {
-                                return;
-                            }
                             const html = await markdownToHtml(md);
                             const changeValues = {
                                 content: html,
