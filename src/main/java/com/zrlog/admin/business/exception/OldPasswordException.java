@@ -11,6 +11,6 @@ public class OldPasswordException extends AbstractBusinessException {
 
     @Override
     public String getMessage() {
-        return I18nUtil.getBackendStringFromRes("oldPasswordError");
+        return I18nUtil.getAdminBackendStringFromRes("oldPasswordError");
     }
 }

@@ -29,7 +29,7 @@ public class AdminPublicController extends BaseController {
         if (Objects.equals(BlogBuildInfoUtil.getBuildId(), request.getParaToStr("buildId", ""))) {
             PublicVersionResponse versionResponse = new PublicVersionResponse();
             versionResponse.setBuildId(BlogBuildInfoUtil.getBuildId());
-            versionResponse.setMessage(I18nUtil.getBackendStringFromRes("upgradeSuccess"));
+            versionResponse.setMessage(I18nUtil.getAdminBackendStringFromRes("upgradeSuccess"));
             return new AdminApiPageDataStandardResponse<>(versionResponse);
         }
         return new AdminApiPageDataStandardResponse<>(new PublicVersionResponse());

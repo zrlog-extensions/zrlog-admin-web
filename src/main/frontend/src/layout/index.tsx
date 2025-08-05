@@ -1,5 +1,5 @@
 import { HomeOutlined, MenuFoldOutlined, MenuUnfoldOutlined } from "@ant-design/icons";
-import { Button, Col, FloatButton, Layout, Row } from "antd";
+import { Alert, Button, Col, FloatButton, Layout, Row } from "antd";
 
 import { getColorPrimary, getRes } from "../utils/constants";
 import { FunctionComponent, PropsWithChildren, useEffect, useState } from "react";
@@ -23,6 +23,7 @@ type AdminManageLayoutProps = PropsWithChildren & {
     offline: boolean;
     basicUserInfo: BasicUserInfo;
     syncStaticSite: boolean;
+    systemNotification: string;
 };
 
 const AdminManageLayout: FunctionComponent<AdminManageLayoutProps> = ({
@@ -32,6 +33,7 @@ const AdminManageLayout: FunctionComponent<AdminManageLayoutProps> = ({
     fullScreen,
     basicUserInfo,
     syncStaticSite,
+    systemNotification,
 }) => {
     const screens = useBreakpoint();
 
@@ -106,6 +108,23 @@ const AdminManageLayout: FunctionComponent<AdminManageLayoutProps> = ({
     return (
         <PWAHandler>
             <StyledIndexLayout>
+                {systemNotification && systemNotification.length > 0 && (
+                    <Alert
+                        showIcon={true}
+                        banner={true}
+                        type={"info"}
+                        message={systemNotification}
+                        style={{
+                            position: "fixed",
+                            zIndex: 1,
+                            top: 38,
+                            borderRadius: 4,
+                            left: "50%",
+                            transform: "translateX(-50%)",
+                            width: "fit-content",
+                        }}
+                    />
+                )}
                 <Header
                     style={{
                         display: fullScreen ? "none" : "flex",

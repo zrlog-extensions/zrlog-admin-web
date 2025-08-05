@@ -61,6 +61,8 @@ public class AdminNativeImageUtils {
         resourceUris.add(AdminConstants.FAVICON_PNG_PWA_512_URI_PATH);
         resourceUris.add("/i18n/admin_en_US.properties");
         resourceUris.add("/i18n/admin_zh_CN.properties");
+        resourceUris.add("/i18n/admin_backend_zh_CN.properties");
+        resourceUris.add("/i18n/admin_backend_zh_CN.properties");
         return resourceUris;
     }
 

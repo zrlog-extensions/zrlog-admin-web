@@ -11,6 +11,6 @@ public class UserNameOrPasswordException extends AbstractBusinessException {
 
     @Override
     public String getMessage() {
-        return I18nUtil.getBackendStringFromRes("userNameOrPasswordError");
+        return I18nUtil.getAdminBackendStringFromRes("userNameOrPasswordError");
     }
 }

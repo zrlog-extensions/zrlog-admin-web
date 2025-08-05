@@ -11,6 +11,6 @@ public class StaticHtmlConfigException extends AbstractBusinessException {
 
     @Override
     public String getMessage() {
-        return I18nUtil.getBackendStringFromRes("staticHtmlConfigError");
+        return I18nUtil.getAdminBackendStringFromRes("staticHtmlConfigError");
     }
 }

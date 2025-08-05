@@ -9,10 +9,10 @@ import com.zrlog.common.rest.response.StandardResponse;
 import java.util.Objects;
 
 public class AdminApiPageDataStandardResponse<T> extends StandardResponse {
-    private final String pageBuildId;
+    protected final String pageBuildId;
     protected String documentTitle;
-    private T data;
-
+    protected final T data;
+    protected final String systemNotification;
 
     public AdminApiPageDataStandardResponse() {
         this(null);
@@ -24,10 +24,6 @@ public class AdminApiPageDataStandardResponse<T> extends StandardResponse {
 
     public T getData() {
         return data;
-    }
-
-    public void setData(T data) {
-        this.data = data;
     }
 
     public AdminApiPageDataStandardResponse(T data, String message) {
@@ -45,6 +41,12 @@ public class AdminApiPageDataStandardResponse<T> extends StandardResponse {
         }
         if (StringUtils.isNotEmpty(requestUri)) {
             this.documentTitle = AdminConstants.getAdminDocumentTitleByUri(requestUri);
+        }
+        String configMsg = Constants.zrLogConfig.getCacheService().getPublicWebSiteInfo().getSystem_notification();
+        if (StringUtils.isNotEmpty(configMsg)) {
+            this.systemNotification = configMsg;
+        } else {
+            this.systemNotification = Objects.requireNonNullElse(System.getenv("SYSTEM_NOTIFICATION"), "");
         }
     }
 

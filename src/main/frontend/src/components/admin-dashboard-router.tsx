@@ -137,6 +137,7 @@ export function AdminPage(props: AdminPageProps<any>): ReactElement<AdminPagePro
         <AdminManageLayout
             basicUserInfo={props.props.userInfo}
             offline={props.props.offline}
+            systemNotification={props.props.systemNotification}
             syncStaticSite={props.props.pageBuildId !== getWindowPageBuildId()}
             loading={props.props.offlineData && !props.props.offline}
             fullScreen={props.props.fullScreen}
@@ -433,6 +434,7 @@ const AdminDashboardRouter: FunctionComponent<AdminDashboardRouterProps> = ({ of
                                         fullScreen: state.fullScreen,
                                         data: getDataFromCache(),
                                         offline: offline,
+                                        systemNotification: getSsDate().systemNotification,
                                         pageBuildId: getPageBuildId(),
                                         offlineData: isOfflineData(),
                                         updateCache: (e, cacheKey) => {

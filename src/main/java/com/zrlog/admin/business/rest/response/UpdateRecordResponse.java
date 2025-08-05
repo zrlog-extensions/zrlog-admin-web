@@ -9,6 +9,6 @@ public class UpdateRecordResponse extends AdminApiPageDataStandardResponse<Objec
 
     public UpdateRecordResponse(Boolean success) {
         setError(success ? 0 : 1);
-        setMessage(success ? I18nUtil.getBackendStringFromRes("updateSuccess") : I18nUtil.getBackendStringFromRes("updateError"));
+        setMessage(success ? I18nUtil.getAdminBackendStringFromRes("updateSuccess") : I18nUtil.getAdminBackendStringFromRes("updateError"));
     }
 }

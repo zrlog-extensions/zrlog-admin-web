@@ -25,7 +25,7 @@ public class UpgradeController extends BaseController {
     public AdminApiPageDataStandardResponse<PreCheckVersionResponse> index() {
         PreCheckVersionResponse preCheckVersionResponse = AdminStaticService.getInstance().getUpgradeService().preUpgradeVersion(true, Constants.zrLogConfig.getPlugin(UpdateVersionInfoPlugin.class), System.currentTimeMillis() + "");
         return new AdminApiPageDataStandardResponse<>(preCheckVersionResponse,
-                Objects.equals(preCheckVersionResponse.getUpgrade(), true) ? "" : I18nUtil.getBackendStringFromRes("notFoundNewVersion"), request.getUri());
+                Objects.equals(preCheckVersionResponse.getUpgrade(), true) ? "" : I18nUtil.getAdminBackendStringFromRes("notFoundNewVersion"), request.getUri());
     }
 
 

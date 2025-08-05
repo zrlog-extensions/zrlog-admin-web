@@ -144,9 +144,10 @@ public class UpgradeService {
             return new UpgradeProcessResponse(updateVersionHandler.isFinish(), updateVersionHandler.getMessage());
         }
         if (ZrLogUtil.isDockerMode()) {
-            updateVersionHandler = new DockerUpdateVersionHandle(I18nUtil.getBackend());
+            updateVersionHandler = new DockerUpdateVersionHandle(I18nUtil.getAdminBackend());
         } else if (ZrLogUtil.isSystemServiceMode()) {
-            updateVersionHandler = new SystemServiceUpdateVersionHandle(I18nUtil.getBackend());
+            Version version = versionMap.get(preUpgradeKey);
+            updateVersionHandler = new SystemServiceUpdateVersionHandle(I18nUtil.getBackend(), version);
         } else if (EnvKit.isFaaSMode()) {
             updateVersionHandler = new FaasUpdateVersionHandler(I18nUtil.getBackend(), versionMap.get(preUpgradeKey));
         } else {

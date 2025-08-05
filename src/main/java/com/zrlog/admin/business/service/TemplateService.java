@@ -34,7 +34,7 @@ public class TemplateService {
     public UpdateRecordResponse save(String template, Map<String, Object> settingMap) throws SQLException {
         new WebSite().updateTemplateConfigMap(template, settingMap);
         UpdateRecordResponse updateRecordResponse = new UpdateRecordResponse();
-        updateRecordResponse.setMessage(I18nUtil.getBackendStringFromRes("templateUpdateSuccess"));
+        updateRecordResponse.setMessage(I18nUtil.getAdminBackendStringFromRes("templateUpdateSuccess"));
         return updateRecordResponse;
     }
 
@@ -45,7 +45,7 @@ public class TemplateService {
         //start extract template file
         FileUtils.moveOrCopyFile(file.toString(), finalFile, true);
         UploadTemplateResponse response = new UploadTemplateResponse();
-        response.setMessage(I18nUtil.getBackendStringFromRes("templateUploadSuccess"));
+        response.setMessage(I18nUtil.getAdminBackendStringFromRes("templateUploadSuccess"));
         String extractFolder = finalPath + templateName.replace(".zip", "");
         FileUtils.deleteFile(extractFolder);
         ZipUtil.unZip(finalFile, extractFolder);

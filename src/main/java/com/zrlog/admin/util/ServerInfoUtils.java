@@ -22,17 +22,17 @@ import java.util.*;
 public class ServerInfoUtils {
     public static List<ServerInfo> convertToServerInfos(Map<String, Object> data) {
         List<ServerInfo> systemInfo = new ArrayList<>();
-        systemInfo.add(new ServerInfo(I18nUtil.getBackendStringFromRes("serverInfo.system"), NativeUtils.getRealFileArch() + " - " + data.get("os.version"), "system"));
-        systemInfo.add(new ServerInfo(I18nUtil.getBackendStringFromRes("serverInfo.runPath"), (String) data.get("zrlog.runtime.path"), "runPath"));
-        systemInfo.add(new ServerInfo(I18nUtil.getBackendStringFromRes("serverInfo.runtime"), data.get("java.vm.name") + " - " + data.get("java.version"), "runtime"));
-        systemInfo.add(new ServerInfo(I18nUtil.getBackendStringFromRes("serverInfo.webServer"), (String) data.get("server.info"), "webServer"));
-        systemInfo.add(new ServerInfo(I18nUtil.getBackendStringFromRes("serverInfo.timezone"), (String) data.get("user.timezone"), "timezone"));
+        systemInfo.add(new ServerInfo(I18nUtil.getAdminBackendStringFromRes("serverInfo.system"), NativeUtils.getRealFileArch() + " - " + data.get("os.version"), "system"));
+        systemInfo.add(new ServerInfo(I18nUtil.getAdminBackendStringFromRes("serverInfo.runPath"), (String) data.get("zrlog.runtime.path"), "runPath"));
+        systemInfo.add(new ServerInfo(I18nUtil.getAdminBackendStringFromRes("serverInfo.runtime"), data.get("java.vm.name") + " - " + data.get("java.version"), "runtime"));
+        systemInfo.add(new ServerInfo(I18nUtil.getAdminBackendStringFromRes("serverInfo.webServer"), (String) data.get("server.info"), "webServer"));
+        systemInfo.add(new ServerInfo(I18nUtil.getAdminBackendStringFromRes("serverInfo.timezone"), (String) data.get("user.timezone"), "timezone"));
         Locale locale = Locale.getDefault();
-        systemInfo.add(new ServerInfo(I18nUtil.getBackendStringFromRes("serverInfo.locale"), locale.getLanguage() + "/" + (StringUtils.isNotEmpty(locale.getCountry()) ? locale.getCountry() : "Unknown"), "locale"));
-        systemInfo.add(new ServerInfo(I18nUtil.getBackendStringFromRes("serverInfo.dbInfo"), (String) data.get("dbServer.version"), "dbInfo"));
-        systemInfo.add(new ServerInfo(I18nUtil.getBackendStringFromRes("serverInfo.cpuInfo"), CPUInfo.getInstance().getCpuModel(), "cpuInfo"));
-        systemInfo.add(new ServerInfo(I18nUtil.getBackendStringFromRes("serverInfo.encoding"), (String) data.get("file.encoding"), "encoding"));
-        systemInfo.add(new ServerInfo(I18nUtil.getBackendStringFromRes("serverInfo.programInfo"), BlogBuildInfoUtil.getVersionInfo(), "programInfo"));
+        systemInfo.add(new ServerInfo(I18nUtil.getAdminBackendStringFromRes("serverInfo.locale"), locale.getLanguage() + "/" + (StringUtils.isNotEmpty(locale.getCountry()) ? locale.getCountry() : "Unknown"), "locale"));
+        systemInfo.add(new ServerInfo(I18nUtil.getAdminBackendStringFromRes("serverInfo.dbInfo"), (String) data.get("dbServer.version"), "dbInfo"));
+        systemInfo.add(new ServerInfo(I18nUtil.getAdminBackendStringFromRes("serverInfo.cpuInfo"), CPUInfo.getInstance().getCpuModel(), "cpuInfo"));
+        systemInfo.add(new ServerInfo(I18nUtil.getAdminBackendStringFromRes("serverInfo.encoding"), (String) data.get("file.encoding"), "encoding"));
+        systemInfo.add(new ServerInfo(I18nUtil.getAdminBackendStringFromRes("serverInfo.programInfo"), BlogBuildInfoUtil.getVersionInfo(), "programInfo"));
         return systemInfo;
     }
 
@@ -76,17 +76,17 @@ public class ServerInfoUtils {
             allFileList.addAll(cacheFileList);
             // 获取堆内存的使用情况
             OperatingSystemMXBean osMXBean = (OperatingSystemMXBean) ManagementFactory.getOperatingSystemMXBean();
-            systemInfo.add(new ServerInfo(I18nUtil.getBackendStringFromRes("serverInfo.usedCacheSpace"), formatFileSize(cacheFileList.stream().mapToLong(File::length).sum()), "usedCacheSpace"));
-            systemInfo.add(new ServerInfo(I18nUtil.getBackendStringFromRes("serverInfo.usedDiskSpace"), formatFileSize(allFileList.stream().mapToLong(File::length).sum()), "usedDiskSpace"));
-            systemInfo.add(new ServerInfo(I18nUtil.getBackendStringFromRes("serverInfo.usedMemorySpace"), formatFileSize(getUsedMemory()), "usedMemorySpace"));
-            systemInfo.add(new ServerInfo(I18nUtil.getBackendStringFromRes("serverInfo.totalMemorySpace"), formatFileSize(osMXBean.getTotalPhysicalMemorySize()), "totalMemorySpace"));
-            systemInfo.add(new ServerInfo(I18nUtil.getBackendStringFromRes("serverInfo.cpuLoad"), CPUInfo.getInstance().getCpuLoad(), "cpuLoad"));
-            systemInfo.add(new ServerInfo(I18nUtil.getBackendStringFromRes("serverInfo.systemLoad"), SystemLoad.getSystemLoad(), "systemLoad"));
+            systemInfo.add(new ServerInfo(I18nUtil.getAdminBackendStringFromRes("serverInfo.usedCacheSpace"), formatFileSize(cacheFileList.stream().mapToLong(File::length).sum()), "usedCacheSpace"));
+            systemInfo.add(new ServerInfo(I18nUtil.getAdminBackendStringFromRes("serverInfo.usedDiskSpace"), formatFileSize(allFileList.stream().mapToLong(File::length).sum()), "usedDiskSpace"));
+            systemInfo.add(new ServerInfo(I18nUtil.getAdminBackendStringFromRes("serverInfo.usedMemorySpace"), formatFileSize(getUsedMemory()), "usedMemorySpace"));
+            systemInfo.add(new ServerInfo(I18nUtil.getAdminBackendStringFromRes("serverInfo.totalMemorySpace"), formatFileSize(osMXBean.getTotalPhysicalMemorySize()), "totalMemorySpace"));
+            systemInfo.add(new ServerInfo(I18nUtil.getAdminBackendStringFromRes("serverInfo.cpuLoad"), CPUInfo.getInstance().getCpuLoad(), "cpuLoad"));
+            systemInfo.add(new ServerInfo(I18nUtil.getAdminBackendStringFromRes("serverInfo.systemLoad"), SystemLoad.getSystemLoad(), "systemLoad"));
             DataSourceWrapper dataSourceWrapper = (DataSourceWrapper) Constants.zrLogConfig.getDataSource();
-            systemInfo.add(new ServerInfo(I18nUtil.getBackendStringFromRes("serverInfo.dbConnectSize"),
+            systemInfo.add(new ServerInfo(I18nUtil.getAdminBackendStringFromRes("serverInfo.dbConnectSize"),
                     dataSourceWrapper.getDatabaseConnectPoolInfo().getConnectActiveSize() + " / " +
                             dataSourceWrapper.getDatabaseConnectPoolInfo().getConnectTotalSize(), "dbConnectSize"));
-            systemInfo.add(new ServerInfo(I18nUtil.getBackendStringFromRes("serverInfo.uptime"), Constants.zrLogConfig.getProgramUptime(), "uptime"));
+            systemInfo.add(new ServerInfo(I18nUtil.getAdminBackendStringFromRes("serverInfo.uptime"), Constants.zrLogConfig.getProgramUptime(), "uptime"));
             return systemInfo;
         } catch (Exception e) {
             LoggerUtil.getLogger(AdminController.class).warning("Load server info error " + e.getMessage());

@@ -7,6 +7,7 @@ type SsDate = {
     resourceInfo?: Record<string, never> | null | undefined;
     user: BasicUserInfo | null;
     key: string;
+    systemNotification: string;
     pageBuildId: string;
 };
 
@@ -36,7 +37,14 @@ const SsData: FunctionComponent<PropsWithChildren> = ({ children }) => {
         if (ssDataStr?.length > 0) {
             tSData = JSON.parse(ssDataStr as string) as SsDate;
         } else {
-            tSData = { key: "", data: undefined, resourceInfo: {}, user: null, pageBuildId: "" };
+            tSData = {
+                key: "",
+                data: undefined,
+                resourceInfo: {},
+                user: null,
+                pageBuildId: "",
+                systemNotification: "",
+            };
         }
 
         if (tSData.key === "" || tSData.key === null || tSData.key === undefined) {

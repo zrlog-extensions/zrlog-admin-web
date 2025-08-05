@@ -5,6 +5,7 @@ export const getCsrData = async (uri: string, axiosInstance: AxiosInstance) => {
     const { data } = await axiosInstance.get("/api/admin" + uri.replace(".html", ""));
     if (data.pageBuildId !== undefined) {
         getSsDate().pageBuildId = data.pageBuildId as string as never;
+        getSsDate().systemNotification = data.systemNotification as string as never;
         if (getWindowPageBuildId() === "" || getWindowPageBuildId() === null || getWindowPageBuildId() === undefined) {
             setWindowPageBuildId(data.pageBuildId);
         }

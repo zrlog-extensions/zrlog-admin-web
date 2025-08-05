@@ -64,6 +64,7 @@ export type AdminCommonProps<P> = {
     fullScreen?: boolean;
     userInfo?: BasicUserInfo;
     pageBuildId?: string;
+    systemNotification?: string;
     updateCache?: (cache: P, cacheKey: string) => void;
 };
 

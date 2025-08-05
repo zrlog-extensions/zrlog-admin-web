@@ -166,7 +166,7 @@ public class AdminResourceImpl implements AdminResource {
 
     @Override
     public Map<String, Object> adminResourceInfo(HttpRequest request) {
-        Map<String, Object> stringObjectMap = ObjectHelpers.requireNonNullElse(I18nUtil.getAdmin().get(I18nUtil.getCurrentLocale()), new HashMap<>());
+        Map<String, Object> stringObjectMap = I18nUtil.getAdmin();
         PublicInfoVO publicInfoVO = new CommonService().getPublicInfo(request);
         stringObjectMap.put("currentVersion", publicInfoVO.getCurrentVersion());
         stringObjectMap.put("websiteTitle", publicInfoVO.getWebsiteTitle());

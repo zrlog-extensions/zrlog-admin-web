@@ -105,7 +105,7 @@ public class AdminController extends BaseController {
     public AdminApiPageDataStandardResponse<IndexResponse> index() throws SQLException {
         List<String> tips = new ArrayList<>();
         for (int i = 1; i <= 4; i++) {
-            tips.add(I18nUtil.getBackendStringFromRes("admin.index.welcomeTips_" + i));
+            tips.add(I18nUtil.getAdminBackendStringFromRes("admin.index.welcomeTips_" + i));
         }
         Collections.shuffle(tips);
         ExecutorService executor = ThreadUtils.newFixedThreadPool(20);
@@ -117,7 +117,7 @@ public class AdminController extends BaseController {
             futures.add(dataList);
             CompletableFuture.allOf(futures.toArray(new CompletableFuture[0])).join();
             return new AdminApiPageDataStandardResponse<>(new IndexResponse(statisticsInfo.join(),
-                    I18nUtil.getBackendStringFromRes("admin.index.welcomeTip"),
+                    I18nUtil.getAdminBackendStringFromRes("admin.index.welcomeTip"),
                     new ArrayList<>(Collections.singletonList(tips.get(0))),
                     dataList.join(), BlogBuildInfoUtil.getVersionInfo()), "", request.getUri());
         } finally {

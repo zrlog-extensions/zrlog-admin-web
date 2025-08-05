@@ -11,6 +11,6 @@ public class UserNameAndPasswordRequiredException extends AbstractBusinessExcept
 
     @Override
     public String getMessage() {
-        return I18nUtil.getBackendStringFromRes("userNameAndPasswordRequired");
+        return I18nUtil.getAdminBackendStringFromRes("userNameAndPasswordRequired");
     }
 }

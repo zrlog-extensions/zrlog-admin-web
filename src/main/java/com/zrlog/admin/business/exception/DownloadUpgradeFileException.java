@@ -11,6 +11,6 @@ public class DownloadUpgradeFileException extends AbstractBusinessException {
 
     @Override
     public String getMessage() {
-        return I18nUtil.getBackendStringFromRes("upgradeDownloadFileError");
+        return I18nUtil.getAdminBackendStringFromRes("upgradeDownloadFileError");
     }
 }

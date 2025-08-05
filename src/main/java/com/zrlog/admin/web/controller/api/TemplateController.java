@@ -54,7 +54,7 @@ public class TemplateController extends BaseController {
             cookie.setHttpOnly(true);
             getResponse().addCookie(cookie);
         }
-        apiStandardResponse.setMessage(I18nUtil.getBackendStringFromRes("updateSuccess"));
+        apiStandardResponse.setMessage(I18nUtil.getAdminBackendStringFromRes("updateSuccess"));
         return apiStandardResponse;
     }
 
@@ -80,7 +80,7 @@ public class TemplateController extends BaseController {
             FileUtils.deleteFile(file.toString());
         }
         AdminApiPageDataStandardResponse<Void> apiStandardResponse = new AdminApiPageDataStandardResponse<>();
-        apiStandardResponse.setMessage(I18nUtil.getBackendStringFromRes("updateSuccess"));
+        apiStandardResponse.setMessage(I18nUtil.getAdminBackendStringFromRes("updateSuccess"));
         return apiStandardResponse;
     }
 

@@ -51,7 +51,7 @@ public class AdminUserController extends BaseController {
             updateRecordResponse.setError(1);
         } else {
             userService.update(AdminTokenThreadLocal.getUserId(), updateAdminRequest);
-            updateRecordResponse.setMessage(I18nUtil.getBackendStringFromRes("updatePersonInfoSuccess"));
+            updateRecordResponse.setMessage(I18nUtil.getAdminBackendStringFromRes("updatePersonInfoSuccess"));
         }
         return updateRecordResponse;
     }

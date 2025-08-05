@@ -43,7 +43,7 @@ public class AdminArticleController extends BaseController {
     }
 
     private String getResponseMsg(CreateOrUpdateArticleResponse response) {
-        return I18nUtil.getBackendStringFromRes(Objects.equals(response.getRubbish(), true)
+        return I18nUtil.getAdminBackendStringFromRes(Objects.equals(response.getRubbish(), true)
                 || Objects.equals(response.getPrivacy(), true) ? "saveSuccess" : "releaseSuccess");
     }
 
