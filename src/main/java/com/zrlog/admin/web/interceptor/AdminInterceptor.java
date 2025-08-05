@@ -116,7 +116,7 @@ public class AdminInterceptor implements HandleAbleInterceptor {
                 return false;
             }
             //拦截请求
-            if (request.getUri().startsWith(AdminConstants.ADMIN_DEV_URI_BASE_PATH)) {
+            if (request.getUri().startsWith(AdminConstants.ADMIN_DEV_FILE_URI_BASE_PATH)) {
                 AdminFullTokenVO adminTokenVO = Constants.zrLogConfig.getTokenService().getAdminTokenVO(request);
                 if (Objects.isNull(adminTokenVO)) {
                     response.renderCode(403);

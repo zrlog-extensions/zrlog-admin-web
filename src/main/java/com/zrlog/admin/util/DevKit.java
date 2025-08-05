@@ -9,9 +9,9 @@ public class DevKit {
 
 
     public static void configDev(ServerConfig serverConfig) {
-        serverConfig.addLocalFileStaticResourceMapper(AdminConstants.ADMIN_DEV_URI_BASE_PATH + "/file", PathUtil.getRootPath(), true);
+        serverConfig.addLocalFileStaticResourceMapper(AdminConstants.ADMIN_DEV_FILE_URI_BASE_PATH, PathUtil.getRootPath(), true);
         if (EnvKit.isLambda()) {
-            serverConfig.addLocalFileStaticResourceMapper(AdminConstants.ADMIN_DEV_URI_BASE_PATH + "/file/lambda", "/tmp", true);
+            serverConfig.addLocalFileStaticResourceMapper(AdminConstants.ADMIN_DEV_FILE_URI_BASE_PATH + "/lambda", "/tmp", true);
         }
     }
 }

@@ -7,10 +7,9 @@ import com.zrlog.util.I18nUtil;
 
 import java.util.*;
 
-import static com.zrlog.common.Constants.DEFAULT_ARTICLE_DIGEST_LENGTH;
-
 public class AdminConstants {
     public static final String ADMIN_DEV_URI_BASE_PATH = "/admin/dev";
+    public static final String ADMIN_DEV_FILE_URI_BASE_PATH = "/admin/dev/file";
     public static final String ADMIN_URI_BASE_PATH = "/admin";
     public static final String ADMIN_HTML_PAGE = ADMIN_URI_BASE_PATH + "/index.html";
     public static final String ADMIN_LOGIN_URI_PATH = ADMIN_URI_BASE_PATH + "/login";
