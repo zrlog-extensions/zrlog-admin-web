@@ -4,7 +4,7 @@ import { EditorConfig, MarkdownEditorProps } from "./editor.types";
 import EnvUtils from "../../utils/env-utils";
 import { StyledEditor } from "./styles/styled-editor";
 import EditorToolBar from "./editor-tool-bar";
-import { getRes } from "../../utils/constants";
+import { getRes, isDev } from "../../utils/constants";
 import useMessage from "antd/es/message/useMessage";
 import { getBorder } from "./editor-helpers";
 import { languages } from "@codemirror/language-data";
@@ -20,7 +20,6 @@ type MarkdownEditorState = {
     markdownValue: string;
     content: string;
     preview: boolean;
-    guttersWidth: number;
 };
 
 const MarkedEditor: FunctionComponent<MarkdownEditorProps> = ({
@@ -48,8 +47,9 @@ const MarkedEditor: FunctionComponent<MarkdownEditorProps> = ({
         //默认开启
         preview: getDefaultConfig().preview,
         content: content,
-        guttersWidth: 27,
     });
+
+    const [guttersWidth, setGuttersWidth] = useState<number>(27);
 
     const editorRef = useRef<EditorView | null>(null);
     const previewRef = useRef<HTMLDivElement | null>(null);
@@ -90,35 +90,18 @@ const MarkedEditor: FunctionComponent<MarkdownEditorProps> = ({
         }
     }, []);
 
-    useEffect(() => {
-        const md = state.markdownValue;
-        markdownToHtml(md).then((html) => {
-            const changeValues = {
-                content: html,
-                markdown: md,
-            };
-            setState((prevState) => {
-                return {
-                    ...prevState,
-                    markdownValue: md,
-                    content: html,
-                };
-            });
-            onChange(changeValues);
-        });
-    }, [state.markdownValue]);
-
     const onViewChange = () => {
         if (editorRef.current && editorRef.current.dom) {
             const gutters = editorRef.current.dom.querySelector(".cm-gutters-before") as HTMLElement;
-            //console.info( gutters.offsetWidth);
             if (gutters) {
-                setState((prevState) => {
-                    return {
-                        ...prevState,
-                        guttersWidth: gutters.offsetWidth,
-                    };
-                });
+                const newWidth = gutters.offsetWidth;
+                if (isDev()) {
+                    console.log("当前行号宽度:", newWidth);
+                }
+                if (guttersWidth == newWidth) {
+                    return;
+                }
+                setGuttersWidth(gutters.offsetWidth);
             }
         }
     };
@@ -173,22 +156,26 @@ const MarkedEditor: FunctionComponent<MarkdownEditorProps> = ({
                             editorRef.current = view;
                             onViewChange();
                         }}
-                        onChange={async (val, viewUpdate) => {
-                            const gutter = viewUpdate.view.dom.querySelector(".cm-gutters") as HTMLElement;
-                            if (gutter) {
-                                const width = gutter.offsetWidth;
-                                console.log("当前行号宽度:", width);
+                        onChange={async (md) => {
+                            if (md === state.markdownValue) {
+                                return;
                             }
+                            const html = await markdownToHtml(md);
+                            const changeValues = {
+                                content: html,
+                                markdown: md,
+                            };
                             setState((prevState) => {
                                 return {
                                     ...prevState,
-                                    markdownValue: val,
+                                    ...changeValues,
                                 };
                             });
+                            onChange(changeValues);
                         }}
                         style={{
-                            minWidth: state.preview ? `calc((50% + ${state.guttersWidth / 2}px)` : "100%",
-                            width: state.preview ? `calc((50% + ${state.guttersWidth / 2}px)` : "100%",
+                            minWidth: state.preview ? `calc((50% + ${guttersWidth / 2}px)` : "100%",
+                            width: state.preview ? `calc((50% + ${guttersWidth / 2}px)` : "100%",
                             overflow: "auto",
                         }}
                     />
@@ -196,8 +183,8 @@ const MarkedEditor: FunctionComponent<MarkdownEditorProps> = ({
                         previewRef={previewRef}
                         style={{
                             display: state.preview ? "block" : "none",
-                            minWidth: `calc((100% - ${state.guttersWidth}px) / 2)`,
-                            width: `calc((100% - ${state.guttersWidth}px) / 2)`,
+                            minWidth: `calc((100% - ${guttersWidth}px) / 2)`,
+                            width: `calc((100% - ${guttersWidth}px) / 2)`,
                             background: EnvUtils.isDarkMode() ? "#1a1a17" : "inherit",
                             paddingTop: 4,
                             paddingBottom: 4,

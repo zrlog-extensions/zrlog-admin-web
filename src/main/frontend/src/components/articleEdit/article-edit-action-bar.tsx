@@ -1,11 +1,10 @@
 import Col from "antd/es/grid/col";
-import { Button } from "antd";
+import { Button, Grid } from "antd";
 import { EyeOutlined, SaveOutlined, SendOutlined } from "@ant-design/icons";
 import { getRes } from "../../utils/constants";
-import TimeAgo from "../../common/TimeAgo";
-import EnvUtils from "../../utils/env-utils";
 import { ArticleEditState, ArticleEntry } from "./index.types";
 import { FunctionComponent, useEffect, useRef } from "react";
+import styled from "styled-components";
 
 type ArticleEditActionBarProps = {
     data: ArticleEditState;
@@ -13,6 +12,23 @@ type ArticleEditActionBarProps = {
     offline: boolean;
     onSubmit: (article: ArticleEntry, release: boolean, preview: boolean, autoSave: boolean) => Promise<void>;
 };
+
+const StyledActionBar = styled(Col)`
+    .ant-btn {
+        -webkit-transition: none;
+        box-shadow: none;
+    }
+
+    .btn {
+        min-width: 120px;
+    }
+
+    @media screen and (max-width: 576px) {
+        .btn {
+            min-width: 40px;
+        }
+    }
+`;
 
 const ArticleEditActionBar: FunctionComponent<ArticleEditActionBarProps> = ({
     data,
@@ -22,48 +38,8 @@ const ArticleEditActionBar: FunctionComponent<ArticleEditActionBarProps> = ({
 }) => {
     const enterBtnRef = useRef<HTMLAnchorElement | HTMLButtonElement>(null);
 
-    const getRubbishText = () => {
-        let tips;
-        if (offline) {
-            tips = getRes()["admin.offline.article-editing"];
-        } else {
-            if (!data.rubbish) {
-                return <Col xxl={3} md={3} sm={4} style={{ padding: 0 }} />;
-            }
-
-            if (data.article.lastUpdateDate && data.article.lastUpdateDate > 0) {
-                tips = (
-                    <>
-                        <TimeAgo timestamp={data.article.lastUpdateDate} />
-                        更新
-                    </>
-                );
-            } else {
-                tips = "当前为草稿";
-            }
-        }
-        return (
-            <Button
-                type={"default"}
-                className={fullScreen ? "saveToRubbish-btn-full-screen" : "item"}
-                style={{
-                    border: 0,
-                    width: "100%",
-                    maxWidth: 256,
-                    display: "flex",
-                    justifyContent: "center",
-                    alignItems: "center",
-                    textAlign: "center",
-                    height: "32px",
-                    paddingRight: "8px",
-                    paddingLeft: "8px",
-                    backgroundColor: fullScreen ? (EnvUtils.isDarkMode() ? "rgb(20 20 20)" : "white") : "inherit",
-                }}
-            >
-                {tips}
-            </Button>
-        );
-    };
+    const { useBreakpoint } = Grid;
+    const screens = useBreakpoint();
 
     useEffect(() => {
         const handleKeyPress = (event: KeyboardEvent) => {
@@ -94,48 +70,46 @@ const ArticleEditActionBar: FunctionComponent<ArticleEditActionBarProps> = ({
     }, []);
 
     return (
-        <Col id={"action-bar"} xxl={9} md={12} sm={24} style={{ display: "flex", justifyContent: "end", padding: 0 }}>
-            <Col id={"item"} xxl={6} md={9} sm={24} className={fullScreen ? "saveToRubbish-btn-full-screen" : "item"}>
-                {getRubbishText()}
-            </Col>
-            <Col xxl={6} md={9} sm={24} className={fullScreen ? "saveToRubbish-btn-full-screen" : "item"}>
-                <Button
-                    type={fullScreen ? "default" : "dashed"}
-                    style={{ width: "100%", maxWidth: 256 }}
-                    disabled={offline || (data.saving.rubbishSaving && !data.saving.autoSaving)}
-                    onClick={async () => await onSubmit(data.article, false, false, false)}
-                >
-                    <SaveOutlined hidden={data.saving.rubbishSaving} />
-                    {data.saving.rubbishSaving ? getRes().saving : getRes().saveAsDraft}
-                </Button>
-            </Col>
-            <Col xxl={6} md={9} sm={24} className={"item"} style={{ display: fullScreen ? "none" : "flex" }}>
-                <Button
-                    type="dashed"
-                    disabled={offline || (data.saving.previewIng && !data.saving.autoSaving)}
-                    style={{ width: "100%", maxWidth: 256 }}
-                    onClick={async () => await onSubmit(data.article, !data.rubbish, true, false)}
-                >
-                    <EyeOutlined />
-                    {getRes().preview}
-                </Button>
-            </Col>
-            <Col xxl={6} md={9} sm={24} className={fullScreen ? "save-btn-full-screen" : "item"}>
-                <Button
-                    ref={enterBtnRef}
-                    type="primary"
-                    disabled={offline}
-                    loading={data.saving.releaseSaving}
-                    style={{ width: "100%", maxWidth: 256 }}
-                    onClick={async () => {
-                        await onSubmit(data.article, true, false, false);
-                    }}
-                >
-                    <SendOutlined />
-                    {data.article.privacy === true ? getRes()["save"] : getRes().release}
-                </Button>
-            </Col>
-        </Col>
+        <StyledActionBar
+            xxl={9}
+            md={12}
+            sm={18}
+            xs={16}
+            style={{ display: "flex", justifyContent: "end", paddingRight: 4, gap: 8 }}
+        >
+            <Button
+                className={"btn"}
+                type={fullScreen ? "default" : "dashed"}
+                disabled={offline || (data.saving.rubbishSaving && !data.saving.autoSaving)}
+                onClick={async () => await onSubmit(data.article, false, false, false)}
+            >
+                <SaveOutlined hidden={data.saving.rubbishSaving} />
+                {screens.sm && <span>{data.saving.rubbishSaving ? getRes().saving : getRes().saveAsDraft}</span>}
+            </Button>
+            <Button
+                className={"btn"}
+                type="dashed"
+                disabled={offline || (data.saving.previewIng && !data.saving.autoSaving)}
+                style={{ display: fullScreen ? "none" : "flex" }}
+                onClick={async () => await onSubmit(data.article, !data.rubbish, true, false)}
+            >
+                <EyeOutlined />
+                {screens.sm && getRes().preview}
+            </Button>
+            <Button
+                ref={enterBtnRef}
+                type="primary"
+                className={"btn"}
+                disabled={offline}
+                loading={data.saving.releaseSaving}
+                onClick={async () => {
+                    await onSubmit(data.article, true, false, false);
+                }}
+            >
+                <SendOutlined />
+                {screens.sm && <span>{data.article.privacy === true ? getRes()["save"] : getRes().release}</span>}
+            </Button>
+        </StyledActionBar>
     );
 };
 export default ArticleEditActionBar;

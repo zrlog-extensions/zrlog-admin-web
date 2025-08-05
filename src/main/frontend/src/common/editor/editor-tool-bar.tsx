@@ -73,7 +73,8 @@ const EditorToolBar: FunctionComponent<EditorToolBarProps> = ({
                     flexWrap: "wrap",
                     paddingLeft: 8,
                     alignItems: "center",
-                    boxSizing: "border-box",
+                    maxHeight: 79,
+                    overflowY: "scroll",
                     borderBottom: getBorder(),
                 }}
             >

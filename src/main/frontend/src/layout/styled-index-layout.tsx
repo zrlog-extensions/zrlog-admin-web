@@ -107,6 +107,7 @@ const StyledIndexLayout = styled("div")`
         overflow: hidden;
         text-overflow: ellipsis;
         white-space: nowrap;
+        height: 32px;
         font-size: 1.75rem;
     }
 

@@ -1,12 +1,11 @@
 import { FunctionComponent, useEffect, useRef, useState } from "react";
-import { App, InputRef, message, Space } from "antd";
+import { App, Grid, InputRef, message, Space } from "antd";
 import Row from "antd/es/grid/row";
 import Col from "antd/es/grid/col";
 import Divider from "antd/es/divider";
 import Title from "antd/es/typography/Title";
 import Card from "antd/es/card";
-import { createUri, getColorPrimary, getRes, updateUri } from "../../utils/constants";
-import styled from "styled-components";
+import { createUri, getRes, updateUri } from "../../utils/constants";
 import Select from "antd/es/select";
 import BaseInput from "../../common/BaseInput";
 import EnvUtils, { isOffline } from "../../utils/env-utils";
@@ -26,54 +25,9 @@ import { auditTime, concatMap, Subject, tap } from "rxjs";
 import { Subscription } from "rxjs/internal/Subscription";
 import { deepEqualWithSpecialJSON, disableExitTips, enableExitTips } from "../../utils/helpers";
 import MarkedEditor from "../../common/editor/marked-editor";
-import { getBorderColor } from "../../common/editor/editor-helpers";
 import { useLocation } from "react-router";
 import { getPageDataCacheKeyByPath } from "../../utils/cache";
-
-const StyledArticleEdit = styled("div")`
-    .ant-btn {
-        -webkit-transition: none;
-        box-shadow: none;
-    }
-
-    .save-btn-full-screen {
-        min-width: 120px;
-    }
-
-    .saveToRubbish-btn-full-screen {
-        min-width: 120px;
-    }
-
-    .saveToRubbish-btn-full-screen > button {
-        display: flex;
-        justify-content: flex-start;
-        align-items: center;
-    }
-
-    .save-text-full-screen {
-        right: 300px;
-    }
-
-    .editor-icon:hover {
-        color: ${getColorPrimary()} !important;
-        background: ${getBorderColor()} !important;
-        border-radius: 2px;
-    }
-
-    @media screen and (max-width: 560px) {
-        #action-bar {
-            flex-flow: column;
-            gap: 8px;
-            width: 100%;
-        }
-    }
-
-    @media screen and (max-width: 767px) {
-        .item {
-            flex: auto;
-        }
-    }
-`;
+import RubbishText from "./RubbishText";
 
 const Index: FunctionComponent<ArticleEditProps> = ({
     offline,
@@ -329,6 +283,11 @@ const Index: FunctionComponent<ArticleEditProps> = ({
     }, [data]);
 
     useEffect(() => {
+        //如果文章内容没有变更，不更新 state，避免触发更新导致文章状态不对
+        if (deepEqualWithSpecialJSON(state.article, data.article)) {
+            console.info("Skip article data useEffect() " + JSON.stringify(data.article.logId));
+            return;
+        }
         if (offline) {
             articleSaveToCache(state.article);
             return;
@@ -413,17 +372,28 @@ const Index: FunctionComponent<ArticleEditProps> = ({
         });
     };
 
-    const getEditorHeight = () => {
-        if (fullScreen) {
-            return "calc(100vh - 120px)";
+    const { useBreakpoint } = Grid;
+    const screens = useBreakpoint();
+
+    const getBaseHeight = () => {
+        if (screens.md) {
+            return 85;
         }
-        return "calc(100vh - 286px)";
+        if (screens.sm) {
+            return 85 + 38;
+        }
+        return 85 + 38 + 40;
+    };
+
+    const getEditorHeight = () => {
+        const baseHeight = (fullScreen ? 0 : 12 + 64 + 33 + 52) + 30 + 4 + getBaseHeight();
+        return `calc(100vh - ${baseHeight}px)`;
     };
 
     return (
-        <StyledArticleEdit>
-            <Row gutter={[8, 8]} style={{ paddingTop: fullScreen ? 0 : 20 }}>
-                <Col md={12} xxl={15} sm={6} span={24}>
+        <>
+            <Row gutter={[8, 8]} style={{ paddingTop: fullScreen ? 0 : 20, justifyContent: "space-between" }}>
+                <Col md={12} xxl={15} sm={6} xs={8}>
                     <Title
                         className="page-header"
                         style={{ marginTop: 0, marginBottom: 0 }}
@@ -459,13 +429,13 @@ const Index: FunctionComponent<ArticleEditProps> = ({
                 }}
             >
                 <Row
-                    gutter={[8, 8]}
+                    gutter={[8, 0]}
                     style={{
                         position: "relative",
                         borderBottom: EnvUtils.isDarkMode() ? "1px solid rgba(253, 253, 253, 0.12)" : "1px solid #DDD",
                     }}
                 >
-                    <Col md={12} xs={24}>
+                    <Col md={fullScreen ? 4 : 8} xl={9} xxl={12} xs={24} sm={fullScreen ? 4 : 6}>
                         <BaseInput
                             maxLength={100}
                             variant={"borderless"}
@@ -479,7 +449,13 @@ const Index: FunctionComponent<ArticleEditProps> = ({
                             style={{ fontSize: 22, fontWeight: 500, textOverflow: "ellipsis" }}
                         />
                     </Col>
-                    <Col md={fullScreen ? 6 : 8} xs={24} style={{ display: "flex", alignItems: "center" }}>
+                    <Col
+                        md={fullScreen ? 8 : 13}
+                        xxl={fullScreen ? 7 : 10}
+                        xs={24}
+                        sm={fullScreen ? 8 : 12}
+                        style={{ display: "flex", alignItems: "center" }}
+                    >
                         <Space.Compact style={{ display: "flex", width: "100%" }} hidden={fullScreen}>
                             <Select
                                 getPopupContainer={(triggerNode) => triggerNode.parentElement}
@@ -517,7 +493,13 @@ const Index: FunctionComponent<ArticleEditProps> = ({
                                 size={"large"}
                                 variant={"borderless"}
                                 placeholder={getRes().inputArticleAlias}
-                                style={{ fontSize: 16, paddingLeft: 0, textOverflow: "ellipsis" }}
+                                style={{ fontSize: 16, minWidth: 48, paddingLeft: 0, textOverflow: "ellipsis" }}
+                            />
+                            <RubbishText
+                                offline={offline}
+                                rubbish={state.rubbish}
+                                lastUpdateDate={state.article.lastUpdateDate}
+                                fullScreen={fullScreen}
                             />
                         </Space.Compact>
                     </Col>
@@ -586,7 +568,7 @@ const Index: FunctionComponent<ArticleEditProps> = ({
                 />
                 <EditorStatistics data={toStatisticsByMarkdown(state.article.markdown)} fullScreen={fullScreen} />
             </Card>
-        </StyledArticleEdit>
+        </>
     );
 };
 

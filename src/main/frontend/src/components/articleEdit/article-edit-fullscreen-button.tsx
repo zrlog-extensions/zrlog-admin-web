@@ -34,11 +34,6 @@ const ArticleEditFullscreenButton: FunctionComponent<ArticleEditFullscreenButton
                     .catch((e) => {
                         console.error(e);
                     });
-                screenfull.on("change", () => {
-                    if (screenfull.isEnabled && !screenfull.isFullscreen) {
-                        onfullscreenExit();
-                    }
-                });
             }
         } catch (e) {
             console.error(e);
@@ -48,11 +43,28 @@ const ArticleEditFullscreenButton: FunctionComponent<ArticleEditFullscreenButton
     };
 
     const onfullscreenExit = () => {
-        onExitFullScreen();
         if (screenfull.isEnabled) {
-            screenfull.exit().catch((e) => {
-                console.error(e);
-            });
+            screenfull
+                .exit()
+                .then(() => {
+                    onExitFullScreen();
+                })
+                .catch((e) => {
+                    console.error(e);
+                });
+        }
+    };
+
+    /**
+     * 监听：用原生事件判断状态
+     */
+    const nativeFullscreenChange = () => {
+        const isFullscreen = !!document.fullscreenElement;
+        if (isFullscreen) {
+            //ignore, fullscreen required click
+        } else {
+            //console.log("退出全屏");
+            onfullscreenExit();
         }
     };
 
@@ -60,6 +72,10 @@ const ArticleEditFullscreenButton: FunctionComponent<ArticleEditFullscreenButton
         if (fullScreen && isPWA()) {
             onfullscreen();
         }
+        document.addEventListener("fullscreenchange", nativeFullscreenChange);
+        return () => {
+            document.removeEventListener("fullscreenchange", nativeFullscreenChange);
+        };
     });
 
     return (
