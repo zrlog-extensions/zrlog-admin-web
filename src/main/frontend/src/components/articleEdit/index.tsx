@@ -392,17 +392,10 @@ const Index: FunctionComponent<ArticleEditProps> = ({
 
     return (
         <>
-            <Row gutter={[8, 8]} style={{ paddingTop: fullScreen ? 0 : 20, justifyContent: "space-between" }}>
-                <Col md={12} xxl={15} sm={6} xs={8}>
-                    <Title
-                        className="page-header"
-                        style={{ marginTop: 0, marginBottom: 0 }}
-                        level={3}
-                        hidden={fullScreen}
-                    >
-                        {getRes()["admin.log.edit"]}
-                    </Title>
-                </Col>
+            <div style={{ paddingTop: fullScreen ? 0 : 20, gap: 8, display: "flex", justifyContent: "space-between" }}>
+                <Title className="page-header" style={{ marginTop: 0, marginBottom: 0 }} level={3} hidden={fullScreen}>
+                    {getRes()["admin.log.edit"]}
+                </Title>
                 {!fullScreen && (
                     <ArticleEditActionBar
                         key={data.article.logId + "actionbar_offline:" + offline}
@@ -412,7 +405,7 @@ const Index: FunctionComponent<ArticleEditProps> = ({
                         onSubmit={onSubmit}
                     />
                 )}
-            </Row>
+            </div>
             {!fullScreen && <Divider style={{ marginTop: 16, marginBottom: 16 }} />}
             {messageContextHolder}
             <Card
@@ -515,12 +508,14 @@ const Index: FunctionComponent<ArticleEditProps> = ({
                         }}
                     >
                         {fullScreen && (
-                            <ArticleEditActionBar
-                                offline={offline}
-                                fullScreen={fullScreen}
-                                data={state}
-                                onSubmit={onSubmit}
-                            />
+                            <Col xxl={9} md={12} sm={18} xs={16} style={{ padding: 0 }}>
+                                <ArticleEditActionBar
+                                    offline={offline}
+                                    fullScreen={fullScreen}
+                                    data={state}
+                                    onSubmit={onSubmit}
+                                />
+                            </Col>
                         )}
                         <ArticleEditSettingButton
                             initDigest={data.article.digest ? data.article.digest : ""}

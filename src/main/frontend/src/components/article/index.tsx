@@ -1,6 +1,6 @@
 import { EditOutlined, LockOutlined, TagOutlined } from "@ant-design/icons";
 
-import { Col, Row, Space, TableColumnsType, Tag, Tooltip } from "antd";
+import { Space, TableColumnsType, Tag, Tooltip } from "antd";
 import Search from "antd/es/input/Search";
 import Title from "antd/es/typography/Title";
 import Divider from "antd/es/divider";
@@ -254,24 +254,19 @@ const Index = ({ data, offline }: { data: ArticlePageDataSource; offline: boolea
 
     return (
         <>
-            <Row gutter={[8, 8]} style={{ paddingTop: 20 }}>
-                <Col md={14} xxl={18} sm={6} span={24}>
-                    <Title className="page-header" style={{ marginTop: 0, marginBottom: 0 }} level={3}>
-                        {getRes()["blogManage"]}
-                    </Title>
-                </Col>
-                <Col md={10} xxl={6} sm={18}>
-                    <Search
-                        disabled={offline}
-                        placeholder={getRes().searchTip}
-                        onSearch={onSearch}
-                        defaultValue={data.key}
-                        enterButton={getRes()["search"]}
-                        style={{ maxWidth: "240px", float: "right" }}
-                    />
-                </Col>
-            </Row>
-
+            <div style={{ paddingTop: 20, justifyContent: "space-between", display: "flex", alignItems: "center" }}>
+                <Title className="page-header" style={{ marginTop: 0, marginBottom: 0 }} level={3}>
+                    {getRes()["blogManage"]}
+                </Title>
+                <Search
+                    disabled={offline}
+                    placeholder={getRes().searchTip}
+                    onSearch={onSearch}
+                    defaultValue={data.key}
+                    enterButton={getRes()["search"]}
+                    style={{ maxWidth: "196px", float: "right" }}
+                />
+            </div>
             <Divider />
             <BaseTable
                 defaultPageSize={data.defaultPageSize}

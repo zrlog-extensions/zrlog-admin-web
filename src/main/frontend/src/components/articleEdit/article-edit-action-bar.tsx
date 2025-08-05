@@ -1,4 +1,3 @@
-import Col from "antd/es/grid/col";
 import { Button, Grid } from "antd";
 import { EyeOutlined, SaveOutlined, SendOutlined } from "@ant-design/icons";
 import { getRes } from "../../utils/constants";
@@ -13,7 +12,7 @@ type ArticleEditActionBarProps = {
     onSubmit: (article: ArticleEntry, release: boolean, preview: boolean, autoSave: boolean) => Promise<void>;
 };
 
-const StyledActionBar = styled(Col)`
+const StyledActionBar = styled(`div`)`
     .ant-btn {
         -webkit-transition: none;
         box-shadow: none;
@@ -70,13 +69,7 @@ const ArticleEditActionBar: FunctionComponent<ArticleEditActionBarProps> = ({
     }, []);
 
     return (
-        <StyledActionBar
-            xxl={9}
-            md={12}
-            sm={18}
-            xs={16}
-            style={{ display: "flex", justifyContent: "end", paddingRight: 4, gap: 8 }}
-        >
+        <StyledActionBar style={{ display: "flex", justifyContent: "end", gap: 8 }}>
             <Button
                 className={"btn"}
                 type={fullScreen ? "default" : "dashed"}

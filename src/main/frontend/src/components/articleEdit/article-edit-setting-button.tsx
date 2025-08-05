@@ -37,7 +37,7 @@ const ArticleEditSettingButton = ({
         <>
             <Button
                 href={window.location.pathname + "#setting"}
-                type={"default"}
+                type={"text"}
                 title={getRes()["admin.setting"]}
                 style={{
                     border: 0,
