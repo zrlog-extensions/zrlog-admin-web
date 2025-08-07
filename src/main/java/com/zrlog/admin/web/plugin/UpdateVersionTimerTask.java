@@ -132,7 +132,7 @@ public class UpdateVersionTimerTask extends TimerTask {
         if (Objects.isNull(language)) {
             versionInfo.setChangeLog("");
         } else {
-            Map<String, Object> langRes = I18nUtil.getI18nVOCache().getBackend().get(language);
+            Map<String, Object> langRes = I18nUtil.getAdminBackend();
             if (Objects.isNull(langRes)) {
                 versionInfo.setChangeLog("");
             } else {
