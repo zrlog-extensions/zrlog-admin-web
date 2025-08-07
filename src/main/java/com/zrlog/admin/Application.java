@@ -74,7 +74,11 @@ class DevZrLogConfig extends ZrLogConfig {
 
     @Override
     protected TokenService initTokenService() {
-        return new AdminTokenService();
+        if (Objects.isNull(cacheService)) {
+            return null;
+        }
+        long sessionTimeout = this.cacheService.getPublicWebSiteInfo().getSession_timeout();
+        return new AdminTokenService(sessionTimeout);
     }
 
     @Override
