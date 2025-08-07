@@ -32,7 +32,7 @@ public class WebSiteController extends BaseController {
         VersionResponse versionResponse = new VersionResponse();
         versionResponse.setBuildId(BlogBuildInfoUtil.getBuildId());
         versionResponse.setVersion(BlogBuildInfoUtil.getVersion());
-        versionResponse.setChangelog(UpdateVersionInfoPlugin.getCurrentChangeLog(I18nUtil.getBackend()));
+        versionResponse.setChangelog(UpdateVersionInfoPlugin.getCurrentChangeLog(I18nUtil.getAdminBackend()));
         return new AdminApiPageDataStandardResponse<>(versionResponse, "", request.getUri());
     }
 

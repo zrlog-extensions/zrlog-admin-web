@@ -147,18 +147,18 @@ public class UpgradeService {
             updateVersionHandler = new DockerUpdateVersionHandle(I18nUtil.getAdminBackend());
         } else if (ZrLogUtil.isSystemServiceMode()) {
             Version version = versionMap.get(preUpgradeKey);
-            updateVersionHandler = new SystemServiceUpdateVersionHandle(I18nUtil.getBackend(), version);
+            updateVersionHandler = new SystemServiceUpdateVersionHandle(I18nUtil.getAdminBackend(), version);
         } else if (EnvKit.isFaaSMode()) {
-            updateVersionHandler = new FaasUpdateVersionHandler(I18nUtil.getBackend(), versionMap.get(preUpgradeKey));
+            updateVersionHandler = new FaasUpdateVersionHandler(I18nUtil.getAdminBackend(), versionMap.get(preUpgradeKey));
         } else {
             HttpFileHandle handle = downloadProcessHandleMap.get(preUpgradeKey);
             if (handle == null) {
                 return new UpgradeProcessResponse(false, "");
             }
             if (ZrLogUtil.isWarMode()) {
-                updateVersionHandler = new WarUpdateVersionHandle(handle.getT(), I18nUtil.getBackend(), preUpgradeKey, versionMap.get(preUpgradeKey));
+                updateVersionHandler = new WarUpdateVersionHandle(handle.getT(), I18nUtil.getAdminBackend(), preUpgradeKey, versionMap.get(preUpgradeKey));
             } else {
-                updateVersionHandler = new ZipUpdateVersionHandle(handle.getT(), I18nUtil.getBackend(), versionMap.get(preUpgradeKey));
+                updateVersionHandler = new ZipUpdateVersionHandle(handle.getT(), I18nUtil.getAdminBackend(), versionMap.get(preUpgradeKey));
             }
         }
         updateVersionHandler.doHandle();
