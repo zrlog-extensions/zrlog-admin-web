@@ -94,7 +94,9 @@ public class WebSiteController extends BaseController {
     @ResponseBody
     public AdminApiPageDataStandardResponse<AdminWebSiteInfo> admin() throws SQLException {
         if (request.getMethod() == HttpMethod.POST) {
-            update(getRequestBodyWithNullCheck(AdminWebSiteInfo.class));
+            AdminWebSiteInfo adminWebSiteInfo = getRequestBodyWithNullCheck(AdminWebSiteInfo.class);
+            update(adminWebSiteInfo);
+            Constants.zrLogConfig.getTokenService().updateSessionTimeout(adminWebSiteInfo.getSession_timeout());
         }
         return new AdminApiPageDataStandardResponse<>(webSiteService.adminWebSiteInfo(), I18nUtil.getAdminBackendStringFromRes("updateSuccess"), request.getUri());
     }

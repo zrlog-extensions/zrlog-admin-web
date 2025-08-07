@@ -16,6 +16,7 @@ import com.zrlog.admin.web.annotation.RequestLock;
 import com.zrlog.admin.web.token.AdminTokenThreadLocal;
 import com.zrlog.business.plugin.PluginCorePlugin;
 import com.zrlog.common.Constants;
+import com.zrlog.common.TokenService;
 import com.zrlog.common.cache.vo.BaseDataInitVO;
 import com.zrlog.common.exception.ArgsException;
 import com.zrlog.common.exception.ResourceLockedException;
@@ -37,6 +38,12 @@ import java.util.logging.Logger;
 public class AdminInterceptor implements HandleAbleInterceptor {
 
     private static final Logger LOGGER = LoggerUtil.getLogger(AdminInterceptor.class);
+
+    private final TokenService tokenService;
+
+    public AdminInterceptor() {
+        this.tokenService = Constants.zrLogConfig.getTokenService();
+    }
 
     private void validPluginToken(HttpRequest request) {
         String requestToken = request.getHeader("X-Plugin-Token");
@@ -107,7 +114,7 @@ public class AdminInterceptor implements HandleAbleInterceptor {
         try {
             String uri = request.getUri();
             if (AdminConstants.ADMIN_LOGIN_URI_PATH.equals(uri)) {
-                AdminTokenVO adminTokenVO = Constants.zrLogConfig.getTokenService().getAdminTokenVO(request);
+                AdminTokenVO adminTokenVO = tokenService.getAdminTokenVO(request);
                 if (adminTokenVO != null) {
                     response.redirect(AdminConstants.ADMIN_URI_BASE_PATH + AdminConstants.INDEX_URI_PATH);
                 } else {
@@ -117,14 +124,14 @@ public class AdminInterceptor implements HandleAbleInterceptor {
             }
             //拦截请求
             if (request.getUri().startsWith(AdminConstants.ADMIN_DEV_FILE_URI_BASE_PATH)) {
-                AdminFullTokenVO adminTokenVO = Constants.zrLogConfig.getTokenService().getAdminTokenVO(request);
+                AdminFullTokenVO adminTokenVO = tokenService.getAdminTokenVO(request);
                 if (Objects.isNull(adminTokenVO)) {
                     response.renderCode(403);
                     return false;
                 }
             }
             if (Objects.equals(AdminConstants.ADMIN_REFRESH_CACHE_API_URI_PATH, uri)) {
-                AdminTokenVO adminTokenVO = Constants.zrLogConfig.getTokenService().getAdminTokenVO(request);
+                AdminTokenVO adminTokenVO = tokenService.getAdminTokenVO(request);
                 if (Objects.isNull(adminTokenVO)) {
                     validPluginToken(request);
                 }
@@ -137,12 +144,12 @@ public class AdminInterceptor implements HandleAbleInterceptor {
             }
             Method method = request.getServerConfig().getRouter().getMethod(request.getUri(), request.getMethod());
             if (Objects.nonNull(method) && !BaseStaticSitePlugin.isStaticPluginRequest(request)) {
-                AdminFullTokenVO adminTokenVO = Constants.zrLogConfig.getTokenService().getAdminTokenVO(request);
+                AdminFullTokenVO adminTokenVO = tokenService.getAdminTokenVO(request);
                 if (adminTokenVO == null) {
                     AdminWebTools.blockUnLoginRequestHandler(request, response);
                     return false;
                 }
-                Constants.zrLogConfig.getTokenService().setAdminToken(adminTokenVO.getUserId(), adminTokenVO.getSecretKey(), adminTokenVO.getSessionId(), adminTokenVO.getProtocol(), request, response);
+                tokenService.setAdminToken(adminTokenVO.getUserId(), adminTokenVO.getSecretKey(), adminTokenVO.getSessionId(), adminTokenVO.getProtocol(), request, response);
             }
 
             Lock lock = getLock(method, request);
