@@ -39,12 +39,6 @@ public class AdminInterceptor implements HandleAbleInterceptor {
 
     private static final Logger LOGGER = LoggerUtil.getLogger(AdminInterceptor.class);
 
-    private final TokenService tokenService;
-
-    public AdminInterceptor() {
-        this.tokenService = Constants.zrLogConfig.getTokenService();
-    }
-
     private void validPluginToken(HttpRequest request) {
         String requestToken = request.getHeader("X-Plugin-Token");
         if (StringUtils.isEmpty(requestToken)) {
@@ -112,6 +106,7 @@ public class AdminInterceptor implements HandleAbleInterceptor {
      */
     public boolean doInterceptor(HttpRequest request, HttpResponse response) throws Exception {
         try {
+            TokenService tokenService = Constants.zrLogConfig.getTokenService();
             String uri = request.getUri();
             if (AdminConstants.ADMIN_LOGIN_URI_PATH.equals(uri)) {
                 AdminTokenVO adminTokenVO = tokenService.getAdminTokenVO(request);
