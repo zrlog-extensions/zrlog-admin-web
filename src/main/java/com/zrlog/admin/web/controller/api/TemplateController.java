@@ -1,13 +1,13 @@
 package com.zrlog.admin.web.controller.api;
 
 import com.hibegin.common.util.FileUtils;
-import com.hibegin.common.util.LoggerUtil;
 import com.hibegin.common.util.StringUtils;
 import com.hibegin.http.HttpMethod;
 import com.hibegin.http.annotation.RequestMethod;
 import com.hibegin.http.annotation.ResponseBody;
 import com.hibegin.http.server.util.PathUtil;
 import com.hibegin.http.server.web.cookie.Cookie;
+import com.zrlog.admin.business.AdminConstants;
 import com.zrlog.admin.business.rest.request.UpdateTemplateConfigRequest;
 import com.zrlog.admin.business.rest.response.AdminApiPageDataStandardResponse;
 import com.zrlog.admin.business.rest.response.TemplateDownloadResponse;
@@ -132,7 +132,7 @@ public class TemplateController extends BaseController {
                 host = getRequest().getHeader("Host");
             }
         }
-        TemplateDownloadResponse downloadResponse = new TemplateDownloadResponse("https://store.zrlog.com/template/index.html?from=" + AdminTokenThreadLocal.getUserProtocol() + "://" + host + request.getContextPath() + "/admin/template&v=" + BlogBuildInfoUtil.getVersion() + "&id=" + BlogBuildInfoUtil.getBuildId() + "&upgrade-v3=true");
+        TemplateDownloadResponse downloadResponse = new TemplateDownloadResponse("https://store.zrlog.com/template/index.html?from=" + AdminTokenThreadLocal.getUserProtocol() + "://" + host + request.getContextPath() + AdminConstants.ADMIN_URI_BASE_PATH + "/template&v=" + BlogBuildInfoUtil.getVersion() + "&id=" + BlogBuildInfoUtil.getBuildId() + "&upgrade-v3=true");
         return new AdminApiPageDataStandardResponse<>(downloadResponse, "", request.getUri());
     }
 }

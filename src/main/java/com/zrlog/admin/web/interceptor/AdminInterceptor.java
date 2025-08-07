@@ -171,9 +171,9 @@ public class AdminInterceptor implements HandleAbleInterceptor {
 
     @Override
     public boolean isHandleAble(HttpRequest request) {
-        if (Objects.equals(request.getUri(), "/admin") || Objects.equals(request.getUri(), "/api/admin")) {
+        if (Objects.equals(request.getUri(), AdminConstants.ADMIN_URI_BASE_PATH) || Objects.equals(request.getUri(), "/api" + AdminConstants.ADMIN_URI_BASE_PATH)) {
             return true;
         }
-        return request.getUri().startsWith("/admin/") || request.getUri().startsWith("/api/admin/");
+        return request.getUri().startsWith(AdminConstants.ADMIN_URI_BASE_PATH + "/") || request.getUri().startsWith("/api" + AdminConstants.ADMIN_URI_BASE_PATH + "/");
     }
 }

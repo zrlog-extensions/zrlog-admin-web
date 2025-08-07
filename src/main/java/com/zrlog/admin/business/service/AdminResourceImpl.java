@@ -136,7 +136,7 @@ public class AdminResourceImpl implements AdminResource {
                 cacheUris.add((basePath + file));
             } else {
                 //vendors
-                cacheUris.add(new File((basePath + "admin/" + file)).toString());
+                cacheUris.add(new File((basePath + AdminConstants.ADMIN_URI_BASE_PATH + file)).toString());
             }
         });
         return cacheUris;

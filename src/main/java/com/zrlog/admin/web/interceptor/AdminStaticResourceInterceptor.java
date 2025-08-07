@@ -40,7 +40,7 @@ public class AdminStaticResourceInterceptor implements HandleAbleInterceptor {
         }
         String stringInputStream = IOUtil.getStringInputStream(inputStream);
         String adminPath = "admin/";
-        return stringInputStream.replace("\"/admin/\"", "document.currentScript.baseURI + \"" + adminPath + "\"");
+        return stringInputStream.replace("\"" + AdminConstants.ADMIN_URI_BASE_PATH + "/\"", "document.currentScript.baseURI + \"" + adminPath + "\"");
     }
 
     @Override
