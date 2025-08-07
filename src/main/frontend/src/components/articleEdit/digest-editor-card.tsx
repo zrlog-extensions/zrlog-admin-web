@@ -15,7 +15,7 @@ type DigestEditorCardProps = {
 
 const DigestEditorCard: FunctionComponent<DigestEditorCardProps> = memo(
     ({ digestRef, initDigest, handleValuesChange }) => {
-        const [editDigest, setEditDigest] = useState<boolean>(false);
+        const [editDigest, setEditDigest] = useState<boolean>(initDigest.trim().length === 0);
 
         const [digest, setDigest] = useState<string>(initDigest);
         const [value, setValue] = useState<string>(initDigest);
@@ -48,7 +48,7 @@ const DigestEditorCard: FunctionComponent<DigestEditorCardProps> = memo(
                         }}
                         minRows={2}
                         maxRows={12}
-                        style={{ padding: 0 }}
+                        style={{ padding: 0, borderRadius: 0 }}
                         formStyle={{ marginBottom: 0 }}
                     />
                 );
@@ -65,29 +65,32 @@ const DigestEditorCard: FunctionComponent<DigestEditorCardProps> = memo(
             );
         };
 
+        const getActionBtn = () => {
+            if (digest.length === 0) {
+                return <></>;
+            }
+            if (editDigest) {
+                return (
+                    <CheckOutlined
+                        onClick={() => {
+                            setEditDigest(false);
+                        }}
+                        style={{ color: getColorPrimary(), cursor: "pointer" }}
+                    />
+                );
+            }
+            return (
+                <EditOutlined
+                    onClick={() => {
+                        setEditDigest(true);
+                    }}
+                    style={{ color: getColorPrimary(), cursor: "pointer" }}
+                />
+            );
+        };
+
         return (
-            <Card
-                size="small"
-                title={getRes().digest}
-                style={{ marginBottom: 36 }}
-                extra={[
-                    editDigest ? (
-                        <CheckOutlined
-                            onClick={() => {
-                                setEditDigest(false);
-                            }}
-                            style={{ color: getColorPrimary(), cursor: "pointer" }}
-                        />
-                    ) : (
-                        <EditOutlined
-                            onClick={() => {
-                                setEditDigest(true);
-                            }}
-                            style={{ color: getColorPrimary(), cursor: "pointer" }}
-                        />
-                    ),
-                ]}
-            >
+            <Card size="small" title={getRes().digest} style={{ marginBottom: 36 }} extra={[getActionBtn()]}>
                 {getBody()}
             </Card>
         );

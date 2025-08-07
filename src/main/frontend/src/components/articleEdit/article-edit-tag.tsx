@@ -142,11 +142,13 @@ const ArticleEditTag: FunctionComponent<ArticleEditTagProps> = ({ allTags, keywo
     const allTagChild = allTags.map(tagForMap);
     return (
         <>
-            <div style={{ marginBottom: 16 }}>
-                <Space size={[0, 8]} wrap>
-                    {tagChild}
-                </Space>
-            </div>
+            {tagChild && tagChild.length > 0 && (
+                <div style={{ marginBottom: 16 }}>
+                    <Space size={[0, 8]} wrap>
+                        {tagChild}
+                    </Space>
+                </div>
+            )}
             {inputVisible && (
                 <Input
                     ref={inputRef}
@@ -166,7 +168,9 @@ const ArticleEditTag: FunctionComponent<ArticleEditTagProps> = ({ allTags, keywo
                             <PlusOutlined /> {getRes()["tagTips"]}
                         </Tag>
                     </Space>
-                    <Title level={5}>{getRes()["allTag"]}</Title>
+                    <Title level={5} style={{ marginTop: 12, fontSize: 14 }}>
+                        {getRes()["allTag"]}
+                    </Title>
                     <div style={{ maxHeight: "240px", overflowY: "auto" }}>
                         <Space size={[0, 8]} wrap>
                             {allTagChild}
