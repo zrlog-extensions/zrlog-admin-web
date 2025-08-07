@@ -19,6 +19,7 @@ import com.zrlog.business.service.CommonService;
 import com.zrlog.common.Constants;
 import com.zrlog.common.TokenService;
 import com.zrlog.common.rest.response.StandardResponse;
+import com.zrlog.common.vo.PublicWebSiteInfo;
 import com.zrlog.plugin.BaseStaticSitePlugin;
 import com.zrlog.util.I18nUtil;
 import org.jsoup.Jsoup;
@@ -40,7 +41,8 @@ public class AdminPageService {
         document.body().removeClass("dark");
         document.body().removeClass("light");
         Objects.requireNonNull(document.selectFirst("base")).attr("href", "/");
-        document.body().addClass(Objects.equals(Constants.zrLogConfig.getCacheService().getPublicWebSiteInfo().getAdmin_darkMode(), true) ? "dark" : "light");
+        PublicWebSiteInfo publicWebSiteInfo = Constants.zrLogConfig.getCacheService().getPublicWebSiteInfo();
+        document.body().addClass(Objects.equals(publicWebSiteInfo.getAdmin_darkMode(), true) ? "dark" : "light");
         Element htmlElement = document.selectFirst("html");
         if (Objects.nonNull(htmlElement)) {
             htmlElement.attr("lang", I18nUtil.getCurrentLocale().split("_")[0]);
@@ -49,8 +51,7 @@ public class AdminPageService {
         if (!select.isEmpty()) {
             Element first = select.first();
             if (Objects.nonNull(first)) {
-                PublicInfoVO publicInfo = new CommonService().getPublicInfo(request);
-                first.attr("content", publicInfo.getPwaThemeColor());
+                first.attr("content", publicWebSiteInfo.getAdmin_color_primary());
             }
         }
         String adminStaticResourceHostByWebSite = AdminWebTools.getAdminStaticResourceBaseUrlByWebSite(request);

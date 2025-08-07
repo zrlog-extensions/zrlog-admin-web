@@ -17,8 +17,6 @@ import com.zrlog.admin.web.annotation.RefreshCache;
 import com.zrlog.admin.web.controller.page.AdminPageController;
 import com.zrlog.blog.web.util.WebTools;
 import com.zrlog.business.exception.MissingInstallException;
-import com.zrlog.business.rest.response.PublicInfoVO;
-import com.zrlog.business.service.CommonService;
 import com.zrlog.common.Constants;
 import com.zrlog.common.controller.BaseController;
 import com.zrlog.common.vo.PublicWebSiteInfo;
@@ -60,15 +58,14 @@ public class AdminController extends BaseController {
             }
             Map map = new Gson().fromJson(IOUtil.getStringInputStream(inputStream), Map.class);
             PublicWebSiteInfo publicWebSiteInfo = Constants.zrLogConfig.getCacheService().getPublicWebSiteInfo();
-            PublicInfoVO publicInfoVO = new CommonService().getPublicInfo(request);
-            if (StringUtils.isNotEmpty(publicInfoVO.getWebsiteTitle())) {
-                map.put("short_name", publicInfoVO.getWebsiteTitle());
+            if (StringUtils.isNotEmpty(publicWebSiteInfo.getTitle())) {
+                map.put("short_name", publicWebSiteInfo.getTitle());
             }
-            map.put("name", AdminConstants.getAdminDocumentTitleByUri("/"));
-            map.put("theme_color", publicInfoVO.getPwaThemeColor());
+            map.put("name", AdminConstants.getAdminDocumentTitleByUri("/", publicWebSiteInfo));
+            map.put("theme_color", publicWebSiteInfo.getAdmin_color_primary());
             map.put("description", publicWebSiteInfo.getDescription());
             map.put("id", publicWebSiteInfo.getAppId());
-            map.put("background_color", Objects.equals(publicInfoVO.getAdmin_darkMode(), true) ? "#000000" : "#FFFFFF");
+            map.put("background_color", Objects.equals(publicWebSiteInfo.getAdmin_darkMode(), true) ? "#000000" : "#FFFFFF");
             List<Map<String, Object>> list = (List<Map<String, Object>>) map.get("icons");
             for (Map<String, Object> icon : list) {
                 icon.put("src", WebTools.buildEncodedUrl(request, "/admin" + ((String) icon.get("src")).substring(1)));

@@ -3,6 +3,7 @@ package com.zrlog.admin.business;
 import com.hibegin.common.util.StringUtils;
 import com.zrlog.admin.business.service.AdminResource;
 import com.zrlog.common.Constants;
+import com.zrlog.common.vo.PublicWebSiteInfo;
 import com.zrlog.util.I18nUtil;
 
 import java.util.*;
@@ -66,8 +67,21 @@ public class AdminConstants {
         return getAdminTitle(I18nUtil.getAdminStringFromRes(key));
     }
 
+    public static String getAdminDocumentTitleByUri(String uri, PublicWebSiteInfo publicWebSiteInfo) {
+        String realUri = uri.replaceFirst("/api", "");
+        String key = TITLE_MAP.get(realUri);
+        if (Objects.isNull(key)) {
+            return getAdminTitle("");
+        }
+        return getAdminTitle(I18nUtil.getAdminStringFromRes(key), publicWebSiteInfo);
+    }
+
     public static String getAdminTitle(String startTitle) {
-        String title = Constants.zrLogConfig.getCacheService().getPublicWebSiteInfo().getTitle();
+        return getAdminTitle(startTitle, Constants.zrLogConfig.getCacheService().getPublicWebSiteInfo());
+    }
+
+    public static String getAdminTitle(String startTitle, PublicWebSiteInfo publicWebSiteInfo) {
+        String title = publicWebSiteInfo.getTitle();
         StringJoiner sj = new StringJoiner(ADMIN_TITLE_CHAR);
         if (StringUtils.isNotEmpty(startTitle) && !startTitle.trim().isEmpty()) {
             sj.add(startTitle);
