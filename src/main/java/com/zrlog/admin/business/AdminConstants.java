@@ -3,14 +3,16 @@ package com.zrlog.admin.business;
 import com.hibegin.common.util.StringUtils;
 import com.zrlog.admin.business.service.AdminResource;
 import com.zrlog.common.Constants;
+import com.zrlog.common.vo.PublicWebSiteInfo;
 import com.zrlog.util.I18nUtil;
 
 import java.util.*;
 
 public class AdminConstants {
-    public static final String ADMIN_DEV_URI_BASE_PATH = "/admin/dev";
-    public static final String ADMIN_DEV_FILE_URI_BASE_PATH = "/admin/dev/file";
     public static final String ADMIN_URI_BASE_PATH = "/admin";
+    public static final String ADMIN_DEV_URI_BASE_PATH = ADMIN_URI_BASE_PATH + "/dev";
+    public static final String ADMIN_DEV_FILE_URI_BASE_PATH = ADMIN_URI_BASE_PATH + "/dev/file";
+
     public static final String ADMIN_HTML_PAGE = ADMIN_URI_BASE_PATH + "/index.html";
     public static final String ADMIN_LOGIN_URI_PATH = ADMIN_URI_BASE_PATH + "/login";
     public static final String ADMIN_PWA_MANIFEST_API_URI_PATH = "/api" + ADMIN_URI_BASE_PATH + "/manifest";
@@ -24,11 +26,11 @@ public class AdminConstants {
     public static final String SYNC_UPDATE_CACHE_KEY = "syncUpdateCache";
 
     public static final String FAVICON_ICO_URI_PATH = "/favicon.ico";
-    public static final String FAVICON_PNG_PWA_192_URI_PATH = "/admin/pwa/icon/favicon-192.png";
-    public static final String FAVICON_PNG_PWA_512_URI_PATH = "/admin/pwa/icon/favicon-512.png";
+    public static final String FAVICON_PNG_PWA_192_URI_PATH = ADMIN_URI_BASE_PATH + "/pwa/icon/favicon-192.png";
+    public static final String FAVICON_PNG_PWA_512_URI_PATH = ADMIN_URI_BASE_PATH + "/pwa/icon/favicon-512.png";
     public static final String ATTACHED_FOLDER = "/attached/";
 
-    public static final List<String> adminStaticResources = Arrays.asList("/admin/static", "/admin/pwa");
+    public static final List<String> adminStaticResources = Arrays.asList(ADMIN_URI_BASE_PATH + "/static", ADMIN_URI_BASE_PATH + "/pwa");
 
     static {
         TITLE_MAP.put(ADMIN_LOGIN_URI_PATH, "login");
@@ -66,8 +68,21 @@ public class AdminConstants {
         return getAdminTitle(I18nUtil.getAdminStringFromRes(key));
     }
 
+    public static String getAdminDocumentTitleByUri(String uri, PublicWebSiteInfo publicWebSiteInfo) {
+        String realUri = uri.replaceFirst("/api", "");
+        String key = TITLE_MAP.get(realUri);
+        if (Objects.isNull(key)) {
+            return getAdminTitle("");
+        }
+        return getAdminTitle(I18nUtil.getAdminStringFromRes(key), publicWebSiteInfo);
+    }
+
     public static String getAdminTitle(String startTitle) {
-        String title = Constants.zrLogConfig.getCacheService().getPublicWebSiteInfo().getTitle();
+        return getAdminTitle(startTitle, Constants.zrLogConfig.getCacheService().getPublicWebSiteInfo());
+    }
+
+    public static String getAdminTitle(String startTitle, PublicWebSiteInfo publicWebSiteInfo) {
+        String title = publicWebSiteInfo.getTitle();
         StringJoiner sj = new StringJoiner(ADMIN_TITLE_CHAR);
         if (StringUtils.isNotEmpty(startTitle) && !startTitle.trim().isEmpty()) {
             sj.add(startTitle);

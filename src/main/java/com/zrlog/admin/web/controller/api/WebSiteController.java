@@ -32,7 +32,7 @@ public class WebSiteController extends BaseController {
         VersionResponse versionResponse = new VersionResponse();
         versionResponse.setBuildId(BlogBuildInfoUtil.getBuildId());
         versionResponse.setVersion(BlogBuildInfoUtil.getVersion());
-        versionResponse.setChangelog(UpdateVersionInfoPlugin.getCurrentChangeLog(I18nUtil.getBackend()));
+        versionResponse.setChangelog(UpdateVersionInfoPlugin.getCurrentChangeLog(I18nUtil.getAdminBackend()));
         return new AdminApiPageDataStandardResponse<>(versionResponse, "", request.getUri());
     }
 
@@ -94,7 +94,9 @@ public class WebSiteController extends BaseController {
     @ResponseBody
     public AdminApiPageDataStandardResponse<AdminWebSiteInfo> admin() throws SQLException {
         if (request.getMethod() == HttpMethod.POST) {
-            update(getRequestBodyWithNullCheck(AdminWebSiteInfo.class));
+            AdminWebSiteInfo adminWebSiteInfo = getRequestBodyWithNullCheck(AdminWebSiteInfo.class);
+            update(adminWebSiteInfo);
+            Constants.zrLogConfig.getTokenService().updateSessionTimeout(adminWebSiteInfo.getSession_timeout());
         }
         return new AdminApiPageDataStandardResponse<>(webSiteService.adminWebSiteInfo(), I18nUtil.getAdminBackendStringFromRes("updateSuccess"), request.getUri());
     }

@@ -10,6 +10,7 @@ import com.zrlog.business.rest.response.PublicInfoVO;
 import com.zrlog.business.service.CommonService;
 import com.zrlog.common.CacheService;
 import com.zrlog.common.Constants;
+import com.zrlog.common.vo.PublicWebSiteInfo;
 import com.zrlog.plugin.BaseStaticSitePlugin;
 import com.zrlog.util.BlogBuildInfoUtil;
 import com.zrlog.util.I18nUtil;
@@ -135,7 +136,7 @@ public class AdminResourceImpl implements AdminResource {
                 cacheUris.add((basePath + file));
             } else {
                 //vendors
-                cacheUris.add(new File((basePath + "admin/" + file)).toString());
+                cacheUris.add(new File((basePath + AdminConstants.ADMIN_URI_BASE_PATH + file)).toString());
             }
         });
         return cacheUris;
@@ -167,12 +168,12 @@ public class AdminResourceImpl implements AdminResource {
     @Override
     public Map<String, Object> adminResourceInfo(HttpRequest request) {
         Map<String, Object> stringObjectMap = I18nUtil.getAdmin();
-        PublicInfoVO publicInfoVO = new CommonService().getPublicInfo(request);
-        stringObjectMap.put("currentVersion", publicInfoVO.getCurrentVersion());
-        stringObjectMap.put("websiteTitle", publicInfoVO.getWebsiteTitle());
-        stringObjectMap.put("homeUrl", publicInfoVO.getHomeUrl());
+        PublicWebSiteInfo publicWebSiteInfo = Constants.zrLogConfig.getCacheService().getPublicWebSiteInfo();
+        stringObjectMap.put("currentVersion", BlogBuildInfoUtil.getBuildId());
+        stringObjectMap.put("websiteTitle", publicWebSiteInfo.getTitle());
+        stringObjectMap.put("homeUrl", ZrLogUtil.getHomeUrlWithHost(request));
         stringObjectMap.put("articleRoute", "");
-        stringObjectMap.put("admin_darkMode", Objects.equals(publicInfoVO.getAdmin_darkMode(), true));
+        stringObjectMap.put("admin_darkMode", Objects.equals(publicWebSiteInfo.getAdmin_darkMode(), true));
         if (ZrLogUtil.isPreviewMode()) {
             Map<String, String> defaultLoginInfo = new HashMap<>();
             defaultLoginInfo.put("userName", System.getenv("DEFAULT_USERNAME"));
@@ -181,8 +182,8 @@ public class AdminResourceImpl implements AdminResource {
             stringObjectMap.put("defaultLoginInfo", defaultLoginInfo);
         }
         stringObjectMap.put("buildId", BlogBuildInfoUtil.getBuildId());
-        stringObjectMap.put("appId", publicInfoVO.getAppId());
-        stringObjectMap.put("admin_color_primary", publicInfoVO.getAdmin_color_primary());
+        stringObjectMap.put("appId", publicWebSiteInfo.getAppId());
+        stringObjectMap.put("admin_color_primary", publicWebSiteInfo.getAdmin_color_primary());
         stringObjectMap.put("lang", I18nUtil.getCurrentLocale());
         stringObjectMap.put("staticPage", BaseStaticSitePlugin.isStaticPluginRequest(request));
         //remove

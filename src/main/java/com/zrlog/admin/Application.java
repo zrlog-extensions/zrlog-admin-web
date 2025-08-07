@@ -2,18 +2,17 @@ package com.zrlog.admin;
 
 import com.hibegin.common.dao.DataSourceWrapper;
 import com.hibegin.http.server.WebServerBuilder;
-import com.hibegin.http.server.api.HttpRequest;
 import com.hibegin.http.server.util.PathUtil;
 import com.hibegin.http.server.web.MethodInterceptor;
 import com.zrlog.admin.business.service.AdminResourceImpl;
 import com.zrlog.admin.web.AdminWebSetup;
-import com.zrlog.admin.web.plugin.AdminStaticResourcePlugin;
 import com.zrlog.admin.web.plugin.ZipUpdater;
 import com.zrlog.admin.web.token.AdminTokenService;
 import com.zrlog.business.plugin.CacheManagerPlugin;
 import com.zrlog.business.plugin.PluginCorePluginImpl;
 import com.zrlog.business.service.DbUpgradeService;
 import com.zrlog.common.Constants;
+import com.zrlog.common.TokenService;
 import com.zrlog.common.Updater;
 import com.zrlog.common.ZrLogConfig;
 import com.zrlog.data.cache.CacheServiceImpl;
@@ -59,7 +58,6 @@ class DevZrLogConfig extends ZrLogConfig {
     protected DevZrLogConfig(Integer port, Updater updater, String contextPath) {
         super(port, updater, contextPath);
         webSetups.add(new AdminWebSetup(this, new AdminResourceImpl(contextPath), contextPath));
-        tokenService = new AdminTokenService();
         this.webSetups.forEach(WebSetup::setup);
         serverConfig.getInterceptors().add(MethodInterceptor.class);
     }
@@ -72,6 +70,11 @@ class DevZrLogConfig extends ZrLogConfig {
             new DbUpgradeService(this.dataSource, this.cacheService.getCurrentSqlVersion()).tryDoUpgrade();
         }
         return dataSource;
+    }
+
+    @Override
+    protected TokenService initTokenService() {
+        return new AdminTokenService();
     }
 
     @Override

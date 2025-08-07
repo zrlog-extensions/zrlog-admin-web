@@ -89,7 +89,7 @@ public class TemplateService {
         }
         for (TemplateVO templateVO : templates) {
             //同时存在以使用为主
-            if (templateVO.getTemplate().equals(Constants.zrLogConfig.getCacheService().getPublicWebSiteInfo().getTemplate())) {
+            if (templateVO.getTemplate().equals(currentTemplate)) {
                 templateVO.setUse(true);
                 templateVO.setDeleteAble(false);
                 continue;

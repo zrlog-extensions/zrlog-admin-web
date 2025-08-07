@@ -1,9 +1,9 @@
 package com.zrlog.admin.business.rest.base;
 
 import com.hibegin.common.util.StringUtils;
-import com.zrlog.common.Constants;
 import com.zrlog.common.Validator;
 import com.zrlog.common.exception.ArgsException;
+import com.zrlog.data.util.WebSiteUtils;
 import org.jsoup.Jsoup;
 import org.jsoup.safety.Safelist;
 
@@ -65,7 +65,13 @@ public class AdminWebSiteInfo implements Validator {
     @Override
     public void doValid() {
         if (Objects.isNull(article_auto_digest_length)) {
-            article_auto_digest_length = Constants.DEFAULT_ARTICLE_DIGEST_LENGTH;
+            article_auto_digest_length = WebSiteUtils.DEFAULT_ARTICLE_DIGEST_LENGTH;
+        }
+        if (Objects.isNull(session_timeout)) {
+            session_timeout = WebSiteUtils.DEFAULT_SESSION_TIMEOUT;
+        }
+        if (session_timeout <= 5) {
+            throw new ArgsException("session_timeout need to be greater than 5");
         }
     }
 

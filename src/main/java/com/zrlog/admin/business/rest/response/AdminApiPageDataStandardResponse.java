@@ -5,6 +5,7 @@ import com.zrlog.admin.business.AdminConstants;
 import com.zrlog.common.Constants;
 import com.zrlog.common.ZrLogConfig;
 import com.zrlog.common.rest.response.StandardResponse;
+import com.zrlog.common.vo.PublicWebSiteInfo;
 
 import java.util.Objects;
 
@@ -39,10 +40,11 @@ public class AdminApiPageDataStandardResponse<T> extends StandardResponse {
         } else {
             this.pageBuildId = "";
         }
+        PublicWebSiteInfo publicWebSiteInfo = Constants.zrLogConfig.getCacheService().getPublicWebSiteInfo();
         if (StringUtils.isNotEmpty(requestUri)) {
-            this.documentTitle = AdminConstants.getAdminDocumentTitleByUri(requestUri);
+            this.documentTitle = AdminConstants.getAdminDocumentTitleByUri(requestUri, publicWebSiteInfo);
         }
-        String configMsg = Constants.zrLogConfig.getCacheService().getPublicWebSiteInfo().getSystem_notification();
+        String configMsg = publicWebSiteInfo.getSystem_notification();
         if (StringUtils.isNotEmpty(configMsg)) {
             this.systemNotification = configMsg;
         } else {

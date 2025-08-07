@@ -332,7 +332,7 @@ public class AdminArticleService {
             key = articleResponseEntry.getAlias();
         }
         if (articleResponseEntry.isPrivacy() || articleResponseEntry.isRubbish()) {
-            return "/admin/403?message=" + I18nUtil.getAdminBackendStringFromRes("preview403");
+            return AdminConstants.ADMIN_URI_BASE_PATH + "/403?message=" + I18nUtil.getAdminBackendStringFromRes("preview403");
         }
         return ZrLogUtil.getHomeUrlWithHost(request) + Constants.getArticleUri() + key + StaticSitePlugin.getSuffix(request);
     }

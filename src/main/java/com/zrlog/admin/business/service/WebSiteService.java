@@ -7,6 +7,7 @@ import com.zrlog.admin.business.rest.base.*;
 import com.zrlog.admin.web.type.AutoUpgradeVersionType;
 import com.zrlog.common.Constants;
 import com.zrlog.common.TokenService;
+import com.zrlog.data.util.WebSiteUtils;
 import com.zrlog.model.WebSite;
 
 import java.util.Arrays;
@@ -45,16 +46,16 @@ public class WebSiteService {
                 "favicon_png_pwa_512_base64", "favicon_png_pwa_192_base64",
                 "admin_article_page_size", "admin_static_resource_base_url"), AdminWebSiteInfo.class);
         if (StringUtils.isEmpty(admin.getAdmin_color_primary())) {
-            admin.setAdmin_color_primary(Constants.DEFAULT_COLOR_PRIMARY_COLOR);
+            admin.setAdmin_color_primary(WebSiteUtils.DEFAULT_COLOR_PRIMARY_COLOR);
         }
         if (Objects.isNull(admin.getAdmin_article_page_size()) || admin.getAdmin_article_page_size() <= 0) {
             admin.setAdmin_article_page_size(10L);
         }
         if (Objects.isNull(admin.getSession_timeout()) || admin.getSession_timeout() <= 0) {
-            admin.setSession_timeout(TokenService.DEFAULT_SESSION_TIMEOUT / 60 / 1000);
+            admin.setSession_timeout(WebSiteUtils.DEFAULT_SESSION_TIMEOUT / 60 / 1000);
         }
         if (Objects.isNull(admin.getArticle_auto_digest_length()) || admin.getArticle_auto_digest_length() <= 0) {
-            admin.setArticle_auto_digest_length(Constants.DEFAULT_ARTICLE_DIGEST_LENGTH);
+            admin.setArticle_auto_digest_length(WebSiteUtils.DEFAULT_ARTICLE_DIGEST_LENGTH);
         }
         return admin;
     }
