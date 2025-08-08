@@ -13,7 +13,9 @@ import com.zrlog.admin.business.rest.request.UpdatePasswordRequest;
 import com.zrlog.admin.business.rest.response.UpdateRecordResponse;
 import com.zrlog.admin.business.rest.response.UserBasicInfoResponse;
 import com.zrlog.admin.web.plugin.UpdateVersionInfoPlugin;
+import com.zrlog.common.CacheService;
 import com.zrlog.common.Constants;
+import com.zrlog.common.cache.dto.UserBasicDTO;
 import com.zrlog.common.exception.ArgsException;
 import com.zrlog.model.User;
 import com.zrlog.util.I18nUtil;
@@ -25,7 +27,10 @@ import java.util.*;
 public class UserService {
 
 
+    private final CacheService cacheService;
+
     public UserService() {
+        this.cacheService = Constants.zrLogConfig.getCacheService();
     }
 
     public UpdateRecordResponse updatePassword(int currentUserId, UpdatePasswordRequest updatePasswordRequest) throws SQLException {
@@ -54,11 +59,17 @@ public class UserService {
 
     public UserBasicInfoResponse getUserInfo(int userId, String sessionId) throws SQLException {
         Map<String, Object> byId = new User().loadById(userId);
-        return getUserInfoByUser(byId, sessionId);
+        UserBasicInfoResponse userInfoByUser = getUserInfoByUser(BeanUtil.convert(byId, UserBasicDTO.class), sessionId);
+        userInfoByUser.setEmail(ObjectHelpers.requireNonNullElse((String) byId.get("email"), ""));
+        return userInfoByUser;
     }
 
-    private UserBasicInfoResponse getUserInfoByUser(Map<String, Object> byId, String sessionId) {
-        UserBasicInfoResponse basicInfoResponse = ObjectUtil.requireNonNullElse(BeanUtil.convert(byId, UserBasicInfoResponse.class), new UserBasicInfoResponse());
+    public UserBasicInfoResponse getUserInfoWithCache(int userId, String sessionId) {
+        return getUserInfoByUser(cacheService.getUserInfoById((long) userId), sessionId);
+    }
+
+    private UserBasicInfoResponse getUserInfoByUser(UserBasicDTO userBasicDTO, String sessionId) {
+        UserBasicInfoResponse basicInfoResponse = ObjectUtil.requireNonNullElse(BeanUtil.convert(userBasicDTO, UserBasicInfoResponse.class), new UserBasicInfoResponse());
         if (StringUtils.isEmpty(basicInfoResponse.getHeader())) {
             byte[] byteByInputStream = IOUtil.getByteByInputStream(UserService.class.getResourceAsStream("/assets/admin/images/default-portrait.gif"));
             basicInfoResponse.setHeader("data:image/gif;base64," + Base64.getEncoder().encodeToString(byteByInputStream));
@@ -84,7 +95,8 @@ public class UserService {
             if (dbPassword == null || !Objects.equals(dbPassword.toLowerCase(), loginRequest.getPassword().toLowerCase())) {
                 throw new UserNameOrPasswordException();
             }
-            UserBasicInfoResponse userInfoByUser = getUserInfoByUser(user, UUID.randomUUID().toString());
+            UserBasicDTO basicDTO = BeanUtil.convert(user, UserBasicDTO.class);
+            UserBasicInfoResponse userInfoByUser = getUserInfoByUser(basicDTO, UUID.randomUUID().toString());
             UserLoginDTO userLoginDTO = new UserLoginDTO();
             userLoginDTO.setSecretKey((String) user.get("secretKey"));
             userLoginDTO.setUserBasicInfoResponse(userInfoByUser);

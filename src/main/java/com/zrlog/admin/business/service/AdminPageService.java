@@ -11,11 +11,8 @@ import com.zrlog.admin.business.rest.response.AdminApiPageDataStandardResponse;
 import com.zrlog.admin.business.rest.response.ServerSideDataResponse;
 import com.zrlog.admin.business.rest.response.UserBasicInfoResponse;
 import com.zrlog.admin.util.AdminWebTools;
-import com.zrlog.admin.web.controller.api.AdminUserController;
 import com.zrlog.admin.web.token.AdminTokenThreadLocal;
 import com.zrlog.blog.web.util.WebTools;
-import com.zrlog.business.rest.response.PublicInfoVO;
-import com.zrlog.business.service.CommonService;
 import com.zrlog.common.Constants;
 import com.zrlog.common.TokenService;
 import com.zrlog.common.rest.response.StandardResponse;
@@ -107,7 +104,7 @@ public class AdminPageService {
         if (Objects.isNull(AdminTokenThreadLocal.getUser())) {
             return new ServerSideDataResponse<>(null, resourceInfo, null, null, AdminConstants.getAdminDocumentTitleByUri(request.getUri()));
         }
-        UserBasicInfoResponse basicInfoResponse = new AdminUserController(request, response).index().getData();
+        UserBasicInfoResponse basicInfoResponse = new UserService().getUserInfoWithCache(AdminTokenThreadLocal.getUserId(), AdminTokenThreadLocal.getUser().getSessionId());
         Method method = request.getRequestConfig().getRouter().getMethod("/api" + uri, request.getMethod());
         try {
             Controller controller = Controller.buildController(method, request, response);

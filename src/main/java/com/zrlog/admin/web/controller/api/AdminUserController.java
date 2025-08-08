@@ -1,6 +1,8 @@
 package com.zrlog.admin.web.controller.api;
 
 import com.hibegin.common.util.StringUtils;
+import com.hibegin.http.HttpMethod;
+import com.hibegin.http.annotation.RequestMethod;
 import com.hibegin.http.annotation.ResponseBody;
 import com.hibegin.http.server.api.HttpRequest;
 import com.hibegin.http.server.api.HttpResponse;
@@ -44,6 +46,7 @@ public class AdminUserController extends BaseController {
 
     @RefreshCache
     @ResponseBody
+    @RequestMethod(method = HttpMethod.POST)
     public UpdateRecordResponse update() throws SQLException {
         UpdateAdminRequest updateAdminRequest = getRequestBodyWithNullCheck(UpdateAdminRequest.class);
         UpdateRecordResponse updateRecordResponse = new UpdateRecordResponse();
@@ -57,6 +60,7 @@ public class AdminUserController extends BaseController {
     }
 
     @ResponseBody
+    @RequestMethod(method = HttpMethod.POST)
     public UpdateRecordResponse updatePassword() throws SQLException {
         return userService.updatePassword(AdminTokenThreadLocal.getUserId(),
                 getRequestBodyWithNullCheck(UpdatePasswordRequest.class));

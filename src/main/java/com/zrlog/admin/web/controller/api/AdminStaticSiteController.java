@@ -7,6 +7,7 @@ import com.zrlog.admin.business.rest.response.AdminApiPageDataStandardResponse;
 import com.zrlog.admin.business.rest.response.AdminStaticSiteSyncResponse;
 import com.zrlog.admin.web.annotation.RequestLock;
 import com.zrlog.admin.web.plugin.AdminStaticResourcePlugin;
+import com.zrlog.admin.web.token.AdminTokenThreadLocal;
 import com.zrlog.business.plugin.StaticSitePlugin;
 import com.zrlog.common.Constants;
 import com.zrlog.common.controller.BaseController;
@@ -43,6 +44,6 @@ public class AdminStaticSiteController extends BaseController {
         if (Objects.isNull(adminStaticResourcePlugin)) {
             throw new NotFindResourceException("plugin not found");
         }
-        return new AdminApiPageDataStandardResponse<>(new AdminStaticSiteSyncResponse(adminStaticResourcePlugin.isSynchronized(request)), "", request.getUri());
+        return new AdminApiPageDataStandardResponse<>(new AdminStaticSiteSyncResponse(adminStaticResourcePlugin.isSynchronized(AdminTokenThreadLocal.getUserProtocol())), "", request.getUri());
     }
 }
