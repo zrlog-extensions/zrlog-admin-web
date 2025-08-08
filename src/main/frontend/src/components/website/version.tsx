@@ -1,8 +1,8 @@
-import { FunctionComponent } from "react";
+import { FunctionComponent, useState } from "react";
 import Card from "antd/es/card";
 import BaseTitle from "../../base/BaseTitle";
 import HtmlPreviewPanel from "../../common/editor/html-preview-panel";
-import { marked } from "marked";
+import { markdownToHtmlSyncWithCallback } from "../../common/editor/utils/marked-utils";
 
 type VersionProps = {
     data: VersionResponse;
@@ -11,14 +11,29 @@ type VersionProps = {
 type VersionResponse = {
     version: string;
     changelog: string;
+    buildSystemInfo: string;
 };
 
 const Version: FunctionComponent<VersionProps> = ({ data }) => {
+    const defaultHtmlStr = markdownToHtmlSyncWithCallback(data.changelog, (htmlStr) => {
+        setChangeLogStr(htmlStr);
+    });
+
+    const defaultBuildStr = markdownToHtmlSyncWithCallback(data.buildSystemInfo, (htmlStr) => {
+        setBuildStr(htmlStr);
+    });
+
+    const [changeLogStr, setChangeLogStr] = useState<string>(defaultHtmlStr);
+    const [buildStr, setBuildStr] = useState<string>(defaultBuildStr);
+
     return (
         <>
             <BaseTitle title={data.version} />
-            <Card title={""} size={"small"} style={{ padding: 8 }}>
-                <HtmlPreviewPanel htmlContent={marked(data.changelog) as string} />
+            <Card title={""} size={"small"} style={{ padding: 8, maxWidth: 600 }}>
+                <HtmlPreviewPanel htmlContent={changeLogStr} />
+            </Card>
+            <Card title={""} size={"small"} style={{ padding: 8, maxWidth: 600, marginTop: 12 }}>
+                <HtmlPreviewPanel htmlContent={buildStr} />
             </Card>
         </>
     );

@@ -5,6 +5,7 @@ public class VersionResponse {
     private String version;
     private String buildId;
     private String changelog;
+    private String buildSystemInfo;
     private String message;
 
     public String getVersion() {
@@ -37,5 +38,13 @@ public class VersionResponse {
 
     public void setMessage(String message) {
         this.message = message;
+    }
+
+    public String getBuildSystemInfo() {
+        return buildSystemInfo;
+    }
+
+    public void setBuildSystemInfo(String buildSystemInfo) {
+        this.buildSystemInfo = buildSystemInfo;
     }
 }

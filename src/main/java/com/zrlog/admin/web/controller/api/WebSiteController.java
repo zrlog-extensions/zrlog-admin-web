@@ -1,6 +1,7 @@
 package com.zrlog.admin.web.controller.api;
 
 import com.hibegin.common.util.BeanUtil;
+import com.hibegin.common.util.IOUtil;
 import com.hibegin.http.HttpMethod;
 import com.hibegin.http.annotation.ResponseBody;
 import com.zrlog.admin.business.rest.base.*;
@@ -18,6 +19,7 @@ import com.zrlog.model.WebSite;
 import com.zrlog.util.BlogBuildInfoUtil;
 import com.zrlog.util.I18nUtil;
 
+import java.io.InputStream;
 import java.sql.SQLException;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -33,6 +35,12 @@ public class WebSiteController extends BaseController {
         versionResponse.setBuildId(BlogBuildInfoUtil.getBuildId());
         versionResponse.setVersion(BlogBuildInfoUtil.getVersion());
         versionResponse.setChangelog(UpdateVersionInfoPlugin.getCurrentChangeLog(I18nUtil.getAdminBackend()));
+        InputStream resourceAsStream = WebSiteController.class.getResourceAsStream("/build_system_info.md");
+        if (Objects.nonNull(resourceAsStream)) {
+            versionResponse.setBuildSystemInfo(IOUtil.getStringInputStream(resourceAsStream));
+        } else {
+            versionResponse.setBuildSystemInfo("#### Not find build system info file");
+        }
         return new AdminApiPageDataStandardResponse<>(versionResponse, "", request.getUri());
     }
 
