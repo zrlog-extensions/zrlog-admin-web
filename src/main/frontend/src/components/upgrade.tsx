@@ -70,8 +70,9 @@ const Upgrade: FunctionComponent<UpgradeProps> = ({ data, offline, offlineData }
                         title: data.message,
                         content: "",
                         onOk: function () {
-                            window.location.href =
-                                getRealRouteUrl(getContextPath() + "admin/index") + "?buildId=" + newBuildId;
+                            window.location.href = getRealRouteUrl(
+                                getContextPath() + "admin/index?buildId=" + newBuildId
+                            );
                         },
                     });
                     return;
