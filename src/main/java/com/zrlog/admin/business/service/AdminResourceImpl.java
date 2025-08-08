@@ -2,12 +2,13 @@ package com.zrlog.admin.business.service;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-import com.hibegin.common.util.*;
+import com.hibegin.common.util.IOUtil;
+import com.hibegin.common.util.ObjectUtil;
+import com.hibegin.common.util.SecurityUtils;
+import com.hibegin.common.util.StringUtils;
 import com.hibegin.http.server.api.HttpRequest;
 import com.zrlog.admin.business.AdminConstants;
 import com.zrlog.admin.util.AdminWebTools;
-import com.zrlog.business.rest.response.PublicInfoVO;
-import com.zrlog.business.service.CommonService;
 import com.zrlog.common.CacheService;
 import com.zrlog.common.Constants;
 import com.zrlog.common.vo.PublicWebSiteInfo;
@@ -168,7 +169,7 @@ public class AdminResourceImpl implements AdminResource {
     @Override
     public Map<String, Object> adminResourceInfo(HttpRequest request) {
         Map<String, Object> stringObjectMap = I18nUtil.getAdmin();
-        PublicWebSiteInfo publicWebSiteInfo = Constants.zrLogConfig.getCacheService().getPublicWebSiteInfo();
+        PublicWebSiteInfo publicWebSiteInfo = AdminConstants.getPublicWebSiteInfo();
         stringObjectMap.put("currentVersion", BlogBuildInfoUtil.getBuildId());
         stringObjectMap.put("websiteTitle", publicWebSiteInfo.getTitle());
         stringObjectMap.put("homeUrl", ZrLogUtil.getHomeUrlWithHost(request));

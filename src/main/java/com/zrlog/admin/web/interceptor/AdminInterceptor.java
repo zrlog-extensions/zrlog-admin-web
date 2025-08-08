@@ -21,7 +21,6 @@ import com.zrlog.common.cache.vo.BaseDataInitVO;
 import com.zrlog.common.exception.ArgsException;
 import com.zrlog.common.exception.ResourceLockedException;
 import com.zrlog.common.vo.AdminFullTokenVO;
-import com.zrlog.common.vo.AdminTokenVO;
 import com.zrlog.data.service.DistributedLock;
 import com.zrlog.plugin.BaseStaticSitePlugin;
 import com.zrlog.util.ThreadUtils;
@@ -100,34 +99,41 @@ public class AdminInterceptor implements HandleAbleInterceptor {
         return new DistributedLock("request-lock-" + request.getUri() + "-" + userFlag);
     }
 
+    private AdminFullTokenVO getAdminToken(HttpRequest request) {
+        if (!Constants.zrLogConfig.isInstalled()) {
+            return null;
+        }
+        TokenService tokenService = Constants.zrLogConfig.getTokenService();
+        if (Objects.isNull(tokenService)) {
+            return null;
+        }
+        return tokenService.getAdminTokenVO(request);
+    }
+
     /**
      * 为了规范代码，这里做了一点类是Spring的ResponseEntity的东西，及通过方法的返回值来判断是应该返回页面还会对应JSON数据
      * 具体方式看 AdminRouters，这里用到了 ThreadLocal
      */
     public boolean doInterceptor(HttpRequest request, HttpResponse response) throws Exception {
         try {
-            TokenService tokenService = Constants.zrLogConfig.getTokenService();
             String uri = request.getUri();
             if (AdminConstants.ADMIN_LOGIN_URI_PATH.equals(uri)) {
-                AdminTokenVO adminTokenVO = tokenService.getAdminTokenVO(request);
-                if (adminTokenVO != null) {
-                    response.redirect(AdminConstants.ADMIN_URI_BASE_PATH + AdminConstants.INDEX_URI_PATH);
-                } else {
+                if (Objects.isNull(getAdminToken(request))) {
                     new MethodInterceptor().doInterceptor(request, response);
+                } else {
+                    response.redirect(AdminConstants.ADMIN_URI_BASE_PATH + AdminConstants.INDEX_URI_PATH);
                 }
                 return false;
             }
             //拦截请求
             if (request.getUri().startsWith(AdminConstants.ADMIN_DEV_FILE_URI_BASE_PATH)) {
-                AdminFullTokenVO adminTokenVO = tokenService.getAdminTokenVO(request);
-                if (Objects.isNull(adminTokenVO)) {
+                if (Objects.isNull(getAdminToken(request))) {
                     response.renderCode(403);
                     return false;
                 }
             }
             if (Objects.equals(AdminConstants.ADMIN_REFRESH_CACHE_API_URI_PATH, uri)) {
-                AdminTokenVO adminTokenVO = tokenService.getAdminTokenVO(request);
-                if (Objects.isNull(adminTokenVO)) {
+                if (Objects.isNull(getAdminToken(request))) {
                     validPluginToken(request);
                 }
                 new MethodInterceptor().doInterceptor(request, response);
@@ -139,12 +145,13 @@ public class AdminInterceptor implements HandleAbleInterceptor {
             }
             Method method = request.getServerConfig().getRouter().getMethod(request.getUri(), request.getMethod());
             if (Objects.nonNull(method) && !BaseStaticSitePlugin.isStaticPluginRequest(request)) {
-                AdminFullTokenVO adminTokenVO = tokenService.getAdminTokenVO(request);
+                AdminFullTokenVO adminTokenVO = getAdminToken(request);
                 if (adminTokenVO == null) {
                     AdminWebTools.blockUnLoginRequestHandler(request, response);
                     return false;
                 }
-                tokenService.setAdminToken(adminTokenVO.getUserId(), adminTokenVO.getSecretKey(), adminTokenVO.getSessionId(), adminTokenVO.getProtocol(), request, response);
+                Constants.zrLogConfig.getTokenService().setAdminToken(adminTokenVO.getUserId(), adminTokenVO.getSecretKey(),
+                        adminTokenVO.getSessionId(), adminTokenVO.getProtocol(), request, response);
             }
 
             Lock lock = getLock(method, request);

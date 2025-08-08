@@ -275,7 +275,7 @@ public class AdminArticleService {
             ArticlePageData convert = BeanUtil.convert(articleResponseEntryPageData, ArticlePageData.class);
             convert.setTypes(listCompletableFuture.join());
             convert.setKey(keywords);
-            convert.setArticle_thumbnail_status(Constants.zrLogConfig.getCacheService().getPublicWebSiteInfo().getArticle_thumbnail_status());
+            convert.setArticle_thumbnail_status(AdminConstants.getPublicWebSiteInfo().getArticle_thumbnail_status());
             convert.setDefaultPageSize(pageRequest.getSize());
             return convert;
         } finally {

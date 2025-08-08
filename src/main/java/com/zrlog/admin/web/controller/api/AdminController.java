@@ -57,7 +57,7 @@ public class AdminController extends BaseController {
                 return new HashMap<>();
             }
             Map map = new Gson().fromJson(IOUtil.getStringInputStream(inputStream), Map.class);
-            PublicWebSiteInfo publicWebSiteInfo = Constants.zrLogConfig.getCacheService().getPublicWebSiteInfo();
+            PublicWebSiteInfo publicWebSiteInfo = AdminConstants.getPublicWebSiteInfo();
             if (StringUtils.isNotEmpty(publicWebSiteInfo.getTitle())) {
                 map.put("short_name", publicWebSiteInfo.getTitle());
             }

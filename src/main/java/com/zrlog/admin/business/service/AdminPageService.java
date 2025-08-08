@@ -13,7 +13,6 @@ import com.zrlog.admin.business.rest.response.UserBasicInfoResponse;
 import com.zrlog.admin.util.AdminWebTools;
 import com.zrlog.admin.web.token.AdminTokenThreadLocal;
 import com.zrlog.blog.web.util.WebTools;
-import com.zrlog.common.Constants;
 import com.zrlog.common.TokenService;
 import com.zrlog.common.rest.response.StandardResponse;
 import com.zrlog.common.vo.PublicWebSiteInfo;
@@ -38,7 +37,7 @@ public class AdminPageService {
         document.body().removeClass("dark");
         document.body().removeClass("light");
         Objects.requireNonNull(document.selectFirst("base")).attr("href", "/");
-        PublicWebSiteInfo publicWebSiteInfo = Constants.zrLogConfig.getCacheService().getPublicWebSiteInfo();
+        PublicWebSiteInfo publicWebSiteInfo = AdminConstants.getPublicWebSiteInfo();
         document.body().addClass(Objects.equals(publicWebSiteInfo.getAdmin_darkMode(), true) ? "dark" : "light");
         Element htmlElement = document.selectFirst("html");
         if (Objects.nonNull(htmlElement)) {
@@ -62,6 +61,17 @@ public class AdminPageService {
                     manifest.remove();
                 } else {
                     fillToRealLink(request, adminStaticResourceHostByWebSite, manifestElement);
+                }
+            }
+        }
+
+        Elements linkManifest = document.head().select("link[rel=stylesheet]");
+        if (!manifest.isEmpty()) {
+            for (Element link : linkManifest) {
+                if (StringUtils.isNotEmpty(adminStaticResourceHostByWebSite) && !BaseStaticSitePlugin.isStaticPluginRequest(request)) {
+                    link.attr("href", link.attr("href").replaceFirst("/", adminStaticResourceHostByWebSite + "/"));
+                } else {
+                    link.attr("href", link.attr("href").replaceFirst("/", WebTools.getHomeUrl(request)));
                 }
             }
         }

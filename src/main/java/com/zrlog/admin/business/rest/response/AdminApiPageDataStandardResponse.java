@@ -40,7 +40,7 @@ public class AdminApiPageDataStandardResponse<T> extends StandardResponse {
         } else {
             this.pageBuildId = "";
         }
-        PublicWebSiteInfo publicWebSiteInfo = Constants.zrLogConfig.getCacheService().getPublicWebSiteInfo();
+        PublicWebSiteInfo publicWebSiteInfo = AdminConstants.getPublicWebSiteInfo();
         if (StringUtils.isNotEmpty(requestUri)) {
             this.documentTitle = AdminConstants.getAdminDocumentTitleByUri(requestUri, publicWebSiteInfo);
         }

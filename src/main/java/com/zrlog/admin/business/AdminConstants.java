@@ -2,8 +2,10 @@ package com.zrlog.admin.business;
 
 import com.hibegin.common.util.StringUtils;
 import com.zrlog.admin.business.service.AdminResource;
+import com.zrlog.common.CacheService;
 import com.zrlog.common.Constants;
 import com.zrlog.common.vo.PublicWebSiteInfo;
+import com.zrlog.data.util.WebSiteUtils;
 import com.zrlog.util.I18nUtil;
 
 import java.util.*;
@@ -78,8 +80,19 @@ public class AdminConstants {
         return getAdminTitle(I18nUtil.getAdminStringFromRes(key), publicWebSiteInfo);
     }
 
+    public static PublicWebSiteInfo getPublicWebSiteInfo() {
+        CacheService cacheService = Constants.zrLogConfig.getCacheService();
+        PublicWebSiteInfo publicWebSiteInfo;
+        if (Objects.nonNull(cacheService)) {
+            publicWebSiteInfo = cacheService.getPublicWebSiteInfo();
+        } else {
+            publicWebSiteInfo = WebSiteUtils.fillDefaultInfo(new PublicWebSiteInfo());
+        }
+        return publicWebSiteInfo;
+    }
+
     public static String getAdminTitle(String startTitle) {
-        return getAdminTitle(startTitle, Constants.zrLogConfig.getCacheService().getPublicWebSiteInfo());
+        return getAdminTitle(startTitle, getPublicWebSiteInfo());
     }
 
     public static String getAdminTitle(String startTitle, PublicWebSiteInfo publicWebSiteInfo) {
@@ -96,6 +109,6 @@ public class AdminConstants {
     }
 
     public static long getAutoDigestLength() {
-        return Constants.zrLogConfig.getCacheService().getPublicWebSiteInfo().getArticle_auto_digest_length();
+        return getPublicWebSiteInfo().getArticle_auto_digest_length();
     }
 }

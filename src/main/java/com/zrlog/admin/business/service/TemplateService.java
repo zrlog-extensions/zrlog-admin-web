@@ -6,6 +6,7 @@ import com.hibegin.common.util.IOUtil;
 import com.hibegin.common.util.LoggerUtil;
 import com.hibegin.common.util.ZipUtil;
 import com.hibegin.http.server.util.PathUtil;
+import com.zrlog.admin.business.AdminConstants;
 import com.zrlog.admin.business.rest.response.UpdateRecordResponse;
 import com.zrlog.admin.business.rest.response.UploadTemplateResponse;
 import com.zrlog.admin.web.controller.api.TemplateController;
@@ -53,7 +54,7 @@ public class TemplateService {
     }
 
     public List<TemplateVO> getAllTemplates(String previewTemplate) throws IOException {
-        String currentTemplate = Constants.zrLogConfig.getCacheService().getPublicWebSiteInfo().getTemplate();
+        String currentTemplate = AdminConstants.getPublicWebSiteInfo().getTemplate();
         if (!Objects.equals(currentTemplate, Constants.DEFAULT_TEMPLATE_PATH)) {
             try {
                 TemplateDownloadUtils.installByTemplateName(currentTemplate, false);
