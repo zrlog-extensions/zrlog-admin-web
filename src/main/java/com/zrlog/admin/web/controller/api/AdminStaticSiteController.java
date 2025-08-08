@@ -1,5 +1,6 @@
 package com.zrlog.admin.web.controller.api;
 
+import com.hibegin.common.util.EnvKit;
 import com.hibegin.http.annotation.ResponseBody;
 import com.hibegin.http.server.execption.NotFindResourceException;
 import com.zrlog.admin.business.rest.response.AdminApiPageDataStandardResponse;
@@ -25,7 +26,12 @@ public class AdminStaticSiteController extends BaseController {
             throw new NotFindResourceException("plugin not found");
         }
         adminStaticResourcePlugin.start();
-        return new AdminApiPageDataStandardResponse<>(new AdminStaticSiteSyncResponse(adminStaticResourcePlugin.waitCacheSync(request)));
+        int timeout = 3600;
+        if (EnvKit.isLambda()) {
+            //建议配置 Lambda 为最大超时
+            timeout = 12 * 60;
+        }
+        return new AdminApiPageDataStandardResponse<>(new AdminStaticSiteSyncResponse(adminStaticResourcePlugin.waitCacheSync(request, timeout)));
     }
 
     @ResponseBody
