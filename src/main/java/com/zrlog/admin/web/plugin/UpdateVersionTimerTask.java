@@ -14,6 +14,7 @@ import com.zrlog.util.ZrLogUtil;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
+import java.net.URL;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -107,12 +108,15 @@ public class UpdateVersionTimerTask extends TimerTask {
 
     public static void main(String[] args) throws IOException, URISyntaxException, ParseException, InterruptedException {
         Version version = new UpdateVersionTimerTask(true, "zh_CN").getVersion(true);
+        String jsonStr = new Gson().toJson(version);
+        System.out.println("jsonStr = " + jsonStr);
     }
 
     private Version getVersion(boolean preview) throws IOException, URISyntaxException, InterruptedException, ParseException {
         String versionUrl = BlogBuildInfoUtil.getResourceDownloadUrl() + "/" + (preview ? "preview" : "release") + "/" + getJsonFilename() + "?_" + System.currentTimeMillis() + "&v=" + BlogBuildInfoUtil.getBuildId();
         String txtContent = HttpUtil.getInstance().getSuccessTextByUrl(versionUrl);
         if (StringUtils.isEmpty(txtContent)) {
+            LOGGER.warning("Fetch version [" + new URL(versionUrl).getPath() + "] info failed");
             Version errorVersion = new Version();
             errorVersion.setBuildDate(new Date(0));
             errorVersion.setBuildId("000000");
