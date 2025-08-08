@@ -74,7 +74,7 @@ public class UpdateVersionTimerTask extends TimerTask {
                 this.version = lastVersion;
             }
         } catch (Exception e) {
-            LOGGER.log(Level.SEVERE, "", e);
+            LOGGER.warning("fetchLastVersion error " + e.getMessage());
         }
     }
 
