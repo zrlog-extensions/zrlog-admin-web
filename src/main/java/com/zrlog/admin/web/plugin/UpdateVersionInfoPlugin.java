@@ -1,5 +1,6 @@
 package com.zrlog.admin.web.plugin;
 
+import com.hibegin.common.util.EnvKit;
 import com.hibegin.common.util.LoggerUtil;
 import com.hibegin.common.util.StringUtils;
 import com.hibegin.common.util.http.HttpUtil;
@@ -33,6 +34,11 @@ public class UpdateVersionInfoPlugin implements IPlugin {
     private ScheduledExecutorService scheduledExecutorService;
 
     private UpdateVersionTimerTask updateVersionTimerTask;
+
+    @Override
+    public boolean autoStart() {
+        return !EnvKit.isFaaSMode();
+    }
 
     public static String getCurrentChangeLog(Map<String, Object> res) {
         String version = BlogBuildInfoUtil.getVersion();

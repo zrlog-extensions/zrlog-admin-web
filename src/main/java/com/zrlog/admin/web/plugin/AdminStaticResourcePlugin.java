@@ -57,14 +57,7 @@ public class AdminStaticResourcePlugin extends BaseLockObject implements StaticS
 
     @Override
     public boolean autoStart() {
-        if (StaticSitePlugin.isDisabled()) {
-            return false;
-        }
-        if (EnvKit.isFaaSMode()) {
-            String adminResourceBuildId = new WebSite().getStringValueByName(ID_CACHE_KEY);
-            return !Objects.equals(adminResourceBuildId, adminResource.getStaticResourceBuildId());
-        }
-        return true;
+        return !StaticSitePlugin.isDisabled() && !EnvKit.isFaaSMode();
     }
 
     @Override
