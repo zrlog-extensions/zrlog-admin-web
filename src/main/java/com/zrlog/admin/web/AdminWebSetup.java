@@ -2,7 +2,6 @@ package com.zrlog.admin.web;
 
 import com.hibegin.common.util.EnvKit;
 import com.hibegin.http.server.api.Interceptor;
-import com.hibegin.http.server.util.NativeImageUtils;
 import com.zrlog.admin.business.AdminConstants;
 import com.zrlog.admin.business.rest.base.*;
 import com.zrlog.admin.business.rest.request.*;
@@ -10,7 +9,6 @@ import com.zrlog.admin.business.rest.response.*;
 import com.zrlog.admin.business.service.AdminResource;
 import com.zrlog.admin.util.AdminNativeImageUtils;
 import com.zrlog.admin.util.DevKit;
-import com.zrlog.admin.util.ServerInfo;
 import com.zrlog.admin.web.config.AdminRouters;
 import com.zrlog.admin.web.interceptor.*;
 import com.zrlog.admin.web.plugin.AdminStaticResourcePlugin;

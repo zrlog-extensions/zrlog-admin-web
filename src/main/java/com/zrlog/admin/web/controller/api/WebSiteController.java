@@ -4,6 +4,7 @@ import com.hibegin.common.util.BeanUtil;
 import com.hibegin.common.util.IOUtil;
 import com.hibegin.http.HttpMethod;
 import com.hibegin.http.annotation.ResponseBody;
+import com.zrlog.admin.business.AdminConstants;
 import com.zrlog.admin.business.rest.base.*;
 import com.zrlog.admin.business.rest.response.AdminApiPageDataStandardResponse;
 import com.zrlog.admin.business.rest.response.VersionResponse;
@@ -35,7 +36,7 @@ public class WebSiteController extends BaseController {
         versionResponse.setBuildId(BlogBuildInfoUtil.getBuildId());
         versionResponse.setVersion(BlogBuildInfoUtil.getVersion());
         versionResponse.setChangelog(UpdateVersionInfoPlugin.getCurrentChangeLog(I18nUtil.getAdminBackend()));
-        InputStream resourceAsStream = WebSiteController.class.getResourceAsStream("/build_system_info.md");
+        InputStream resourceAsStream = WebSiteController.class.getResourceAsStream(AdminConstants.BUILD_SYSTEM_INFO_MD);
         if (Objects.nonNull(resourceAsStream)) {
             versionResponse.setBuildSystemInfo(IOUtil.getStringInputStream(resourceAsStream));
         } else {

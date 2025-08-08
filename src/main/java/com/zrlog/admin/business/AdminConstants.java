@@ -29,6 +29,7 @@ public class AdminConstants {
     public static final String FAVICON_PNG_PWA_192_URI_PATH = ADMIN_URI_BASE_PATH + "/pwa/icon/favicon-192.png";
     public static final String FAVICON_PNG_PWA_512_URI_PATH = ADMIN_URI_BASE_PATH + "/pwa/icon/favicon-512.png";
     public static final String ATTACHED_FOLDER = "/attached/";
+    public static final String BUILD_SYSTEM_INFO_MD = "/build_system_info.md";
 
     public static final List<String> adminStaticResources = Arrays.asList(ADMIN_URI_BASE_PATH + "/static", ADMIN_URI_BASE_PATH + "/pwa");
 

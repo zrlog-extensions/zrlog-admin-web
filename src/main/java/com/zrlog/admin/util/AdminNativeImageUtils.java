@@ -63,6 +63,7 @@ public class AdminNativeImageUtils {
         resourceUris.add("/i18n/admin_zh_CN.properties");
         resourceUris.add("/i18n/admin_backend_zh_CN.properties");
         resourceUris.add("/i18n/admin_backend_zh_CN.properties");
+        resourceUris.add(AdminConstants.BUILD_SYSTEM_INFO_MD);
         return resourceUris;
     }
 
