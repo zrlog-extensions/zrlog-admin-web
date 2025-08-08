@@ -67,7 +67,14 @@ const UserInfo = ({ data, offline }: { data: BasicUserInfo; offline: boolean }) 
                     key: "99",
                     label: (
                         <Link to={getRealRouteUrl("/upgrade")} onClick={(e) => tryBlock(e, modal)}>
-                            <Badge dot={true}>
+                            <Badge
+                                dot={true}
+                                styles={{
+                                    root: {
+                                        whiteSpace: "nowrap",
+                                    },
+                                }}
+                            >
                                 <SoundOutlined />
                                 <Text style={{ paddingLeft: "6px" }}>
                                     {res["newVersion"]} - ({data.lastVersion.version.version}#
