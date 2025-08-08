@@ -6,6 +6,7 @@ import com.hibegin.http.server.api.HttpRequest;
 import com.hibegin.http.server.api.HttpResponse;
 import com.zrlog.admin.business.AdminConstants;
 import com.zrlog.admin.business.exception.AdminAuthException;
+import com.zrlog.business.exception.MissingInstallException;
 import com.zrlog.common.Constants;
 import com.zrlog.model.WebSite;
 import com.zrlog.plugin.BaseStaticSitePlugin;
@@ -19,6 +20,9 @@ public class AdminWebTools {
     public static void blockUnLoginRequestHandler(HttpRequest request, HttpResponse response) {
         String actionKey = request.getUri();
         if (actionKey.startsWith("/api")) {
+            if (!Constants.zrLogConfig.isInstalled()) {
+                throw new MissingInstallException();
+            }
             throw new AdminAuthException();
         } else {
             String url = AdminConstants.ADMIN_LOGIN_URI_PATH + "?redirectFrom="
