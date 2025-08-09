@@ -5,14 +5,16 @@ public class UserInfoResponse {
     private String userName;
     private String header;
     private String key;
+    private CheckVersionResponse lastVersion;
 
     public UserInfoResponse() {
     }
 
-    public UserInfoResponse(String userName, String header, String key) {
+    public UserInfoResponse(String userName, String header, String key,CheckVersionResponse lastVersion) {
         this.userName = userName;
         this.header = header;
         this.key = key;
+        this.lastVersion = lastVersion;
     }
 
     public String getUserName() {
@@ -37,5 +39,13 @@ public class UserInfoResponse {
 
     public void setKey(String key) {
         this.key = key;
+    }
+
+    public CheckVersionResponse getLastVersion() {
+        return lastVersion;
+    }
+
+    public void setLastVersion(CheckVersionResponse lastVersion) {
+        this.lastVersion = lastVersion;
     }
 }

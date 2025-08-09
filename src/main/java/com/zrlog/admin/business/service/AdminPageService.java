@@ -10,6 +10,7 @@ import com.zrlog.admin.business.AdminConstants;
 import com.zrlog.admin.business.rest.response.AdminApiPageDataStandardResponse;
 import com.zrlog.admin.business.rest.response.ServerSideDataResponse;
 import com.zrlog.admin.business.rest.response.UserBasicInfoResponse;
+import com.zrlog.admin.business.rest.response.UserInfoResponse;
 import com.zrlog.admin.util.AdminWebTools;
 import com.zrlog.admin.web.token.AdminTokenThreadLocal;
 import com.zrlog.blog.web.util.WebTools;
@@ -114,13 +115,13 @@ public class AdminPageService {
         if (Objects.isNull(AdminTokenThreadLocal.getUser())) {
             return new ServerSideDataResponse<>(null, resourceInfo, null, null, AdminConstants.getAdminDocumentTitleByUri(request.getUri()));
         }
-        UserBasicInfoResponse basicInfoResponse = new UserService().getBasicUserInfoWithCache(AdminTokenThreadLocal.getUserId(), AdminTokenThreadLocal.getUser().getSessionId());
+        UserInfoResponse userInfo = new UserService().getUserInfoWithCache(AdminTokenThreadLocal.getUserId(), AdminTokenThreadLocal.getUser().getSessionId());
         Method method = request.getRequestConfig().getRouter().getMethod("/api" + uri, request.getMethod());
         try {
             Controller controller = Controller.buildController(method, request, response);
             StandardResponse result = (StandardResponse) method.invoke(controller);
             if (Objects.isNull(result)) {
-                return new ServerSideDataResponse<>(basicInfoResponse, resourceInfo, new Object(), AdminTokenThreadLocal.getUser().getSessionId(), AdminConstants.getAdminDocumentTitleByUri(request.getUri()));
+                return new ServerSideDataResponse<>(userInfo, resourceInfo, new Object(), AdminTokenThreadLocal.getUser().getSessionId(), AdminConstants.getAdminDocumentTitleByUri(request.getUri()));
             }
             if (result instanceof AdminApiPageDataStandardResponse<?>) {
                 AdminApiPageDataStandardResponse<?> data = (AdminApiPageDataStandardResponse<?>) result;
@@ -130,12 +131,12 @@ public class AdminPageService {
                 } else {
                     documentTitle = AdminConstants.getAdminDocumentTitleByUri(request.getUri());
                 }
-                return new ServerSideDataResponse<>(basicInfoResponse, resourceInfo, data.getData(), AdminTokenThreadLocal.getUser().getSessionId(), documentTitle);
+                return new ServerSideDataResponse<>(userInfo, resourceInfo, data.getData(), AdminTokenThreadLocal.getUser().getSessionId(), documentTitle);
             }
         } catch (InvocationTargetException e) {
             throw e.getTargetException();
         }
-        return new ServerSideDataResponse<>(basicInfoResponse, resourceInfo, null, AdminTokenThreadLocal.getUser().getSessionId(), AdminConstants.getAdminDocumentTitleByUri(request.getUri()));
+        return new ServerSideDataResponse<>(userInfo, resourceInfo, null, AdminTokenThreadLocal.getUser().getSessionId(), AdminConstants.getAdminDocumentTitleByUri(request.getUri()));
     }
 
 }

@@ -42,10 +42,6 @@ public class AdminUserController extends BaseController {
         if (Objects.isNull(adminTokenVO)) {
             throw new AdminAuthException();
         }
-        boolean cacheAble = getRequest().getParaToBool("readCacheAble");
-        if (cacheAble) {
-            return new AdminApiPageDataStandardResponse<>(userService.getBasicUserInfoWithCache(adminTokenVO.getUserId(), adminTokenVO.getSessionId()), "", request.getUri());
-        }
         return new AdminApiPageDataStandardResponse<>(userService.getBasicUserInfo(adminTokenVO.getUserId(), adminTokenVO.getSessionId()), "", request.getUri());
     }
 

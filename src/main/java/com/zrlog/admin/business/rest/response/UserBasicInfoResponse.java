@@ -5,7 +5,6 @@ import java.util.Set;
 public class UserBasicInfoResponse extends UserInfoResponse {
 
     private String email;
-    private CheckVersionResponse lastVersion;
     private Set<String> cacheableApiUris;
 
     public String getEmail() {
@@ -14,14 +13,6 @@ public class UserBasicInfoResponse extends UserInfoResponse {
 
     public void setEmail(String email) {
         this.email = email;
-    }
-
-    public CheckVersionResponse getLastVersion() {
-        return lastVersion;
-    }
-
-    public void setLastVersion(CheckVersionResponse lastVersion) {
-        this.lastVersion = lastVersion;
     }
 
     public Set<String> getCacheableApiUris() {

@@ -10,6 +10,7 @@ import com.zrlog.admin.business.exception.UserNameOrPasswordException;
 import com.zrlog.admin.business.rest.request.LoginRequest;
 import com.zrlog.admin.business.rest.request.UpdateAdminRequest;
 import com.zrlog.admin.business.rest.request.UpdatePasswordRequest;
+import com.zrlog.admin.business.rest.response.CheckVersionResponse;
 import com.zrlog.admin.business.rest.response.UpdateRecordResponse;
 import com.zrlog.admin.business.rest.response.UserBasicInfoResponse;
 import com.zrlog.admin.business.rest.response.UserInfoResponse;
@@ -65,16 +66,14 @@ public class UserService {
         return userInfoByUser;
     }
 
-    public UserBasicInfoResponse getBasicUserInfoWithCache(int userId, String sessionId) {
-        return getUserInfoByUser(cacheService.getUserInfoById((long) userId), sessionId);
-    }
-
     public UserInfoResponse getUserInfoWithCache(int userId, String sessionId) {
         UserBasicDTO userInfoById = cacheService.getUserInfoById((long) userId);
+        UpdateVersionInfoPlugin plugin = Constants.zrLogConfig.getPlugin(UpdateVersionInfoPlugin.class);
+        CheckVersionResponse checkVersionResponse = AdminStaticService.getInstance().getUpgradeService().getCheckVersionResponse(false, plugin);
         if (StringUtils.isEmpty(userInfoById.getHeader())) {
-            new UserInfoResponse(userInfoById.getUserName(), getDefaultHeaderImage(), sessionId);
+            new UserInfoResponse(userInfoById.getUserName(), getDefaultHeaderImage(), sessionId, checkVersionResponse);
         }
-        return new UserInfoResponse(userInfoById.getUserName(), userInfoById.getHeader(), sessionId);
+        return new UserInfoResponse(userInfoById.getUserName(), userInfoById.getHeader(), sessionId, checkVersionResponse);
     }
 
     private String getDefaultHeaderImage() {
@@ -110,6 +109,7 @@ public class UserService {
             }
             UserBasicDTO basicDTO = BeanUtil.convert(user, UserBasicDTO.class);
             UserBasicInfoResponse userInfoByUser = getUserInfoByUser(basicDTO, UUID.randomUUID().toString());
+            userInfoByUser.setEmail(ObjectHelpers.requireNonNullElse((String) user.get("email"), ""));
             UserLoginDTO userLoginDTO = new UserLoginDTO();
             userLoginDTO.setSecretKey((String) user.get("secretKey"));
             userLoginDTO.setUserBasicInfoResponse(userInfoByUser);
