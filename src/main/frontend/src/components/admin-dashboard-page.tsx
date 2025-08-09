@@ -2,7 +2,6 @@ import { FunctionComponent, lazy, useEffect, useState } from "react";
 import { jumpToLoginPage, useAxiosBaseInstance } from "../base/AppBase";
 import { BasicUserInfo } from "../type";
 import { Spin } from "antd";
-import { addToCache } from "../utils/cache";
 import { getCsrData } from "../api";
 import { useNavigate } from "react-router-dom";
 import { getSsDate } from "../base/SsData";
@@ -24,7 +23,7 @@ const AdminDashboardPage: FunctionComponent<AdminDashBroadPageProps> = ({ offlin
         if (offline) {
             return;
         }
-        getCsrData(`/user?_t=${new Date().getTime()}`, axiosBaseInstance)
+        getCsrData(`/user?_t=${new Date().getTime()}&readCacheAble=true`, axiosBaseInstance)
             .then((data) => {
                 if (data && data.error === 0) {
                     if (data.key) {
@@ -33,7 +32,6 @@ const AdminDashboardPage: FunctionComponent<AdminDashBroadPageProps> = ({ offlin
                     const userData = data.data;
                     getSsDate().user = userData;
                     setUserInfo(userData);
-                    addToCache("/user", userData);
                 } else {
                     jumpToLoginPage(navigate);
                 }
