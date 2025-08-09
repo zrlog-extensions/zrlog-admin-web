@@ -69,12 +69,12 @@ public class UserService {
         return getUserInfoByUser(cacheService.getUserInfoById((long) userId), sessionId);
     }
 
-    public UserInfoResponse getUserInfoWithCache(int userId) {
+    public UserInfoResponse getUserInfoWithCache(int userId, String sessionId) {
         UserBasicDTO userInfoById = cacheService.getUserInfoById((long) userId);
         if (StringUtils.isEmpty(userInfoById.getHeader())) {
-            new UserInfoResponse(userInfoById.getUserName(), getDefaultHeaderImage());
+            new UserInfoResponse(userInfoById.getUserName(), getDefaultHeaderImage(), sessionId);
         }
-        return new UserInfoResponse(userInfoById.getUserName(), userInfoById.getHeader());
+        return new UserInfoResponse(userInfoById.getUserName(), userInfoById.getHeader(), sessionId);
     }
 
     private String getDefaultHeaderImage() {

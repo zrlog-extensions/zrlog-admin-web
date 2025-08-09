@@ -4,13 +4,15 @@ public class UserInfoResponse {
 
     private String userName;
     private String header;
+    private String key;
 
     public UserInfoResponse() {
     }
 
-    public UserInfoResponse(String userName, String header) {
+    public UserInfoResponse(String userName, String header, String key) {
         this.userName = userName;
         this.header = header;
+        this.key = key;
     }
 
     public String getUserName() {
@@ -27,5 +29,13 @@ public class UserInfoResponse {
 
     public void setHeader(String header) {
         this.header = header;
+    }
+
+    public String getKey() {
+        return key;
+    }
+
+    public void setKey(String key) {
+        this.key = key;
     }
 }
