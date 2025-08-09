@@ -71,7 +71,7 @@ public class UserService {
         UpdateVersionInfoPlugin plugin = Constants.zrLogConfig.getPlugin(UpdateVersionInfoPlugin.class);
         CheckVersionResponse checkVersionResponse = AdminStaticService.getInstance().getUpgradeService().getCheckVersionResponse(false, plugin);
         if (StringUtils.isEmpty(userInfoById.getHeader())) {
-            new UserInfoResponse(userInfoById.getUserName(), getDefaultHeaderImage(), sessionId, checkVersionResponse);
+            return new UserInfoResponse(userInfoById.getUserName(), getDefaultHeaderImage(), sessionId, checkVersionResponse);
         }
         return new UserInfoResponse(userInfoById.getUserName(), userInfoById.getHeader(), sessionId, checkVersionResponse);
     }
