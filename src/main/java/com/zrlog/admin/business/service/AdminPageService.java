@@ -114,7 +114,7 @@ public class AdminPageService {
         if (Objects.isNull(AdminTokenThreadLocal.getUser())) {
             return new ServerSideDataResponse<>(null, resourceInfo, null, null, AdminConstants.getAdminDocumentTitleByUri(request.getUri()));
         }
-        UserBasicInfoResponse basicInfoResponse = new UserService().getUserInfoWithCache(AdminTokenThreadLocal.getUserId(), AdminTokenThreadLocal.getUser().getSessionId());
+        UserBasicInfoResponse basicInfoResponse = new UserService().getBasicUserInfoWithCache(AdminTokenThreadLocal.getUserId(), AdminTokenThreadLocal.getUser().getSessionId());
         Method method = request.getRequestConfig().getRouter().getMethod("/api" + uri, request.getMethod());
         try {
             Controller controller = Controller.buildController(method, request, response);

@@ -12,6 +12,7 @@ import com.zrlog.admin.business.rest.request.UpdateAdminRequest;
 import com.zrlog.admin.business.rest.request.UpdatePasswordRequest;
 import com.zrlog.admin.business.rest.response.UpdateRecordResponse;
 import com.zrlog.admin.business.rest.response.UserBasicInfoResponse;
+import com.zrlog.admin.business.rest.response.UserInfoResponse;
 import com.zrlog.admin.web.plugin.UpdateVersionInfoPlugin;
 import com.zrlog.common.CacheService;
 import com.zrlog.common.Constants;
@@ -57,22 +58,34 @@ public class UserService {
         }
     }
 
-    public UserBasicInfoResponse getUserInfo(int userId, String sessionId) throws SQLException {
+    public UserBasicInfoResponse getBasicUserInfo(int userId, String sessionId) throws SQLException {
         Map<String, Object> byId = new User().loadById(userId);
         UserBasicInfoResponse userInfoByUser = getUserInfoByUser(BeanUtil.convert(byId, UserBasicDTO.class), sessionId);
         userInfoByUser.setEmail(ObjectHelpers.requireNonNullElse((String) byId.get("email"), ""));
         return userInfoByUser;
     }
 
-    public UserBasicInfoResponse getUserInfoWithCache(int userId, String sessionId) {
+    public UserBasicInfoResponse getBasicUserInfoWithCache(int userId, String sessionId) {
         return getUserInfoByUser(cacheService.getUserInfoById((long) userId), sessionId);
+    }
+
+    public UserInfoResponse getUserInfoWithCache(int userId) {
+        UserBasicDTO userInfoById = cacheService.getUserInfoById((long) userId);
+        if (StringUtils.isEmpty(userInfoById.getHeader())) {
+            new UserInfoResponse(userInfoById.getUserName(), getDefaultHeaderImage());
+        }
+        return new UserInfoResponse(userInfoById.getUserName(), userInfoById.getHeader());
+    }
+
+    private String getDefaultHeaderImage() {
+        byte[] byteByInputStream = IOUtil.getByteByInputStream(UserService.class.getResourceAsStream("/assets/admin/images/default-portrait.gif"));
+        return "data:image/gif;base64," + Base64.getEncoder().encodeToString(byteByInputStream);
     }
 
     private UserBasicInfoResponse getUserInfoByUser(UserBasicDTO userBasicDTO, String sessionId) {
         UserBasicInfoResponse basicInfoResponse = ObjectUtil.requireNonNullElse(BeanUtil.convert(userBasicDTO, UserBasicInfoResponse.class), new UserBasicInfoResponse());
         if (StringUtils.isEmpty(basicInfoResponse.getHeader())) {
-            byte[] byteByInputStream = IOUtil.getByteByInputStream(UserService.class.getResourceAsStream("/assets/admin/images/default-portrait.gif"));
-            basicInfoResponse.setHeader("data:image/gif;base64," + Base64.getEncoder().encodeToString(byteByInputStream));
+            basicInfoResponse.setHeader(getDefaultHeaderImage());
         }
         UpdateVersionInfoPlugin plugin = Constants.zrLogConfig.getPlugin(UpdateVersionInfoPlugin.class);
         basicInfoResponse.setLastVersion(AdminStaticService.getInstance().getUpgradeService().getCheckVersionResponse(false, plugin));

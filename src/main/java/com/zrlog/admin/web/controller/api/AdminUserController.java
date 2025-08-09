@@ -12,6 +12,7 @@ import com.zrlog.admin.business.rest.request.UpdatePasswordRequest;
 import com.zrlog.admin.business.rest.response.AdminApiPageDataStandardResponse;
 import com.zrlog.admin.business.rest.response.UpdateRecordResponse;
 import com.zrlog.admin.business.rest.response.UserBasicInfoResponse;
+import com.zrlog.admin.business.rest.response.UserInfoResponse;
 import com.zrlog.admin.business.service.UserService;
 import com.zrlog.admin.web.annotation.RefreshCache;
 import com.zrlog.admin.web.token.AdminTokenThreadLocal;
@@ -43,9 +44,23 @@ public class AdminUserController extends BaseController {
         }
         boolean cacheAble = getRequest().getParaToBool("readCacheAble");
         if (cacheAble) {
-            return new AdminApiPageDataStandardResponse<>(userService.getUserInfoWithCache(adminTokenVO.getUserId(), adminTokenVO.getSessionId()), "", request.getUri());
+            return new AdminApiPageDataStandardResponse<>(userService.getBasicUserInfoWithCache(adminTokenVO.getUserId(), adminTokenVO.getSessionId()), "", request.getUri());
         }
-        return new AdminApiPageDataStandardResponse<>(userService.getUserInfo(adminTokenVO.getUserId(), adminTokenVO.getSessionId()), "", request.getUri());
+        return new AdminApiPageDataStandardResponse<>(userService.getBasicUserInfo(adminTokenVO.getUserId(), adminTokenVO.getSessionId()), "", request.getUri());
+    }
+
+    /**
+     * 校验是否处于登录状态，不需要返回过多的用户信息，可以返回一些全局需要使用到的与用户相关的信息，比如 头像/昵称
+     *
+     * @return 基础的用户信息
+     */
+    @ResponseBody
+    public AdminApiPageDataStandardResponse<UserInfoResponse> info() {
+        AdminTokenVO adminTokenVO = AdminTokenThreadLocal.getUser();
+        if (Objects.isNull(adminTokenVO)) {
+            throw new AdminAuthException();
+        }
+        return new AdminApiPageDataStandardResponse<>(userService.getUserInfoWithCache(adminTokenVO.getUserId()), "", request.getUri());
     }
 
     @RefreshCache
