@@ -1,6 +1,5 @@
 package com.zrlog.admin.web.controller.api;
 
-import com.hibegin.common.util.StringUtils;
 import com.hibegin.http.HttpMethod;
 import com.hibegin.http.annotation.RequestMethod;
 import com.hibegin.http.annotation.ResponseBody;
@@ -64,13 +63,9 @@ public class AdminUserController extends BaseController {
     @RequestMethod(method = HttpMethod.POST)
     public UpdateRecordResponse update() throws SQLException {
         UpdateAdminRequest updateAdminRequest = getRequestBodyWithNullCheck(UpdateAdminRequest.class);
-        UpdateRecordResponse updateRecordResponse = new UpdateRecordResponse();
-        if (StringUtils.isEmpty(updateAdminRequest.getUserName())) {
-            updateRecordResponse.setError(1);
-        } else {
-            userService.update(AdminTokenThreadLocal.getUserId(), updateAdminRequest);
-            updateRecordResponse.setMessage(I18nUtil.getAdminBackendStringFromRes("updatePersonInfoSuccess"));
-        }
+        userService.update(AdminTokenThreadLocal.getUserId(), updateAdminRequest);
+        UpdateRecordResponse updateRecordResponse = new UpdateRecordResponse(true);
+        updateRecordResponse.setMessage(I18nUtil.getAdminBackendStringFromRes("updatePersonInfoSuccess"));
         return updateRecordResponse;
     }
 
