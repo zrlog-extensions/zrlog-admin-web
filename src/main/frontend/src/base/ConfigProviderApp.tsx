@@ -1,7 +1,7 @@
 import { App, ConfigProvider, theme } from "antd";
 import { useEffect, useState } from "react";
 import EnvUtils, { isOffline } from "../utils/env-utils";
-import { getColorPrimary, getRes } from "../utils/constants";
+import { getColorPrimary, isCompactMode } from "../utils/constants";
 import { getContextPath } from "../utils/helpers";
 import zh_CN from "antd/es/locale/zh_CN";
 import en_US from "antd/es/locale/en_US";
@@ -10,7 +10,7 @@ import { BrowserRouter, Route, Routes } from "react-router-dom";
 import AppInit from "./AppInit";
 import { AppState } from "../type";
 
-const { darkAlgorithm, defaultAlgorithm } = theme;
+const { darkAlgorithm, defaultAlgorithm, compactAlgorithm } = theme;
 
 const ConfigProviderApp = () => {
     const [appState, setState] = useState<AppState>({
@@ -45,17 +45,30 @@ const ConfigProviderApp = () => {
         window.document.body.setAttribute("class", appState.dark ? "dark" : "light");
     }, [appState.dark]);
 
+    const themeAlgorithms = [];
+
+    if (appState.dark) {
+        themeAlgorithms.push(darkAlgorithm);
+    } else {
+        themeAlgorithms.push(defaultAlgorithm);
+    }
+
+    const compact = isCompactMode();
+    if (compact) {
+        themeAlgorithms.push(compactAlgorithm);
+    }
+
     return (
         <ConfigProvider
             key={appState.lang + "_" + appState.dark + "_" + appState.colorPrimary}
             locale={appState.lang.startsWith("zh") ? zh_CN : en_US}
             theme={{
-                algorithm: [appState.dark ? darkAlgorithm : defaultAlgorithm],
+                algorithm: themeAlgorithms,
                 token: {
                     colorPrimary: appState.colorPrimary,
                 },
             }}
-            componentSize={getRes()["admin_compactMode"] ? "small" : undefined}
+            componentSize={compact ? "small" : undefined}
             table={{
                 style: {
                     whiteSpace: "nowrap",
@@ -71,7 +84,7 @@ const ConfigProviderApp = () => {
                     header: {
                         padding: "0 8px",
                         lineHeight: "24px",
-                        minHeight: "42px",
+                        minHeight: compact ? 36 : 42,
                     },
                     body: {
                         padding: 8,
