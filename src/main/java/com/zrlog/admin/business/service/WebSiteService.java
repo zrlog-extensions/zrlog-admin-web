@@ -5,8 +5,6 @@ import com.hibegin.common.util.StringUtils;
 import com.zrlog.admin.business.AdminConstants;
 import com.zrlog.admin.business.rest.base.*;
 import com.zrlog.admin.web.type.AutoUpgradeVersionType;
-import com.zrlog.common.Constants;
-import com.zrlog.common.TokenService;
 import com.zrlog.data.util.WebSiteUtils;
 import com.zrlog.model.WebSite;
 
@@ -41,7 +39,7 @@ public class WebSiteService {
     }
 
     public AdminWebSiteInfo adminWebSiteInfo() {
-        AdminWebSiteInfo admin = queryToMap(Arrays.asList(WebSite.admin_darkMode, WebSite.language,
+        AdminWebSiteInfo admin = queryToMap(Arrays.asList(WebSite.admin_darkMode, WebSite.admin_compactMode, WebSite.language,
                 WebSite.admin_color_primary, WebSite.session_timeout, WebSite.article_auto_digest_length,
                 "favicon_png_pwa_512_base64", "favicon_png_pwa_192_base64",
                 "admin_article_page_size", "admin_static_resource_base_url"), AdminWebSiteInfo.class);

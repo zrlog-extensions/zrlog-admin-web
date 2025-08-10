@@ -77,6 +77,9 @@ const BlogForm = ({
             <Form.Item valuePropName="checked" name="admin_darkMode" label={getRes()["admin.dark.mode"]}>
                 <Switch size={"small"} />
             </Form.Item>
+            <Form.Item valuePropName="checked" name="admin_compactMode" label={getRes()["admin.compact.mode"]}>
+                <Switch size={"small"} />
+            </Form.Item>
             <Form.Item name="admin_article_page_size" label={getRes()["admin_article_page_size"]}>
                 <Select
                     style={{ maxWidth: "120px" }}

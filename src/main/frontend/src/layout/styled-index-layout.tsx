@@ -7,13 +7,11 @@ const StyledIndexLayout = styled("div")`
         width: 100%;
     }
 
-    #logo {
-        height: 64px;
-        padding-left: 23px;
-        padding-right: 23px;
+    .logo {
         overflow: hidden;
         font-size: 25px;
         display: inline-flex;
+        justify-content: center;
         color: #ffffff;
     }
 

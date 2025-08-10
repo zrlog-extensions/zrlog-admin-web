@@ -135,6 +135,7 @@ export function AdminPage(props: AdminPageProps<any>): ReactElement<AdminPagePro
 
     return (
         <AdminManageLayout
+            compact={getRes()["admin_compactMode"]}
             basicUserInfo={props.props.userInfo}
             offline={props.props.offline}
             systemNotification={props.props.systemNotification}

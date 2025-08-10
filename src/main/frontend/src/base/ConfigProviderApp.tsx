@@ -50,7 +50,7 @@ const ConfigProviderApp = () => {
             key={appState.lang + "_" + appState.dark + "_" + appState.colorPrimary}
             locale={appState.lang.startsWith("zh") ? zh_CN : en_US}
             theme={{
-                algorithm: appState.dark ? darkAlgorithm : defaultAlgorithm,
+                algorithm: [appState.dark ? darkAlgorithm : defaultAlgorithm],
                 token: {
                     colorPrimary: appState.colorPrimary,
                 },
