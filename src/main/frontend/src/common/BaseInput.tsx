@@ -1,5 +1,5 @@
 import { Input, InputRef } from "antd";
-import React, { forwardRef, ReactElement, RefObject, useState } from "react";
+import React, { forwardRef, ReactElement, ReactNode, RefObject, useState } from "react";
 import { InputStatus } from "antd/es/_util/statusUtils";
 import { Variant } from "antd/es/config-provider/context";
 import { SizeType } from "antd/es/config-provider/SizeContext";
@@ -18,9 +18,27 @@ type BaseInputProps = {
     size?: SizeType;
     ref?: RefObject<InputRef>;
     style?: React.CSSProperties;
+    prefix?: ReactNode;
+    suffix?: ReactNode;
 };
 const BaseInput = forwardRef<InputRef, BaseInputProps>(
-    ({ hidden, onChange, addonBefore, status, defaultValue, placeholder, style, variant, size, maxLength }, ref) => {
+    (
+        {
+            hidden,
+            onChange,
+            addonBefore,
+            status,
+            defaultValue,
+            placeholder,
+            style,
+            variant,
+            size,
+            maxLength,
+            prefix,
+            suffix,
+        },
+        ref
+    ) => {
         const [inputValue, setInputValue] = useState<string>(defaultValue || "");
         const [isComposing, setIsComposing] = useState<boolean>(false);
 
@@ -37,6 +55,8 @@ const BaseInput = forwardRef<InputRef, BaseInputProps>(
                     ...style,
                     display: hidden ? "none" : "flex",
                 }}
+                prefix={prefix}
+                suffix={suffix}
                 defaultValue={defaultValue}
                 ref={ref}
                 variant={variant}

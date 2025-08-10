@@ -47,9 +47,9 @@ const Index = ({ data, offline }: { data: ArticlePageDataSource; offline: boolea
     const wrapperArticleStateInfo = (record: any, children: ReactElement) => {
         return (
             <span style={{ display: "flex", gap: 4, whiteSpace: "normal" }}>
-                {record.privacy && <LockOutlined style={{ color: getColorPrimary() }} />}
-                {record.rubbish && <span>[{getRes()["rubbish"]}]</span>}
                 {children}
+                {record.rubbish && <span style={{ color: "rgb(119, 119, 119)" }}>{getRes()["draft"]}</span>}
+                {record.privacy && <LockOutlined style={{ color: "rgb(119, 119, 119)" }} />}
             </span>
         );
     };
