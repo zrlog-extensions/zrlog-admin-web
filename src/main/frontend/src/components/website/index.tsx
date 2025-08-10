@@ -96,24 +96,22 @@ const WebSite: FunctionComponent<WebSiteProps> = ({ data, offline, offlineData, 
         window.location.reload();
     };
 
-    const onSubmit = async (form: WebSiteEntry) => {
+    const onSubmit = async (form: WebSiteEntry): Promise<boolean> => {
         try {
             setLoading(true);
             const { data } = await axiosInstance.post("/api/admin/website/" + activeKey, { ...form });
             setLoading(false);
             if (data.error) {
                 await messageApi.error(data.message);
-                return;
+                return false;
             }
-            if (data.error === 0) {
-                await messageApi.success(data.message);
-                onChanged(data.data);
-            } else {
-                await messageApi.error(data.message);
-            }
+            await messageApi.success(data.message);
+            onChanged(data.data);
+            return true;
         } catch (e) {
             setLoading(false);
             await messageApi.error((e as Error).message);
+            return false;
         } finally {
             setLoading(false);
         }
@@ -128,8 +126,10 @@ const WebSite: FunctionComponent<WebSiteProps> = ({ data, offline, offlineData, 
                             loading={loading}
                             offlineData={offlineData}
                             onSubmit={(newData) => {
-                                onSubmit(newData).then(() => {
-                                    reloadPage();
+                                onSubmit(newData).then((ok) => {
+                                    if (ok) {
+                                        reloadPage();
+                                    }
                                 });
                             }}
                             offline={offline}
@@ -146,8 +146,10 @@ const WebSite: FunctionComponent<WebSiteProps> = ({ data, offline, offlineData, 
                             loading={loading}
                             offlineData={offlineData}
                             onSubmit={(newData) => {
-                                onSubmit(newData).then(() => {
-                                    reloadPage();
+                                onSubmit(newData).then((ok) => {
+                                    if (ok) {
+                                        reloadPage();
+                                    }
                                 });
                             }}
                             offline={offline}
@@ -164,8 +166,10 @@ const WebSite: FunctionComponent<WebSiteProps> = ({ data, offline, offlineData, 
                             loading={loading}
                             offlineData={offlineData}
                             onSubmit={(newData) => {
-                                onSubmit(newData).then(() => {
-                                    reloadPage();
+                                onSubmit(newData).then((ok) => {
+                                    if (ok) {
+                                        reloadPage();
+                                    }
                                 });
                             }}
                             offline={offline}
@@ -183,8 +187,10 @@ const WebSite: FunctionComponent<WebSiteProps> = ({ data, offline, offlineData, 
                         <OtherForm
                             loading={loading}
                             onSubmit={(newData) => {
-                                onSubmit(newData).then(() => {
-                                    reloadPage();
+                                onSubmit(newData).then((ok) => {
+                                    if (ok) {
+                                        reloadPage();
+                                    }
                                 });
                             }}
                             offlineData={offlineData}

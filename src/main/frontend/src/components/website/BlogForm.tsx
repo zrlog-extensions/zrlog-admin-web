@@ -50,13 +50,13 @@ const BlogForm = ({
                 <Input style={{ maxWidth: "300px" }} placeholder="留空，程序将读取接收到的 Host 字段" />
             </Form.Item>
             <Form.Item valuePropName="checked" name="generator_html_status" label="静态化文章页">
-                <Switch size={"small"} />
+                <Switch />
             </Form.Item>
             <Form.Item valuePropName="checked" name="disable_comment_status" label="关闭评论">
-                <Switch size={"small"} />
+                <Switch />
             </Form.Item>
             <Form.Item valuePropName="checked" name="article_thumbnail_status" label={getRes()["articleCover"]}>
-                <Switch size={"small"} />
+                <Switch />
             </Form.Item>
             <Form.Item name="system_notification" label={"系统通知"}>
                 <TextArea />

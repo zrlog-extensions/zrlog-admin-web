@@ -118,7 +118,7 @@ const UpgradeSettingForm = ({
                 </Select>
             </Form.Item>
             <Form.Item valuePropName="checked" name="upgradePreview" label={getRes()["admin.upgrade.canPreview"]}>
-                <Switch size={"small"} />
+                <Switch />
             </Form.Item>
             <Divider />
             <Button

@@ -29,10 +29,10 @@ const Version: FunctionComponent<VersionProps> = ({ data }) => {
     return (
         <>
             <BaseTitle title={data.version} />
-            <Card title={""} size={"small"} style={{ padding: 8, maxWidth: 600 }}>
+            <Card title={""} style={{ padding: 8, maxWidth: 600 }}>
                 <HtmlPreviewPanel htmlContent={changeLogStr} />
             </Card>
-            <Card title={""} size={"small"} style={{ padding: 8, maxWidth: 600, marginTop: 12 }}>
+            <Card title={""} style={{ padding: 8, maxWidth: 600, marginTop: 12 }}>
                 <HtmlPreviewPanel htmlContent={buildStr} />
             </Card>
         </>

@@ -1,7 +1,7 @@
 import { App, ConfigProvider, theme } from "antd";
 import { useEffect, useState } from "react";
 import EnvUtils, { isOffline } from "../utils/env-utils";
-import { getColorPrimary } from "../utils/constants";
+import { getColorPrimary, getRes } from "../utils/constants";
 import { getContextPath } from "../utils/helpers";
 import zh_CN from "antd/es/locale/zh_CN";
 import en_US from "antd/es/locale/en_US";
@@ -55,6 +55,7 @@ const ConfigProviderApp = () => {
                     colorPrimary: appState.colorPrimary,
                 },
             }}
+            componentSize={getRes()["admin_compactMode"] ? "small" : undefined}
             table={{
                 style: {
                     whiteSpace: "nowrap",
@@ -67,6 +68,11 @@ const ConfigProviderApp = () => {
             }}
             card={{
                 styles: {
+                    header: {
+                        padding: "0 8px",
+                        lineHeight: "24px",
+                        minHeight: "42px",
+                    },
                     body: {
                         padding: 8,
                     },

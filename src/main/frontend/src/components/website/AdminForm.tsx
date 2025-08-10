@@ -75,10 +75,10 @@ const BlogForm = ({
                 </Select>
             </Form.Item>
             <Form.Item valuePropName="checked" name="admin_darkMode" label={getRes()["admin.dark.mode"]}>
-                <Switch size={"small"} />
+                <Switch />
             </Form.Item>
             <Form.Item valuePropName="checked" name="admin_compactMode" label={getRes()["admin.compact.mode"]}>
-                <Switch size={"small"} />
+                <Switch />
             </Form.Item>
             <Form.Item name="admin_article_page_size" label={getRes()["admin_article_page_size"]}>
                 <Select

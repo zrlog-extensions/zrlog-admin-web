@@ -116,7 +116,7 @@ const TemplateConfig = ({
                 </BaseDragger>
             );
         } else if (value.htmlElementType === "switch") {
-            return <Switch size={"small"} />;
+            return <Switch />;
         } else if (value.htmlElementType === "textarea" || value.htmlElementType === "large-textarea") {
             return (
                 <TextArea rows={value.htmlElementType === "large-textarea" ? 20 : 5} placeholder={value.placeholder} />
@@ -167,7 +167,6 @@ const TemplateConfig = ({
                         <Form.Item label={" "} colon={false} style={{ display: value.type === "hidden" ? "none" : "" }}>
                             <Card
                                 title={getRes()["preview"] + " (" + value.contentType + ")"}
-                                size={"small"}
                                 style={{ overflow: "hidden" }}
                             >
                                 <div

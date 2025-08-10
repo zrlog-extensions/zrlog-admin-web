@@ -8,7 +8,6 @@ const QuickAccessCard = () => {
     return (
         <Card
             title={"快捷操作"}
-            size={"small"}
             styles={{
                 body: {
                     overflow: "auto",
