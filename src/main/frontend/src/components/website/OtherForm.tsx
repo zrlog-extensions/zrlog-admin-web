@@ -5,10 +5,8 @@ import TextArea from "antd/es/input/TextArea";
 import Button from "antd/es/button";
 import { getRes } from "../../utils/constants";
 import { useEffect, useState } from "react";
-import { message } from "antd";
 
 import { Other } from "./index";
-import { useAxiosBaseInstance } from "../../base/AppBase";
 
 const layout = {
     labelCol: { span: 8 },
@@ -19,45 +17,17 @@ const OtherForm = ({
     data,
     offline,
     offlineData,
-    onSuccess,
+    onSubmit,
+    loading,
 }: {
     data: Other;
     offline: boolean;
     offlineData: boolean;
-    onSuccess: (data: Other) => void;
+    onSubmit: (data: Other) => void;
+    loading?: boolean;
 }) => {
     const [state, setState] = useState<Other>(data);
     const [form] = Form.useForm();
-    const [messageApi, contextHolder] = message.useMessage({ maxCount: 3 });
-    const [loading, setLoading] = useState<boolean>(false);
-
-    const axiosInstance = useAxiosBaseInstance();
-    const websiteFormFinish = async (changedValues: Other) => {
-        if (loading) {
-            return;
-        }
-        try {
-            setLoading(true);
-            const { data } = await axiosInstance.post("/api/admin/website/other", { ...state, ...changedValues });
-            setLoading(false);
-            if (data.error) {
-                await messageApi.error(data.message);
-                return;
-            }
-            if (data.error === 0) {
-                await messageApi.success(data.message);
-                onSuccess(data.data);
-                window.location.reload();
-            } else {
-                await messageApi.error(data.message);
-            }
-        } catch (e) {
-            setLoading(false);
-            await messageApi.error((e as Error).message);
-        } finally {
-            setLoading(false);
-        }
-    };
 
     useEffect(() => {
         setState(data);
@@ -65,33 +35,36 @@ const OtherForm = ({
     }, [data]);
 
     return (
-        <>
-            {contextHolder}
+        <Form
+            form={form}
+            {...layout}
+            disabled={offline || offlineData}
+            initialValues={data}
+            onValuesChange={(_k, v) => setState({ ...state, ...v })}
+            onFinish={(nv) => onSubmit({ ...state, ...nv })}
+        >
             <Title level={4}>{getRes()["admin.other.manage"]}</Title>
             <Divider />
-            <Form
-                form={form}
-                {...layout}
+            <Form.Item name="icp" label="ICP备案信息">
+                <TextArea />
+            </Form.Item>
+            <Form.Item name="webCm" label="网站统计">
+                <TextArea rows={7} />
+            </Form.Item>
+            <Form.Item name="robotRuleContent" label="robots.txt">
+                <TextArea rows={7} placeholder={"User-agent: *\n" + "Disallow: /admin/"} />
+            </Form.Item>
+            <Divider />
+            <Button
+                enterKeyHint={"enter"}
                 disabled={offline || offlineData}
-                initialValues={data}
-                onValuesChange={(_k, v) => setState({ ...state, ...v })}
-                onFinish={(k) => websiteFormFinish(k)}
+                loading={loading}
+                type="primary"
+                htmlType="submit"
             >
-                <Form.Item name="icp" label="ICP备案信息">
-                    <TextArea />
-                </Form.Item>
-                <Form.Item name="webCm" label="网站统计">
-                    <TextArea rows={7} />
-                </Form.Item>
-                <Form.Item name="robotRuleContent" label="robots.txt">
-                    <TextArea rows={7} placeholder={"User-agent: *\n" + "Disallow: /admin/"} />
-                </Form.Item>
-                <Divider />
-                <Button disabled={offline || offlineData} loading={loading} type="primary" htmlType="submit">
-                    {getRes().submit}
-                </Button>
-            </Form>
-        </>
+                {getRes().submit}
+            </Button>
+        </Form>
     );
 };
 

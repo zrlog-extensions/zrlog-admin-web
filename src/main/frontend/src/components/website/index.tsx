@@ -1,4 +1,4 @@
-import { Tabs } from "antd";
+import { message, Tabs } from "antd";
 import Row from "antd/es/grid/row";
 import Col from "antd/es/grid/col";
 import Index, { TemplateEntry } from "../template";
@@ -9,10 +9,11 @@ import OtherForm from "./OtherForm";
 import UpgradeSettingForm from "./UpgradeSettingForm";
 import { Link, useLocation } from "react-router-dom";
 import AdminForm from "./AdminForm";
-import { FunctionComponent } from "react";
+import { FunctionComponent, useState } from "react";
 import { AdminCommonProps } from "../../type";
 import BaseTitle from "../../base/BaseTitle";
 import { getPageDataCacheKeyByPath } from "../../utils/cache";
+import { useAxiosBaseInstance } from "../../base/AppBase";
 
 export interface Basic {
     second_title: string;
@@ -77,11 +78,44 @@ const WebSite: FunctionComponent<WebSiteProps> = ({ data, offline, offlineData, 
         );
     };
 
+    const [loading, setLoading] = useState<boolean>(false);
+    const [messageApi, contextHolder] = message.useMessage({ maxCount: 3 });
+
+    const axiosInstance = useAxiosBaseInstance();
+
     const onChanged = (newData: WebSiteEntry) => {
         const url = new URL(window.location.href);
         const cacheKey = getPageDataCacheKeyByPath(location.pathname, "?" + url.searchParams.toString());
         if (updateCache) {
             updateCache(newData, cacheKey);
+        }
+    };
+
+    const reloadPage = () => {
+        window.location.search = getRealRouteUrl(location.pathname).split("?")[1];
+        window.location.reload();
+    };
+
+    const onSubmit = async (form: WebSiteEntry) => {
+        try {
+            setLoading(true);
+            const { data } = await axiosInstance.post("/api/admin/website/" + activeKey, { ...form });
+            setLoading(false);
+            if (data.error) {
+                await messageApi.error(data.message);
+                return;
+            }
+            if (data.error === 0) {
+                await messageApi.success(data.message);
+                onChanged(data.data);
+            } else {
+                await messageApi.error(data.message);
+            }
+        } catch (e) {
+            setLoading(false);
+            await messageApi.error((e as Error).message);
+        } finally {
+            setLoading(false);
         }
     };
 
@@ -91,9 +125,12 @@ const WebSite: FunctionComponent<WebSiteProps> = ({ data, offline, offlineData, 
                 <Row>
                     <Col xs={24} style={{ maxWidth: 600 }}>
                         <BasicForm
+                            loading={loading}
                             offlineData={offlineData}
-                            onSuccess={(newData) => {
-                                onChanged(newData);
+                            onSubmit={(newData) => {
+                                onSubmit(newData).then(() => {
+                                    reloadPage();
+                                });
                             }}
                             offline={offline}
                             data={data as Basic}
@@ -106,9 +143,12 @@ const WebSite: FunctionComponent<WebSiteProps> = ({ data, offline, offlineData, 
                 <Row>
                     <Col xs={24} style={{ maxWidth: 600 }}>
                         <BlogForm
+                            loading={loading}
                             offlineData={offlineData}
-                            onSuccess={(newData) => {
-                                onChanged(newData);
+                            onSubmit={(newData) => {
+                                onSubmit(newData).then(() => {
+                                    reloadPage();
+                                });
                             }}
                             offline={offline}
                             data={data as Blog}
@@ -121,9 +161,12 @@ const WebSite: FunctionComponent<WebSiteProps> = ({ data, offline, offlineData, 
                 <Row>
                     <Col xs={24} style={{ maxWidth: 600 }}>
                         <AdminForm
+                            loading={loading}
                             offlineData={offlineData}
-                            onSuccess={(newData) => {
-                                onChanged(newData);
+                            onSubmit={(newData) => {
+                                onSubmit(newData).then(() => {
+                                    reloadPage();
+                                });
                             }}
                             offline={offline}
                             data={data as Admin}
@@ -138,8 +181,11 @@ const WebSite: FunctionComponent<WebSiteProps> = ({ data, offline, offlineData, 
                 <Row>
                     <Col xs={24} style={{ maxWidth: 600 }}>
                         <OtherForm
-                            onSuccess={(newData) => {
-                                onChanged(newData);
+                            loading={loading}
+                            onSubmit={(newData) => {
+                                onSubmit(newData).then(() => {
+                                    reloadPage();
+                                });
                             }}
                             offlineData={offlineData}
                             offline={offline}
@@ -150,14 +196,21 @@ const WebSite: FunctionComponent<WebSiteProps> = ({ data, offline, offlineData, 
             );
         } else if (activeKey === "upgrade") {
             return (
-                <UpgradeSettingForm
-                    offlineData={offlineData}
-                    onSuccess={(newData) => {
-                        onChanged(newData);
-                    }}
-                    offline={offline}
-                    data={data as Upgrade}
-                />
+                <Row>
+                    <Col xs={24} style={{ maxWidth: 600 }}>
+                        <UpgradeSettingForm
+                            loading={loading}
+                            offlineData={offlineData}
+                            onSubmit={(newData) => {
+                                onSubmit(newData).then(() => {
+                                    //ignore
+                                });
+                            }}
+                            offline={offline}
+                            data={data as Upgrade}
+                        />
+                    </Col>
+                </Row>
             );
         }
         return <></>;
@@ -165,6 +218,7 @@ const WebSite: FunctionComponent<WebSiteProps> = ({ data, offline, offlineData, 
 
     return (
         <>
+            {contextHolder}
             <BaseTitle title={getRes()["admin.setting"]} />
             <Tabs
                 activeKey={activeKey}

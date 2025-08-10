@@ -24,12 +24,14 @@ const UpgradeSettingForm = ({
     data,
     offlineData,
     offline,
-    onSuccess,
+    onSubmit,
+    loading,
 }: {
     data: Upgrade;
     offlineData: boolean;
     offline: boolean;
-    onSuccess: (data: Upgrade) => void;
+    loading?: boolean;
+    onSubmit: (data: Upgrade) => void;
 }) => {
     const [checking, setChecking] = useState<boolean>(false);
     const { modal } = App.useApp();
@@ -37,37 +39,9 @@ const UpgradeSettingForm = ({
 
     const [state, setState] = useState<Upgrade>(data);
     const [form] = Form.useForm();
-    const [loading, setLoading] = useState<boolean>(false);
 
     const navigate = useNavigate();
-
     const axiosInstance = useAxiosBaseInstance();
-
-    const websiteFormFinish = async (changedValues: Upgrade) => {
-        if (loading) {
-            return;
-        }
-        try {
-            setLoading(true);
-            const { data } = await axiosInstance.post("/api/admin/website/upgrade", { ...form, ...changedValues });
-            setLoading(false);
-            if (data.error) {
-                await messageApi.error(data.message);
-                return;
-            }
-            if (data.error === 0) {
-                await messageApi.success(data.message);
-                onSuccess(data.data);
-            } else {
-                await messageApi.error(data.message);
-            }
-        } catch (e) {
-            setLoading(false);
-            await messageApi.error((e as Error).message);
-        } finally {
-            setLoading(false);
-        }
-    };
 
     const checkNewVersion = async () => {
         if (checking) {
@@ -105,7 +79,14 @@ const UpgradeSettingForm = ({
     }, [data]);
 
     return (
-        <div style={{ maxWidth: 600 }}>
+        <Form
+            form={form}
+            {...layout}
+            disabled={offline || offlineData}
+            initialValues={data}
+            onValuesChange={(_k, v) => setState({ ...state, ...v })}
+            onFinish={(nv) => onSubmit({ ...state, ...nv })}
+        >
             {contextHolder}
             <Row>
                 <Col xs={24}>
@@ -120,47 +101,36 @@ const UpgradeSettingForm = ({
                     </Button>
                 </Col>
             </Row>
-            <Row>
-                <Col xs={24}>
-                    <Form
-                        form={form}
-                        {...layout}
-                        disabled={offline || offlineData}
-                        initialValues={data}
-                        onValuesChange={(_k, v) => setState({ ...state, ...v })}
-                        onFinish={(k) => websiteFormFinish(k)}
-                    >
-                        <Form.Item name="autoUpgradeVersion" label={getRes()["admin.upgrade.autoCheckCycle"]}>
-                            <Select style={{ maxWidth: "120px" }}>
-                                <Select.Option key="86400" value={86400}>
-                                    {getRes()["admin.upgrade.cycle.oneDay"]}
-                                </Select.Option>
-                                <Select.Option key="604800" value={604800}>
-                                    {getRes()["admin.upgrade.cycle.oneWeek"]}
-                                </Select.Option>
-                                <Select.Option key="1296000" value={1296000}>
-                                    {getRes()["admin.upgrade.cycle.halfMonth"]}
-                                </Select.Option>
-                                <Select.Option key="-1" value={-1}>
-                                    {getRes()["admin.upgrade.cycle.never"]}
-                                </Select.Option>
-                            </Select>
-                        </Form.Item>
-                        <Form.Item
-                            valuePropName="checked"
-                            name="upgradePreview"
-                            label={getRes()["admin.upgrade.canPreview"]}
-                        >
-                            <Switch size={"small"} />
-                        </Form.Item>
-                        <Divider />
-                        <Button disabled={offline || offlineData} loading={loading} type="primary" htmlType="submit">
-                            {getRes().submit}
-                        </Button>
-                    </Form>
-                </Col>
-            </Row>
-        </div>
+            <Form.Item name="autoUpgradeVersion" label={getRes()["admin.upgrade.autoCheckCycle"]}>
+                <Select style={{ maxWidth: "120px" }}>
+                    <Select.Option key="86400" value={86400}>
+                        {getRes()["admin.upgrade.cycle.oneDay"]}
+                    </Select.Option>
+                    <Select.Option key="604800" value={604800}>
+                        {getRes()["admin.upgrade.cycle.oneWeek"]}
+                    </Select.Option>
+                    <Select.Option key="1296000" value={1296000}>
+                        {getRes()["admin.upgrade.cycle.halfMonth"]}
+                    </Select.Option>
+                    <Select.Option key="-1" value={-1}>
+                        {getRes()["admin.upgrade.cycle.never"]}
+                    </Select.Option>
+                </Select>
+            </Form.Item>
+            <Form.Item valuePropName="checked" name="upgradePreview" label={getRes()["admin.upgrade.canPreview"]}>
+                <Switch size={"small"} />
+            </Form.Item>
+            <Divider />
+            <Button
+                enterKeyHint={"enter"}
+                disabled={offline || offlineData}
+                loading={loading}
+                type="primary"
+                htmlType="submit"
+            >
+                {getRes().submit}
+            </Button>
+        </Form>
     );
 };
 
