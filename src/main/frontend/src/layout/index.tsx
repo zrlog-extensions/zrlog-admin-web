@@ -64,7 +64,7 @@ const AdminManageLayout: FunctionComponent<AdminManageLayoutProps> = ({
     }
 
     const getMainHeight = () => {
-        return `calc(100vh - ${getSiderWidth()}px)`;
+        return `calc(100vh - ${getHeaderHeight()}px)`;
     };
 
     const getHeaderHeight = () => {
