@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { getColorPrimary } from "../utils/constants";
+import { getColorPrimary, isCompactMode } from "../utils/constants";
 import { colorToRgba } from "./slider";
 
 const StyledIndexLayout = styled("div")`
@@ -7,13 +7,11 @@ const StyledIndexLayout = styled("div")`
         width: 100%;
     }
 
-    #logo {
-        height: 64px;
-        padding-left: 23px;
-        padding-right: 23px;
+    .logo {
         overflow: hidden;
         font-size: 25px;
         display: inline-flex;
+        justify-content: center;
         color: #ffffff;
     }
 
@@ -53,10 +51,21 @@ const StyledIndexLayout = styled("div")`
 
     .ant-menu-item .anticon,
     .ant-menu-submenu-title .anticon {
-        margin-top: 12px;
         display: block;
         font-size: 25px;
         margin-right: 0;
+    }
+
+    .ant-menu-title-content > a {
+        display: flex;
+        flex-flow: column;
+        justify-content: space-evenly;
+        align-items: center;
+        height: ${isCompactMode() ? 58 : 72}px;
+    }
+
+    .ant-menu-title-content > a > span {
+        line-height: 1;
     }
 
     .ant-menu-item > a > span,
@@ -75,7 +84,7 @@ const StyledIndexLayout = styled("div")`
     .ant-menu-vertical-left > .ant-menu-submenu > .ant-menu-submenu-title,
     .ant-menu-vertical-right > .ant-menu-submenu > .ant-menu-submenu-title,
     .ant-menu-inline > .ant-menu-submenu > .ant-menu-submenu-title {
-        height: 72px;
+        height: ${isCompactMode() ? 58 : 72}px;
         padding: 0;
     }
 
@@ -85,7 +94,7 @@ const StyledIndexLayout = styled("div")`
     }
 
     .ant-menu-submenu {
-        height: 72px;
+        height: ${isCompactMode() ? 58 : 72}px;
     }
 
     .ant-menu-submenu-title > i {

@@ -31,7 +31,7 @@ const StatisticsInfo = ({ data, versionInfo }: { data: StatisticsInfoState; vers
     };
 
     return (
-        <Card size={"small"} title={getRes()["admin.index.outline"]}>
+        <Card title={getRes()["admin.index.outline"]}>
             <Row gutter={[8, 8]}>
                 <Col xs={24} md={12}>
                     <Card styles={{ body: { padding: 16 } }}>

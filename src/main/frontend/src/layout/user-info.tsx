@@ -99,9 +99,11 @@ const UserInfo = ({ data, offline }: { data: BasicUserInfo; offline: boolean }) 
                 <div
                     style={{
                         color: "#ffffff",
-                        height: "64px",
                         borderRadius: 0,
                         marginRight: 16,
+                        height: 50,
+                        display: "flex",
+                        alignItems: "center",
                     }}
                 >
                     <Image
@@ -109,7 +111,7 @@ const UserInfo = ({ data, offline }: { data: BasicUserInfo; offline: boolean }) 
                         fallback={Constants.getFillBackImg()}
                         className={"userAvatarImg"}
                         src={tryAppendBackendServerUrl(data.header)}
-                        style={{ cursor: "pointer", width: 40, height: 40 }}
+                        style={{ lineHeight: 40 }}
                     />
                     <Badge dot={data.lastVersion?.upgrade}>
                         <Text

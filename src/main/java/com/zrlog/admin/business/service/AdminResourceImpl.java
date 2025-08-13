@@ -175,6 +175,7 @@ public class AdminResourceImpl implements AdminResource {
         stringObjectMap.put("homeUrl", ZrLogUtil.getHomeUrlWithHost(request));
         stringObjectMap.put("articleRoute", "");
         stringObjectMap.put("admin_darkMode", Objects.equals(publicWebSiteInfo.getAdmin_darkMode(), true));
+        stringObjectMap.put("admin_compactMode", Objects.equals(publicWebSiteInfo.getAdmin_compactMode(), true));
         if (ZrLogUtil.isPreviewMode()) {
             Map<String, String> defaultLoginInfo = new HashMap<>();
             defaultLoginInfo.put("userName", System.getenv("DEFAULT_USERNAME"));

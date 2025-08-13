@@ -1,6 +1,5 @@
 package com.zrlog.admin.web.controller.api;
 
-import com.hibegin.common.util.StringUtils;
 import com.hibegin.http.HttpMethod;
 import com.hibegin.http.annotation.RequestMethod;
 import com.hibegin.http.annotation.ResponseBody;
@@ -12,6 +11,7 @@ import com.zrlog.admin.business.rest.request.UpdatePasswordRequest;
 import com.zrlog.admin.business.rest.response.AdminApiPageDataStandardResponse;
 import com.zrlog.admin.business.rest.response.UpdateRecordResponse;
 import com.zrlog.admin.business.rest.response.UserBasicInfoResponse;
+import com.zrlog.admin.business.rest.response.UserInfoResponse;
 import com.zrlog.admin.business.service.UserService;
 import com.zrlog.admin.web.annotation.RefreshCache;
 import com.zrlog.admin.web.token.AdminTokenThreadLocal;
@@ -41,7 +41,21 @@ public class AdminUserController extends BaseController {
         if (Objects.isNull(adminTokenVO)) {
             throw new AdminAuthException();
         }
-        return new AdminApiPageDataStandardResponse<>(userService.getUserInfo(adminTokenVO.getUserId(), adminTokenVO.getSessionId()), "", request.getUri());
+        return new AdminApiPageDataStandardResponse<>(userService.getBasicUserInfo(adminTokenVO.getUserId(), adminTokenVO.getSessionId()), "", request.getUri());
+    }
+
+    /**
+     * 校验是否处于登录状态，不需要返回过多的用户信息，可以返回一些全局需要使用到的与用户相关的信息，比如 头像/昵称,新版本
+     *
+     * @return 基础的用户信息
+     */
+    @ResponseBody
+    public AdminApiPageDataStandardResponse<UserInfoResponse> info() {
+        AdminTokenVO adminTokenVO = AdminTokenThreadLocal.getUser();
+        if (Objects.isNull(adminTokenVO)) {
+            throw new AdminAuthException();
+        }
+        return new AdminApiPageDataStandardResponse<>(userService.getUserInfoWithCache(adminTokenVO.getUserId(), adminTokenVO.getSessionId()), "", request.getUri());
     }
 
     @RefreshCache
@@ -49,13 +63,9 @@ public class AdminUserController extends BaseController {
     @RequestMethod(method = HttpMethod.POST)
     public UpdateRecordResponse update() throws SQLException {
         UpdateAdminRequest updateAdminRequest = getRequestBodyWithNullCheck(UpdateAdminRequest.class);
-        UpdateRecordResponse updateRecordResponse = new UpdateRecordResponse();
-        if (StringUtils.isEmpty(updateAdminRequest.getUserName())) {
-            updateRecordResponse.setError(1);
-        } else {
-            userService.update(AdminTokenThreadLocal.getUserId(), updateAdminRequest);
-            updateRecordResponse.setMessage(I18nUtil.getAdminBackendStringFromRes("updatePersonInfoSuccess"));
-        }
+        userService.update(AdminTokenThreadLocal.getUserId(), updateAdminRequest);
+        UpdateRecordResponse updateRecordResponse = new UpdateRecordResponse(true);
+        updateRecordResponse.setMessage(I18nUtil.getAdminBackendStringFromRes("updatePersonInfoSuccess"));
         return updateRecordResponse;
     }
 

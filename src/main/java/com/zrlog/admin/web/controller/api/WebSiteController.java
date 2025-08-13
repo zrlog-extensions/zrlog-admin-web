@@ -110,20 +110,20 @@ public class WebSiteController extends BaseController {
         return new AdminApiPageDataStandardResponse<>(webSiteService.adminWebSiteInfo(), I18nUtil.getAdminBackendStringFromRes("updateSuccess"), request.getUri());
     }
 
-    @RefreshCache(onlyOnPostMethod = true)
     @RequestLock(onlyOnPostMethod = true)
     @ResponseBody
     public AdminApiPageDataStandardResponse<UpgradeWebSiteInfo> upgrade() throws SQLException {
         if (request.getMethod() == HttpMethod.POST) {
+            UpdateVersionInfoPlugin updateVersionInfoPlugin = Constants.zrLogConfig.getPlugin(UpdateVersionInfoPlugin.class);
+            if (Objects.isNull(updateVersionInfoPlugin)) {
+                throw new RuntimeException("Missing setup updateVersionInfoPlugin");
+            }
             UpgradeWebSiteInfo request = getRequestBodyWithNullCheck(UpgradeWebSiteInfo.class);
             update(request);
-            UpdateVersionInfoPlugin updateVersionInfoPlugin = Constants.zrLogConfig.getPlugin(UpdateVersionInfoPlugin.class);
-            if (Objects.nonNull(updateVersionInfoPlugin)) {
-                if (AutoUpgradeVersionType.cycle(request.getAutoUpgradeVersion()) == AutoUpgradeVersionType.NEVER) {
-                    updateVersionInfoPlugin.stop();
-                } else {
-                    updateVersionInfoPlugin.start();
-                }
+            if (AutoUpgradeVersionType.cycle(request.getAutoUpgradeVersion()) == AutoUpgradeVersionType.NEVER) {
+                updateVersionInfoPlugin.stop();
+            } else {
+                updateVersionInfoPlugin.start();
             }
         }
         return new AdminApiPageDataStandardResponse<>(webSiteService.upgradeWebSiteInfo(), I18nUtil.getAdminBackendStringFromRes("updateSuccess"), request.getUri());

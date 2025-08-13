@@ -90,7 +90,7 @@ const DigestEditorCard: FunctionComponent<DigestEditorCardProps> = memo(
         };
 
         return (
-            <Card size="small" title={getRes().digest} style={{ marginBottom: 36 }} extra={[getActionBtn()]}>
+            <Card title={getRes().digest} style={{ marginBottom: 36 }} extra={[getActionBtn()]}>
                 {getBody()}
             </Card>
         );

@@ -95,7 +95,6 @@ const ArticleEditSettingButton = ({
                     <Row gutter={[8, 8]}>
                         <Col span={24}>
                             <Card
-                                size="small"
                                 title={
                                     <span style={{ textAlign: "start", display: "flex" }}>
                                         {getRes()["articleCover"]}
@@ -112,7 +111,7 @@ const ArticleEditSettingButton = ({
                             </Card>
                         </Col>
                         <Col span={24}>
-                            <Card size="small" title={getRes()["admin.setting"]}>
+                            <Card title={getRes()["admin.setting"]}>
                                 <Row>
                                     <Col xs={24} md={12}>
                                         <Form.Item
@@ -122,7 +121,6 @@ const ArticleEditSettingButton = ({
                                         >
                                             <Switch
                                                 value={article.canComment}
-                                                size="small"
                                                 onChange={(checked) => {
                                                     handleValuesChange({ canComment: checked });
                                                 }}
@@ -137,7 +135,6 @@ const ArticleEditSettingButton = ({
                                         >
                                             <Switch
                                                 value={article.privacy}
-                                                size="small"
                                                 onChange={(checked) => {
                                                     handleValuesChange({ privacy: checked });
                                                 }}
@@ -148,7 +145,7 @@ const ArticleEditSettingButton = ({
                             </Card>
                         </Col>
                         <Col span={24}>
-                            <Card size="small" title={getRes().tag}>
+                            <Card title={getRes().tag}>
                                 <ArticleEditTag
                                     onKeywordsChange={(text: string) => {
                                         handleValuesChange({ keywords: text });

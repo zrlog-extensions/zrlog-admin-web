@@ -24,6 +24,7 @@ type AdminManageLayoutProps = PropsWithChildren & {
     basicUserInfo: BasicUserInfo;
     syncStaticSite: boolean;
     systemNotification: string;
+    compact: boolean;
 };
 
 const AdminManageLayout: FunctionComponent<AdminManageLayoutProps> = ({
@@ -34,6 +35,7 @@ const AdminManageLayout: FunctionComponent<AdminManageLayoutProps> = ({
     basicUserInfo,
     syncStaticSite,
     systemNotification,
+    compact,
 }) => {
     const screens = useBreakpoint();
 
@@ -62,16 +64,28 @@ const AdminManageLayout: FunctionComponent<AdminManageLayoutProps> = ({
     }
 
     const getMainHeight = () => {
-        return "calc(100vh - 64px)";
+        return `calc(100vh - ${getHeaderHeight()}px)`;
+    };
+
+    const getHeaderHeight = () => {
+        return compact ? 54 : 64;
+    };
+
+    const getSiderWidth = () => {
+        return compact ? 58 : 70;
     };
 
     const getMainButton = () => {
         const home = (
             <a
                 href={getRes()["homeUrl"] + "?spm=admin&buildId=" + getRes()["buildId"]}
-                id="logo"
+                className="logo"
                 target="_blank"
                 title={getRes()["websiteTitle"]}
+                style={{
+                    height: getHeaderHeight(),
+                    width: getSiderWidth(),
+                }}
                 rel="noopener noreferrer"
             >
                 <HomeOutlined />
@@ -83,20 +97,23 @@ const AdminManageLayout: FunctionComponent<AdminManageLayoutProps> = ({
                     <div
                         style={{
                             textAlign: "center",
-                            width: 70,
+                            width: getSiderWidth(),
                             height: "100%",
-                            cursor: "pointer",
                             display: "flex",
                             alignItems: "center",
                             justifyContent: "center",
                         }}
-                        onClick={() => {
-                            const newState = !hiddenSlider;
-                            addToCache(sliderStateKey, newState);
-                            setHiddenSlider(newState);
-                        }}
                     >
-                        <Button type="primary">{hiddenSlider ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}</Button>
+                        <Button
+                            type="primary"
+                            onClick={() => {
+                                const newState = !hiddenSlider;
+                                addToCache(sliderStateKey, newState);
+                                setHiddenSlider(newState);
+                            }}
+                        >
+                            {hiddenSlider ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
+                        </Button>
                     </div>
                     {home}
                 </div>
@@ -127,8 +144,10 @@ const AdminManageLayout: FunctionComponent<AdminManageLayoutProps> = ({
                 )}
                 <Header
                     style={{
+                        height: getHeaderHeight(),
                         display: fullScreen ? "none" : "flex",
                         justifyContent: "space-between",
+                        alignItems: "center",
                         backgroundColor: EnvUtils.isDarkMode() ? "#1f1f1f" : "#011529",
                     }}
                 >
@@ -157,11 +176,11 @@ const AdminManageLayout: FunctionComponent<AdminManageLayoutProps> = ({
                     }}
                 >
                     <Sider
-                        width={70}
+                        width={getSiderWidth()}
                         style={{
                             opacity: fullScreen || hiddenSlider ? 0 : 1,
                             position: "absolute",
-                            left: hiddenSlider ? "-70px" : "0", // 动画控制显示隐藏
+                            left: hiddenSlider ? `-${getSiderWidth()}px` : "0", // 动画控制显示隐藏
                             height: "100%",
                             transform: fullScreen || hiddenSlider ? "translateX(-100%)" : "translateX(0)",
                             backgroundColor: EnvUtils.isDarkMode() ? "#1f1f1f" : "#001529",
@@ -175,7 +194,7 @@ const AdminManageLayout: FunctionComponent<AdminManageLayoutProps> = ({
                             width: 100,
                             minHeight: fullScreen ? 0 : 1,
                             transition: "margin-left .2s ease", // 动画完成后调整布局
-                            marginLeft: hiddenSlider || fullScreen ? 0 : 70,
+                            marginLeft: hiddenSlider || fullScreen ? 0 : getSiderWidth(),
                         }}
                     >
                         <Layout style={{ minHeight: getMainHeight(), overflow: fullScreen ? "hidden" : "auto" }}>

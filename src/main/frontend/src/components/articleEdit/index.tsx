@@ -1,5 +1,5 @@
 import { FunctionComponent, useEffect, useRef, useState } from "react";
-import { App, Grid, InputRef, message, Space } from "antd";
+import { App, Button, Grid, InputRef, message, Space } from "antd";
 import Row from "antd/es/grid/row";
 import Col from "antd/es/grid/col";
 import Divider from "antd/es/divider";
@@ -28,6 +28,7 @@ import MarkedEditor from "../../common/editor/marked-editor";
 import { useLocation } from "react-router";
 import { getPageDataCacheKeyByPath } from "../../utils/cache";
 import RubbishText from "./RubbishText";
+import { LockOutlined } from "@ant-design/icons";
 
 const Index: FunctionComponent<ArticleEditProps> = ({
     offline,
@@ -428,8 +429,20 @@ const Index: FunctionComponent<ArticleEditProps> = ({
                         borderBottom: EnvUtils.isDarkMode() ? "1px solid rgba(253, 253, 253, 0.12)" : "1px solid #DDD",
                     }}
                 >
-                    <Col md={fullScreen ? 4 : 8} xl={9} xxl={12} xs={24} sm={fullScreen ? 4 : 6}>
+                    <Col md={fullScreen ? 4 : 8} xl={9} xxl={12} xs={16} sm={fullScreen ? 4 : 6}>
                         <BaseInput
+                            suffix={
+                                <div style={{ display: "flex", gap: 4 }}>
+                                    {state.article.rubbish && (
+                                        <Button disabled={true} style={{ padding: 0, fontSize: 16 }} type={"text"}>
+                                            {getRes()["draft"]}
+                                        </Button>
+                                    )}
+                                    {state.article.privacy && (
+                                        <LockOutlined style={{ color: "rgb(119, 119, 119)", fontSize: 16 }} />
+                                    )}
+                                </div>
+                            }
                             maxLength={100}
                             variant={"borderless"}
                             size={"large"}

@@ -17,6 +17,7 @@ public class AdminWebSiteInfo implements Validator {
     private String admin_color_primary;
     private Long article_auto_digest_length;
     private Boolean admin_darkMode;
+    private Boolean admin_compactMode;
     private Long admin_article_page_size;
     private String favicon_png_pwa_192_base64;
     private String favicon_png_pwa_512_base64;
@@ -128,5 +129,13 @@ public class AdminWebSiteInfo implements Validator {
 
     public void setAdmin_static_resource_base_url(String admin_static_resource_base_url) {
         this.admin_static_resource_base_url = admin_static_resource_base_url;
+    }
+
+    public Boolean getAdmin_compactMode() {
+        return admin_compactMode;
+    }
+
+    public void setAdmin_compactMode(Boolean admin_compactMode) {
+        this.admin_compactMode = admin_compactMode;
     }
 }

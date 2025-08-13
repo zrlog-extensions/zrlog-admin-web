@@ -75,7 +75,6 @@ const Index: FunctionComponent<IndexProps> = ({ data }) => {
                 <Col xs={24} md={12}>
                     <Card
                         title={getRes()["admin.index.activity"]}
-                        size={"small"}
                         styles={{
                             body: {
                                 overflow: "auto",

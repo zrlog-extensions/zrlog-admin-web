@@ -50,6 +50,10 @@ export const getColorPrimary = (): string => {
     return color;
 };
 
+export const isCompactMode = () => {
+    return getRes()["admin_compactMode"] === true;
+};
+
 export const setRes = (r: Record<string, never>) => {
     getSsDate().resourceInfo = r;
 };

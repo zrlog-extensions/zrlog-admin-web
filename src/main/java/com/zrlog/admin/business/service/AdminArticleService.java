@@ -54,8 +54,8 @@ public class AdminArticleService {
 
     private static final Logger LOGGER = LoggerUtil.getLogger(AdminArticleService.class);
 
-    private Lock getWriteLock(AdminTokenVO adminTokenVO) {
-        return new DistributedLock("write_article_" + adminTokenVO.getSessionId());
+    private Lock getWriteLock(AdminTokenVO adminTokenVO, Integer logId) {
+        return new DistributedLock("write_article_" + adminTokenVO.getSessionId() + "_" + ObjectUtil.requireNonNullElse(logId, Integer.MAX_VALUE));
     }
 
     private static String getFirstImgUrl(String htmlContent, AdminTokenVO adminTokenVO) {
@@ -121,7 +121,8 @@ public class AdminArticleService {
         if (Objects.isNull(createArticleRequest.getTypeId()) || createArticleRequest.getTypeId() < 1) {
             throw new ArticleMissingTypeException();
         }
-        Lock lock = getWriteLock(adminTokenVO);
+        Integer logId = (createArticleRequest instanceof UpdateArticleRequest ? ((UpdateArticleRequest) createArticleRequest).getLogId() : null);
+        Lock lock = getWriteLock(adminTokenVO, logId);
         try {
             if (!lock.tryLock(20, TimeUnit.SECONDS)) {
                 throw new ResourceLockedException();

@@ -171,7 +171,7 @@ const ServerInfo = ({
     }
 
     return (
-        <Card size={"small"} title={title} styles={{ body: { padding: 8, overflow: "hidden" } }}>
+        <Card title={title} styles={{ body: { padding: 8, overflow: "hidden" } }}>
             <Row gutter={[8, 8]}>
                 {data.map((e) => {
                     const url = externalUrl(e.key, e.value);
