@@ -50,6 +50,14 @@ export const isCompactModeByRes = (): boolean => {
     return getRes()["admin_compactMode"] === true;
 };
 
+export const getLangByRes = (): string => {
+    const lang = getRes()["lang"];
+    if (lang !== undefined) {
+        return lang;
+    }
+    return "zh_CN";
+};
+
 const AppInit: FunctionComponent<AppInitProps> = ({ lang, offline }) => {
     const [appState, setAppState] = useState<AppInitState>({
         resLoaded: false,
@@ -144,6 +152,9 @@ const AppInit: FunctionComponent<AppInitProps> = ({ lang, offline }) => {
     useEffect(() => {
         if (langFirst.current) {
             langFirst.current = false;
+            return;
+        }
+        if (getLangByRes() === lang) {
             return;
         }
         loadResourceFromServer("");

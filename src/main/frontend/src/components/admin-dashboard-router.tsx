@@ -171,6 +171,9 @@ const AdminDashboardRouter: FunctionComponent<AdminDashboardRouterProps> = ({ of
 
     const getDataFromCache = () => {
         const pageDataCacheKey = getPageDataCacheKey(location);
+        if (serverSideData.current) {
+            return getSsDate().data;
+        }
         return getCacheByKey(pageDataCacheKey);
     };
 

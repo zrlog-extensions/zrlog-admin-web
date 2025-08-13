@@ -6,7 +6,7 @@ import zh_CN from "antd/es/locale/zh_CN";
 import en_US from "antd/es/locale/en_US";
 import { legacyLogicalPropertiesTransformer, StyleProvider } from "@ant-design/cssinjs";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
-import AppInit, { getColorPrimaryByRes, isCompactModeByRes, isDarkModeByRes } from "./AppInit";
+import AppInit, { getColorPrimaryByRes, getLangByRes, isCompactModeByRes, isDarkModeByRes } from "./AppInit";
 import { AppColorPrimaryState, AppCompactModeState, AppDarkState, AppLangState, AppState } from "../type";
 
 const { darkAlgorithm, defaultAlgorithm, compactAlgorithm } = theme;
@@ -20,7 +20,7 @@ export const changeAppState = (appState: ChangeAbleState | AppState) => {
 
 const getDefaultAppState = (): AppState => {
     return {
-        lang: "",
+        lang: getLangByRes(),
         dark: isDarkModeByRes(),
         colorPrimary: getColorPrimaryByRes(),
         offline: isOffline(),
@@ -31,7 +31,7 @@ const getDefaultAppState = (): AppState => {
 let gAppState = getDefaultAppState();
 
 export const getAppState = (): AppState => {
-    console.info(gAppState);
+    //console.info(gAppState);
     return gAppState;
 };
 
