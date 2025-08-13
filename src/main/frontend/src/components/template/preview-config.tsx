@@ -24,9 +24,11 @@ const PreviewConfig: FunctionComponent<PreviewConfigProps> = ({ contentType, val
         }
         //console.info(contentType);
         if (contentType === "html") {
-            axiosInstance.get("/api/admin/template/previewConfigValue?value=" + value).then(({ data }) => {
-                setPreviewValue(data.data.previewValue);
-            });
+            axiosInstance
+                .get("/api/admin/template/previewConfigValue?value=" + encodeURIComponent(value))
+                .then(({ data }) => {
+                    setPreviewValue(data.data.previewValue);
+                });
         }
     }, [value]);
 
