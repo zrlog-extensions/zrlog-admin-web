@@ -41,7 +41,8 @@ public class AdminNativeImageUtils {
                 UserBasicInfoResponse.class, AdminTokenVO.class, AdminFullTokenVO.class,
                 VersionResponse.class, PluginStatusResponse.class, UploadTemplateResponse.class,
                 DeleteLogResponse.class, LoadEditArticleResponse.class, ServerInfo.class,
-                SystemResponse.class, FaviconBase64DTO.class, AdminStaticSiteSyncResponse.class, UploadServiceResponseEntity.class));
+                SystemResponse.class, FaviconBase64DTO.class, AdminStaticSiteSyncResponse.class, UploadServiceResponseEntity.class,
+                TemplateValuePreviewResponse.class));
     }
 
     private static void adminJson() {

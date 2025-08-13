@@ -12,7 +12,7 @@ import { useAxiosBaseInstance } from "../../base/AppBase";
 import BaseDragger, { DraggerUploadResponse } from "../../common/BaseDragger";
 import BaseTitle from "../../base/BaseTitle";
 import { CameraOutlined } from "@ant-design/icons";
-import Card from "antd/es/card";
+import PreviewConfig from "./preview-config";
 
 const layout = {
     labelCol: { span: 8 },
@@ -28,6 +28,8 @@ type TemplateConfigState = {
 export type ConfigParam = {
     label: string;
     type: string;
+    value: string;
+    previewValue: string;
     htmlElementType: string;
     contentType: string;
     placeholder: string;
@@ -163,20 +165,11 @@ const TemplateConfig = ({
                     >
                         {getInput(key, value)}
                     </Form.Item>
-                    {value.contentType === "html" && (
-                        <Form.Item label={" "} colon={false} style={{ display: value.type === "hidden" ? "none" : "" }}>
-                            <Card
-                                title={getRes()["preview"] + " (" + value.contentType + ")"}
-                                size={"small"}
-                                style={{ overflow: "hidden" }}
-                            >
-                                <div
-                                    style={{ userSelect: "none" }}
-                                    dangerouslySetInnerHTML={{ __html: state.dataMap[key] }}
-                                />
-                            </Card>
-                        </Form.Item>
-                    )}
+                    <PreviewConfig
+                        contentType={value.contentType}
+                        value={state.dataMap[key]}
+                        initPreviewValue={value.previewValue ? value.previewValue : ""}
+                    />
                 </>
             );
             formInputs.push(input);
@@ -210,9 +203,11 @@ const TemplateConfig = ({
     };
 
     useEffect(() => {
+        const newDataMap = convertToDataMap(data);
+        form.setFieldsValue(newDataMap);
         setState({
             config: data.config,
-            dataMap: convertToDataMap(data),
+            dataMap: newDataMap,
             loading: false,
         });
     }, [data]);

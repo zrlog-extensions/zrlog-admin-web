@@ -9,15 +9,13 @@ import com.hibegin.http.server.util.PathUtil;
 import com.hibegin.http.server.web.cookie.Cookie;
 import com.zrlog.admin.business.AdminConstants;
 import com.zrlog.admin.business.rest.request.UpdateTemplateConfigRequest;
-import com.zrlog.admin.business.rest.response.AdminApiPageDataStandardResponse;
-import com.zrlog.admin.business.rest.response.TemplateDownloadResponse;
-import com.zrlog.admin.business.rest.response.UpdateRecordResponse;
-import com.zrlog.admin.business.rest.response.UploadTemplateResponse;
+import com.zrlog.admin.business.rest.response.*;
 import com.zrlog.admin.business.service.TemplateService;
 import com.zrlog.admin.util.AdminTemplateUtils;
 import com.zrlog.admin.web.annotation.RefreshCache;
 import com.zrlog.admin.web.annotation.RequestLock;
 import com.zrlog.admin.web.token.AdminTokenThreadLocal;
+import com.zrlog.business.template.HtmlTemplateProcessor;
 import com.zrlog.common.Constants;
 import com.zrlog.common.controller.BaseController;
 import com.zrlog.common.exception.ArgsException;
@@ -112,7 +110,25 @@ public class TemplateController extends BaseController {
     @ResponseBody
     public AdminApiPageDataStandardResponse<TemplateVO> configParams() throws IOException {
         String template = AdminTemplateUtils.loadTemplatePathByRequestInfo(this);
-        return new AdminApiPageDataStandardResponse<>(templateService.loadTemplateConfig(template), "", request.getUri());
+        TemplateVO templateVO = templateService.loadTemplateConfig(template);
+        templateVO.getConfig().values().forEach((value) -> {
+            if (Objects.equals(value.getContentType(), "html") && Objects.nonNull(value.getValue())) {
+                if (value.getValue() instanceof String) {
+                    value.setPreviewValue(previewValue((String) value.getValue()));
+                }
+            }
+        });
+        return new AdminApiPageDataStandardResponse<>(templateVO, "", request.getUri());
+    }
+
+    private String previewValue(String value) {
+        HtmlTemplateProcessor htmlTemplateProcessor = new HtmlTemplateProcessor(request, null, "/");
+        return htmlTemplateProcessor.transform(value);
+    }
+
+    @ResponseBody
+    public AdminApiPageDataStandardResponse<TemplateValuePreviewResponse> previewConfigValue() {
+        return new AdminApiPageDataStandardResponse<>(new TemplateValuePreviewResponse(previewValue(request.getParaToStr("value"))), "", request.getUri());
     }
 
     @ResponseBody
