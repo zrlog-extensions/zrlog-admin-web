@@ -102,7 +102,7 @@ const UpgradeSettingForm = ({
                 </Col>
             </Row>
             <Form.Item name="autoUpgradeVersion" label={getRes()["admin.upgrade.autoCheckCycle"]}>
-                <Select style={{ maxWidth: "120px" }}>
+                <Select style={{ maxWidth: 120 }}>
                     <Select.Option key="86400" value={86400}>
                         {getRes()["admin.upgrade.cycle.oneDay"]}
                     </Select.Option>

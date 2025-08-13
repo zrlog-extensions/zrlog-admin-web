@@ -32,7 +32,7 @@ const ServerInfo = ({
                     <>
                         {dockerMode && <DockerOutlined />}
                         {nativeImageMode && screens.sm && <GraalVmOutlined />}
-                        <Typography.Text style={{ fontSize: 18, lineHeight: "28px" }} ellipsis={true}>
+                        <Typography.Text style={{ fontSize: 18, lineHeight: 28 }} ellipsis={true}>
                             {e}
                         </Typography.Text>
                     </>
@@ -44,7 +44,7 @@ const ServerInfo = ({
                 return (
                     <>
                         <LinuxOutlined />
-                        <Typography.Text style={{ fontSize: 18, lineHeight: "28px" }} ellipsis={true}>
+                        <Typography.Text style={{ fontSize: 18, lineHeight: 28 }} ellipsis={true}>
                             {e}
                         </Typography.Text>
                     </>
@@ -53,7 +53,7 @@ const ServerInfo = ({
                 return (
                     <>
                         <AppleOutlined />
-                        <Typography.Text style={{ fontSize: 18, lineHeight: "28px" }} ellipsis={true}>
+                        <Typography.Text style={{ fontSize: 18, lineHeight: 28 }} ellipsis={true}>
                             {e}
                         </Typography.Text>{" "}
                     </>
@@ -62,7 +62,7 @@ const ServerInfo = ({
                 return (
                     <>
                         <WindowsOutlined />
-                        <Typography.Text style={{ fontSize: 18, lineHeight: "28px" }} ellipsis={true}>
+                        <Typography.Text style={{ fontSize: 18, lineHeight: 28 }} ellipsis={true}>
                             {e}
                         </Typography.Text>
                     </>
@@ -73,7 +73,7 @@ const ServerInfo = ({
             return (
                 <>
                     <HddOutlined />
-                    <Typography.Text style={{ fontSize: 18, lineHeight: "28px" }} ellipsis={true}>
+                    <Typography.Text style={{ fontSize: 18, lineHeight: 28 }} ellipsis={true}>
                         {e}
                     </Typography.Text>
                 </>
@@ -83,7 +83,7 @@ const ServerInfo = ({
             return (
                 <>
                     <MemoryIcon />
-                    <Typography.Text style={{ fontSize: 18, lineHeight: "28px" }} ellipsis={true}>
+                    <Typography.Text style={{ fontSize: 18, lineHeight: 28 }} ellipsis={true}>
                         {e}
                     </Typography.Text>
                 </>
@@ -93,7 +93,7 @@ const ServerInfo = ({
             return (
                 <>
                     <DatabaseOutlined />
-                    <Typography.Text style={{ fontSize: 18, lineHeight: "28px" }} ellipsis={true}>
+                    <Typography.Text style={{ fontSize: 18, lineHeight: 28 }} ellipsis={true}>
                         {e}
                     </Typography.Text>
                 </>
@@ -103,7 +103,7 @@ const ServerInfo = ({
             return (
                 <>
                     <CPUIcon />
-                    <Typography.Text style={{ fontSize: 18, lineHeight: "28px" }} ellipsis={true}>
+                    <Typography.Text style={{ fontSize: 18, lineHeight: 28 }} ellipsis={true}>
                         {e}
                     </Typography.Text>
                 </>
@@ -111,7 +111,7 @@ const ServerInfo = ({
         }
         return (
             <>
-                <Typography.Text style={{ fontSize: 18, lineHeight: "28px" }} ellipsis={true}>
+                <Typography.Text style={{ fontSize: 18, lineHeight: 28 }} ellipsis={true}>
                     {e}
                 </Typography.Text>
             </>

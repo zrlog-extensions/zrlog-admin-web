@@ -86,7 +86,7 @@ const AdminManageLayout: FunctionComponent<AdminManageLayoutProps> = ({
                 }}
                 rel="noopener noreferrer"
             >
-                <HomeOutlined />
+                <HomeOutlined style={{ fontSize: getAppState().compactMode ? 22 : 28 }} />
             </a>
         );
         if (showSliderBtn) {

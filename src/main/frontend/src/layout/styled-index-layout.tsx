@@ -13,7 +13,6 @@ const StyledIndexLayout = styled.div<StyledIndexLayoutProps>`
 
     .logo {
         overflow: hidden;
-        font-size: 25px;
         display: inline-flex;
         justify-content: center;
         color: #ffffff;
@@ -124,8 +123,6 @@ const StyledIndexLayout = styled.div<StyledIndexLayoutProps>`
     }
 
     .userAvatarImg {
-        width: 40px;
-        height: 40px;
         border-radius: 50%;
     }
 

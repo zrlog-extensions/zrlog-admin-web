@@ -14,6 +14,7 @@ import Constants, {
 import Divider from "antd/es/divider";
 import { BasicUserInfo } from "../type";
 import { tryBlock } from "../utils/helpers";
+import { getAppState } from "../base/ConfigProviderApp";
 
 const { Text } = Typography;
 
@@ -92,6 +93,13 @@ const UserInfo = ({ data, offline }: { data: BasicUserInfo; offline: boolean }) 
 
     const items = adminSettings(getRes());
 
+    const getImgSize = () => {
+        if (getAppState().compactMode) {
+            return 32;
+        }
+        return 40;
+    };
+
     return (
         <>
             {contextHolder}
@@ -111,7 +119,7 @@ const UserInfo = ({ data, offline }: { data: BasicUserInfo; offline: boolean }) 
                         fallback={Constants.getFillBackImg()}
                         className={"userAvatarImg"}
                         src={tryAppendBackendServerUrl(data.header)}
-                        style={{ lineHeight: 40 }}
+                        style={{ lineHeight: getImgSize(), width: getImgSize(), height: getImgSize() }}
                     />
                     <Badge dot={data.lastVersion?.upgrade}>
                         <Text

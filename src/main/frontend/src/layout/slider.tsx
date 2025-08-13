@@ -87,6 +87,13 @@ const SliderMenu = () => {
         return { selected: false, icon: entry.icon };
     };
 
+    const getIconSize = () => {
+        if (getAppState().compactMode) {
+            return 20;
+        }
+        return 24;
+    };
+
     function getItem(entry: MenuEntry, key: React.Key | null, children: MenuItem[]): MenuItem {
         const info = getInfo(entry);
         const label = (
@@ -132,8 +139,8 @@ const SliderMenu = () => {
             {
                 text: getRes().dashboard,
                 link: "/index",
-                selectIcon: <DashboardFilled style={{ fontSize: 24 }} />,
-                icon: <DashboardOutlined style={{ fontSize: 24 }} />,
+                selectIcon: <DashboardFilled style={{ fontSize: getIconSize() }} />,
+                icon: <DashboardOutlined style={{ fontSize: getIconSize() }} />,
             },
             "/index",
             []
@@ -142,8 +149,8 @@ const SliderMenu = () => {
             {
                 text: getRes()["admin.log.edit"],
                 link: "/article-edit",
-                selectIcon: <EditFilled style={{ fontSize: 24 }} />,
-                icon: <EditOutlined style={{ fontSize: 24 }} />,
+                selectIcon: <EditFilled style={{ fontSize: getIconSize() }} />,
+                icon: <EditOutlined style={{ fontSize: getIconSize() }} />,
             },
             "/article-edit",
             []
@@ -152,8 +159,8 @@ const SliderMenu = () => {
             {
                 text: getRes()["blogManage"],
                 link: "/article",
-                selectIcon: <ContainerFilled style={{ fontSize: 24 }} />,
-                icon: <ContainerOutlined style={{ fontSize: 24 }} />,
+                selectIcon: <ContainerFilled style={{ fontSize: getIconSize() }} />,
+                icon: <ContainerOutlined style={{ fontSize: getIconSize() }} />,
             },
             "/article",
             []
@@ -162,8 +169,8 @@ const SliderMenu = () => {
             {
                 text: getRes()["admin.comment.manage"],
                 link: "/comment",
-                selectIcon: <CommentOutlined style={{ fontSize: 24 }} />,
-                icon: <CommentOutlined style={{ fontSize: 24 }} />,
+                selectIcon: <CommentOutlined style={{ fontSize: getIconSize() }} />,
+                icon: <CommentOutlined style={{ fontSize: getIconSize() }} />,
             },
             "/comment",
             []
@@ -172,8 +179,8 @@ const SliderMenu = () => {
             {
                 text: getRes()["admin.plugin.manage"],
                 link: "/plugin",
-                selectIcon: <ApiFilled style={{ fontSize: 24 }} />,
-                icon: <ApiOutlined style={{ fontSize: 24 }} />,
+                selectIcon: <ApiFilled style={{ fontSize: getIconSize() }} />,
+                icon: <ApiOutlined style={{ fontSize: getIconSize() }} />,
             },
             "/plugin",
             []
@@ -182,8 +189,8 @@ const SliderMenu = () => {
             {
                 text: getRes()["admin.setting"],
                 link: "/website",
-                selectIcon: <SettingFilled style={{ fontSize: 24 }} />,
-                icon: <SettingOutlined style={{ fontSize: 24 }} />,
+                selectIcon: <SettingFilled style={{ fontSize: getIconSize() }} />,
+                icon: <SettingOutlined style={{ fontSize: getIconSize() }} />,
             },
             "/website",
             []
@@ -192,8 +199,8 @@ const SliderMenu = () => {
             {
                 text: getRes()["admin.more"],
                 link: "#more",
-                selectIcon: <AppstoreFilled style={{ fontSize: 24 }} />,
-                icon: <AppstoreOutlined style={{ fontSize: 24 }} />,
+                selectIcon: <AppstoreFilled style={{ fontSize: getIconSize() }} />,
+                icon: <AppstoreOutlined style={{ fontSize: getIconSize() }} />,
             },
             "/more",
             [

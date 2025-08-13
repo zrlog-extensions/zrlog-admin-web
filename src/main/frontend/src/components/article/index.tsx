@@ -270,7 +270,7 @@ const Index = ({ data, offline }: { data: ArticlePageDataSource; offline: boolea
                     onSearch={onSearch}
                     defaultValue={data.key}
                     enterButton={getRes()["search"]}
-                    style={{ maxWidth: "196px", float: "right" }}
+                    style={{ maxWidth: 196, float: "right" }}
                 />
             </div>
             <Divider />

@@ -66,7 +66,7 @@ const User = ({ data, offline }: { data: BasicUserInfo; offline: boolean }) => {
 
                         <Form.Item label={getRes().headPortrait} rules={[{ required: true }]}>
                             <BaseDragger
-                                style={{ width: "128px", height: "128px" }}
+                                style={{ width: 128, height: 128 }}
                                 onSuccess={(e) => onUploadChange(e)}
                                 onError={(e) => {
                                     messageApi.error(e.message);

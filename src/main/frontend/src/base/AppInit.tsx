@@ -55,7 +55,7 @@ export const getLangByRes = (): string => {
     if (lang !== undefined) {
         return lang;
     }
-    return "zh_CN";
+    return "";
 };
 
 const AppInit: FunctionComponent<AppInitProps> = ({ lang, offline }) => {

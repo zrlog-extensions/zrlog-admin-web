@@ -47,7 +47,7 @@ const BlogForm = ({
             <Title level={4}>{getRes()["admin.blog.manage"]}</Title>
             <Divider />
             <Form.Item name="host" label={getRes()["blogHost"]}>
-                <Input style={{ maxWidth: "300px" }} placeholder="" />
+                <Input style={{ maxWidth: 300 }} placeholder="" />
             </Form.Item>
             <Form.Item valuePropName="checked" name="generator_html_status" label={getRes()["staticSite"]}>
                 <Switch />

@@ -50,7 +50,7 @@ const ThumbnailUpload: FunctionComponent<ThumbnailUploadProps> = ({ onChange, th
                             alignItems: "center",
                         }}
                     >
-                        <CameraOutlined style={{ fontSize: "28px" }} />
+                        <CameraOutlined style={{ fontSize: 28 }} />
                     </p>
                     <p
                         className="ant-upload-text"

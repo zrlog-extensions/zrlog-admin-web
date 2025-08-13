@@ -90,12 +90,12 @@ const BlogForm = ({
             <Title level={4}>{getRes()["admin.admin.manage"]}</Title>
             <Divider />
             <Form.Item name="admin_static_resource_base_url" label={getRes()["adminStaticResourceUrl"]}>
-                <Input style={{ maxWidth: "300px" }} placeholder={getRes()["adminStaticResourceUrlTips"]} />
+                <Input style={{ maxWidth: 300 }} placeholder={getRes()["adminStaticResourceUrlTips"]} />
             </Form.Item>
             <Form.Item name="session_timeout" label={getRes()["adminSessionTimeout"]} rules={[{ required: true }]}>
                 <Input
                     suffix={getRes()["adminSessionTimeoutUnit"]}
-                    style={{ maxWidth: "120px" }}
+                    style={{ maxWidth: 140 }}
                     max={99999}
                     type={"number"}
                     min={5}
@@ -104,7 +104,7 @@ const BlogForm = ({
             </Form.Item>
             <Form.Item name="language" label={getRes()["language"]}>
                 <Select
-                    style={{ maxWidth: "120px" }}
+                    style={{ maxWidth: 120 }}
                     onChange={(lang: string) => {
                         changeAppState({
                             lang: lang,
@@ -155,7 +155,7 @@ const BlogForm = ({
             <Divider />
             <Form.Item name="admin_article_page_size" label={getRes()["admin_article_page_size"]}>
                 <Select
-                    style={{ maxWidth: "120px" }}
+                    style={{ maxWidth: 120 }}
                     options={[
                         {
                             value: 10,
@@ -179,7 +179,7 @@ const BlogForm = ({
             <Form.Item name="article_auto_digest_length" label={getRes()["article_auto_digest_length_tips"]}>
                 <Input
                     suffix={getRes()["editor.wordsCount"]}
-                    style={{ maxWidth: "120px" }}
+                    style={{ maxWidth: 120 }}
                     max={99999}
                     type={"number"}
                     min={-1}

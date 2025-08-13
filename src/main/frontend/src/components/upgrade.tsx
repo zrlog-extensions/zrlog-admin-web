@@ -212,7 +212,7 @@ const Upgrade: FunctionComponent<UpgradeProps> = ({ data, offline, offlineData }
                         return <Step key={item.alias} title={item.title} />;
                     })}
                 </Steps>
-                <div className="steps-content" style={{ marginTop: "20px" }}>
+                <div className="steps-content" style={{ marginTop: 20 }}>
                     {state.current === 0 && (
                         <>
                             <Title level={4}>{getRes().changeLog}</Title>
@@ -232,7 +232,7 @@ const Upgrade: FunctionComponent<UpgradeProps> = ({ data, offline, offlineData }
                         </>
                     )}
                 </div>
-                <div className="steps-action" style={{ paddingTop: "20px" }}>
+                <div className="steps-action" style={{ paddingTop: 20 }}>
                     {state.current < steps.length - 1 && (
                         <Button type="primary" loading={offlineData} disabled={nextDisabled()} onClick={() => next()}>
                             {getRes().nextStep}

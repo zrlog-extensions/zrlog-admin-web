@@ -171,7 +171,7 @@ const ArticleEditTag: FunctionComponent<ArticleEditTagProps> = ({ allTags, keywo
                     <Title level={5} style={{ marginTop: 12, fontSize: 14 }}>
                         {getRes()["allTag"]}
                     </Title>
-                    <div style={{ maxHeight: "240px", overflowY: "auto" }}>
+                    <div style={{ maxHeight: 240, overflowY: "auto" }}>
                         <Space size={[0, 8]} wrap>
                             {allTagChild}
                         </Space>

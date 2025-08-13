@@ -88,7 +88,6 @@ const ConfigProviderApp = () => {
 
     return (
         <ConfigProvider
-            //key={appState.lang + "_" + appState.dark + "_" + appState.colorPrimary}
             locale={appState.lang.startsWith("en") ? en_US : zh_CN}
             theme={{
                 algorithm: themeAlgorithms,
@@ -111,7 +110,7 @@ const ConfigProviderApp = () => {
                 styles: {
                     header: {
                         padding: "0 8px",
-                        lineHeight: "24px",
+                        lineHeight: 24,
                         minHeight: appState.compactMode ? 36 : 42,
                     },
                     body: {
