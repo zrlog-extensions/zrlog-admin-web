@@ -8,7 +8,7 @@ import Card from "antd/es/card";
 import { createUri, getRes, updateUri } from "../../utils/constants";
 import Select from "antd/es/select";
 import BaseInput from "../../common/BaseInput";
-import EnvUtils, { isOffline } from "../../utils/env-utils";
+import { isOffline } from "../../utils/env-utils";
 import EditorStatistics, { toStatisticsByMarkdown } from "../../common/editor/editor-statistics-info";
 import { useAxiosBaseInstance } from "../../base/AppBase";
 import ArticleEditSettingButton from "./article-edit-setting-button";
@@ -29,6 +29,7 @@ import { useLocation } from "react-router";
 import { getPageDataCacheKeyByPath } from "../../utils/cache";
 import RubbishText from "./RubbishText";
 import { LockOutlined } from "@ant-design/icons";
+import { getAppState } from "../../base/ConfigProviderApp";
 
 const Index: FunctionComponent<ArticleEditProps> = ({
     offline,
@@ -426,7 +427,7 @@ const Index: FunctionComponent<ArticleEditProps> = ({
                     gutter={[8, 0]}
                     style={{
                         position: "relative",
-                        borderBottom: EnvUtils.isDarkMode() ? "1px solid rgba(253, 253, 253, 0.12)" : "1px solid #DDD",
+                        borderBottom: getAppState().dark ? "1px solid rgba(253, 253, 253, 0.12)" : "1px solid #DDD",
                     }}
                 >
                     <Col md={fullScreen ? 4 : 8} xl={9} xxl={12} xs={16} sm={fullScreen ? 4 : 6}>

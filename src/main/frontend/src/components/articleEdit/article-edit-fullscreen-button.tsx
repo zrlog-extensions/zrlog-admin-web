@@ -1,9 +1,10 @@
 import { FullscreenExitOutlined, FullscreenOutlined } from "@ant-design/icons";
-import EnvUtils, { isPWA } from "../../utils/env-utils";
+import { isPWA } from "../../utils/env-utils";
 import { Button } from "antd";
 import screenfull from "screenfull";
 import { FunctionComponent, useEffect } from "react";
 import { FullScreenProps } from "./index.types";
+import { getAppState } from "../../base/ConfigProviderApp";
 
 type ArticleEditFullscreenButton = FullScreenProps & {
     fullScreenElement: HTMLDivElement;
@@ -105,7 +106,7 @@ const ArticleEditFullscreenButton: FunctionComponent<ArticleEditFullscreenButton
                 fontSize: 24,
                 cursor: "pointer",
                 color: "rgb(102, 102, 102)",
-                background: EnvUtils.isDarkMode() ? "#141414" : "white",
+                background: getAppState().dark ? "#141414" : "white",
             }}
             onClick={(e) => {
                 toggleFullScreen();

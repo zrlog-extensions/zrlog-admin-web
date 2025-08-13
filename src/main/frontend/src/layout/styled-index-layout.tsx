@@ -1,8 +1,12 @@
 import styled from "styled-components";
-import { getColorPrimary, isCompactMode } from "../utils/constants";
 import { colorToRgba } from "./slider";
 
-const StyledIndexLayout = styled("div")`
+type StyledIndexLayoutProps = {
+    compactMode: boolean;
+    colorPrimary: string;
+};
+
+const StyledIndexLayout = styled.div<StyledIndexLayoutProps>`
     .ant-menu-item {
         width: 100%;
     }
@@ -61,7 +65,7 @@ const StyledIndexLayout = styled("div")`
         flex-flow: column;
         justify-content: space-evenly;
         align-items: center;
-        height: ${isCompactMode() ? 58 : 72}px;
+        height: ${(props) => (props.compactMode ? 58 : 72)}px;
     }
 
     .ant-menu-title-content > a > span {
@@ -84,7 +88,7 @@ const StyledIndexLayout = styled("div")`
     .ant-menu-vertical-left > .ant-menu-submenu > .ant-menu-submenu-title,
     .ant-menu-vertical-right > .ant-menu-submenu > .ant-menu-submenu-title,
     .ant-menu-inline > .ant-menu-submenu > .ant-menu-submenu-title {
-        height: ${isCompactMode() ? 58 : 72}px;
+        height: ${(props) => (props.compactMode ? 58 : 72)}px;
         padding: 0;
     }
 
@@ -94,7 +98,7 @@ const StyledIndexLayout = styled("div")`
     }
 
     .ant-menu-submenu {
-        height: ${isCompactMode() ? 58 : 72}px;
+        height: ${(props) => (props.compactMode ? 58 : 72)}px;
     }
 
     .ant-menu-submenu-title > i {
@@ -111,7 +115,6 @@ const StyledIndexLayout = styled("div")`
 
     h3.page-header {
         margin-top: 20px;
-        border-left: 3px solid ${getColorPrimary()};
         padding-left: 5px;
         overflow: hidden;
         text-overflow: ellipsis;
@@ -145,11 +148,11 @@ const StyledIndexLayout = styled("div")`
     }
 
     .ant-menu-item:hover {
-        background: ${colorToRgba(getColorPrimary(), 0.2) + "!important"};
+        background: ${(props) => colorToRgba(props.colorPrimary, 0.2) + "!important"};
     }
 
     .ant-menu-submenu:hover {
-        background: ${colorToRgba(getColorPrimary(), 0.2) + "!important"};
+        background: ${(props) => colorToRgba(props.colorPrimary, 0.2) + "!important"};
     }
 
     .ant-upload-list {
@@ -213,15 +216,15 @@ const StyledIndexLayout = styled("div")`
     }
 
     .ant-input-search-button {
-        background-color: ${getColorPrimary()} !important;
+        background-color: ${(props) => props.colorPrimary} !important;
     }
 
     .ant-input-search-button:hover {
-        background-color: ${getColorPrimary()} !important;
+        background-color: ${(props) => props.colorPrimary} !important;
     }
 
     .ant-input-search-button:active {
-        background-color: ${getColorPrimary()} !important;
+        background-color: ${(props) => props.colorPrimary} !important;
     }
 `;
 

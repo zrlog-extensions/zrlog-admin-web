@@ -1,6 +1,6 @@
 import styled from "styled-components";
-import { getColorPrimary } from "../../../utils/constants";
 import { getBorderColor } from "../editor-helpers";
+import { getAppState } from "../../../base/ConfigProviderApp";
 
 export const StyledEditor = styled("div")`
     .cm-editor.cm-focused {
@@ -9,7 +9,7 @@ export const StyledEditor = styled("div")`
     }
 
     .editor-icon:hover {
-        color: ${getColorPrimary()} !important;
+        color: ${getAppState().colorPrimary} !important;
         background: ${getBorderColor()};
         border-radius: 2px;
     }
@@ -43,7 +43,7 @@ export const StyledEditor = styled("div")`
 
     .cm-panel.cm-search .cm-button {
         font-size: 14px !important;
-        background: ${getColorPrimary()};
+        background: ${getAppState().colorPrimary};
         color: white;
         border-radius: 4px;
     }

@@ -2,7 +2,7 @@ import { message, Tabs } from "antd";
 import Row from "antd/es/grid/row";
 import Col from "antd/es/grid/col";
 import Index, { TemplateEntry } from "../template";
-import { getColorPrimary, getRealRouteUrl, getRes } from "../../utils/constants";
+import { getRealRouteUrl, getRes } from "../../utils/constants";
 import BlogForm from "./BlogForm";
 import BasicForm from "./BasicForm";
 import OtherForm from "./OtherForm";
@@ -14,6 +14,7 @@ import { AdminCommonProps } from "../../type";
 import BaseTitle from "../../base/BaseTitle";
 import { getPageDataCacheKeyByPath } from "../../utils/cache";
 import { useAxiosBaseInstance } from "../../base/AppBase";
+import { getAppState } from "../../base/ConfigProviderApp";
 
 export interface Basic {
     second_title: string;
@@ -30,6 +31,7 @@ export interface Admin {
     admin_static_resource_base_url: string;
     language: string;
     admin_darkMode: boolean;
+    admin_compactMode: boolean;
     admin_color_primary: string;
     favicon_png_pwa_192_base64: string;
     favicon_png_pwa_512_base64: string;
@@ -71,7 +73,7 @@ const WebSite: FunctionComponent<WebSiteProps> = ({ data, offline, offlineData, 
             <Link
                 to={getRealRouteUrl(toUrl)}
                 replace={true}
-                style={{ color: activeKey === key ? getColorPrimary() : "inherit" }}
+                style={{ color: activeKey === key ? getAppState().colorPrimary : "inherit" }}
             >
                 {text}
             </Link>

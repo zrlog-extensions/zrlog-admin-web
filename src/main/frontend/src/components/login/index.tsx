@@ -4,7 +4,6 @@ import { Button, Col, Form, Input, Layout, message } from "antd";
 import Card from "antd/es/card";
 import Row from "antd/es/grid/row";
 import {
-    getColorPrimary,
     getDefaultLoginInfo,
     getRealRouteUrl,
     getRes,
@@ -23,6 +22,7 @@ import { getCsrData } from "../../api";
 import { BasicUserInfo } from "../../type";
 import { AxiosInstance } from "axios";
 import { getSsDate, ssKeyStorageKey } from "../../base/SsData";
+import { getAppState } from "../../base/ConfigProviderApp";
 
 const md5 = require("md5");
 
@@ -203,7 +203,7 @@ const Index = ({ offline }: { offline: boolean }) => {
     return (
         <PWAHandler>
             {contextHolder}
-            <StyledLoginPage mainColor={getColorPrimary()}>
+            <StyledLoginPage mainColor={getAppState().colorPrimary}>
                 <Content className={classes.content}>
                     <Card
                         cover={

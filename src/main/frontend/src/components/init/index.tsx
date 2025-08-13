@@ -1,13 +1,14 @@
 import { Content } from "antd/es/layout/layout";
 import Card from "antd/es/card";
 import { Button, Col, Form, Input } from "antd";
-import { getBackendServerUrl, getColorPrimary } from "../../utils/constants";
+import { getBackendServerUrl } from "../../utils/constants";
 import Row from "antd/es/grid/row";
 import { LoginOutlined } from "@ant-design/icons";
 import { classes, LoginBg, StyledLoginPage } from "../login";
 import { FunctionComponent, useState } from "react";
 import zh_CN from "antd/es/locale/zh_CN";
 import en_US from "antd/es/locale/en_US";
+import { getAppState } from "../../base/ConfigProviderApp";
 
 const layout = {
     labelCol: { span: 8 },
@@ -46,7 +47,7 @@ const Init: FunctionComponent<InitProps> = ({ onSubmit, lang }) => {
     };
 
     return (
-        <StyledLoginPage mainColor={getColorPrimary()}>
+        <StyledLoginPage mainColor={getAppState().colorPrimary}>
             <Content className={classes.content}>
                 <Card
                     className={classes.card}

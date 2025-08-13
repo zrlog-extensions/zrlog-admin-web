@@ -4,8 +4,9 @@ import Row from "antd/es/grid/row";
 import TextArea from "antd/es/input/TextArea";
 import { EditOutlined } from "@ant-design/icons";
 import { Link } from "react-router-dom";
-import { getColorPrimary, getRes } from "../../utils/constants";
+import { getRes } from "../../utils/constants";
 import { useAxiosBaseInstance } from "../../base/AppBase";
+import { getAppState } from "../../base/ConfigProviderApp";
 
 const layout = {
     labelCol: { span: 4 },
@@ -61,7 +62,7 @@ const EditType: FunctionComponent<EditTypeProps> = ({ record, editSuccessCall, o
                     setShowModel(true);
                 }}
             >
-                <EditOutlined style={{ color: getColorPrimary() }} />
+                <EditOutlined style={{ color: getAppState().colorPrimary }} />
             </Link>
             <Modal title={getRes()["edit"]} open={showModel} onOk={handleOk} onCancel={() => setShowModel(false)}>
                 <Form initialValues={updateForm} onValuesChange={(_k, v) => setValue(v)} {...layout}>

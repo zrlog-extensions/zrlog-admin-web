@@ -1,9 +1,10 @@
 import { CameraOutlined, DeleteFilled, LoadingOutlined } from "@ant-design/icons";
 import Image from "antd/es/image";
 import { FunctionComponent, useState } from "react";
-import { getColorPrimary, getRes } from "../../utils/constants";
+import { getRes } from "../../utils/constants";
 import BaseDragger from "../../common/BaseDragger";
 import { message } from "antd";
+import { getAppState } from "../../base/ConfigProviderApp";
 
 type ThumbnailUploadProps = {
     onChange?: (e: string) => void;
@@ -78,7 +79,7 @@ const ThumbnailUpload: FunctionComponent<ThumbnailUploadProps> = ({ onChange, th
                             top: 0,
                             borderRadius: "0 8px",
                             padding: 12,
-                            background: getColorPrimary() + "5e",
+                            background: getAppState().colorPrimary + "5e",
                             color: "white",
                             fontSize: 20,
                         }}

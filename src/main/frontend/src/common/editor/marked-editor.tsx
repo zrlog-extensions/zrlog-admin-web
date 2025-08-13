@@ -1,7 +1,6 @@
 import CodeMirror, { EditorSelection, EditorState, EditorView } from "@uiw/react-codemirror";
 import { FunctionComponent, useEffect, useMemo, useRef, useState } from "react";
 import { EditorConfig, MarkdownEditorProps } from "./editor.types";
-import EnvUtils from "../../utils/env-utils";
 import { StyledEditor } from "./styles/styled-editor";
 import EditorToolBar from "./editor-tool-bar";
 import { getRes, isDev } from "../../utils/constants";
@@ -15,6 +14,7 @@ import ScrollSync from "./scroll-sync";
 import HtmlPreviewPanel from "./html-preview-panel";
 import { markdownToHtml } from "./utils/marked-utils";
 import { addToCache, getCacheByKey } from "../../utils/cache";
+import { getAppState } from "../../base/ConfigProviderApp";
 
 type MarkdownEditorState = {
     markdownValue: string;
@@ -140,7 +140,7 @@ const MarkedEditor: FunctionComponent<MarkdownEditorProps> = ({
                     editorView={editorRef.current.contentDOM as HTMLElement}
                 />
             )}
-            <div className={EnvUtils.isDarkMode() ? "editor-dark" : "editor-light"} style={{ overflow: "hidden" }}>
+            <div className={getAppState().dark ? "editor-dark" : "editor-light"} style={{ overflow: "hidden" }}>
                 {contextHolder}
                 <EditorToolBar
                     getContainer={getContainer}
@@ -173,7 +173,7 @@ const MarkedEditor: FunctionComponent<MarkdownEditorProps> = ({
                                 onViewChange();
                             }
                         }}
-                        theme={EnvUtils.isDarkMode() ? "dark" : "light"}
+                        theme={getAppState().dark ? "dark" : "light"}
                         extensions={[markdown({ codeLanguages: languages }), EditorView.lineWrapping, i18nExtension]}
                         onCreateEditor={(view) => {
                             editorRef.current = view;
@@ -205,7 +205,7 @@ const MarkedEditor: FunctionComponent<MarkdownEditorProps> = ({
                             display: state.preview ? "block" : "none",
                             minWidth: `calc((100% - ${guttersWidth}px) / 2)`,
                             width: `calc((100% - ${guttersWidth}px) / 2)`,
-                            background: EnvUtils.isDarkMode() ? "#1a1a17" : "inherit",
+                            background: getAppState().dark ? "#1a1a17" : "inherit",
                             paddingTop: 4,
                             paddingBottom: 4,
                             paddingRight: 2,

@@ -1,11 +1,23 @@
 import { ActivityDay } from "./components/index/ActivityGraph";
 
-export type AppState = {
-    dark: boolean;
-    lang: string;
-    colorPrimary: string;
-    offline: boolean;
+export type AppCompactModeState = {
+    compactMode: boolean;
 };
+
+export type AppColorPrimaryState = {
+    colorPrimary: string;
+};
+
+export type AppDarkState = {
+    dark: boolean;
+};
+
+export type AppState = AppCompactModeState &
+    AppColorPrimaryState &
+    AppDarkState & {
+        lang: string;
+        offline: boolean;
+    };
 
 export type UpgradeData = {
     upgrade: boolean;

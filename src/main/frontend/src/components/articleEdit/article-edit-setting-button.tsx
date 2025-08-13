@@ -7,12 +7,12 @@ import Form from "antd/es/form";
 import Switch from "antd/es/switch";
 import ArticleEditTag from "./article-edit-tag";
 import { Drawer, InputRef } from "antd";
-import EnvUtils from "../../utils/env-utils";
 import { SettingFilled, SettingOutlined } from "@ant-design/icons";
 import { RefObject, useState } from "react";
 import { ArticleChangeableValue, ArticleEntry } from "./index.types";
 import Button from "antd/es/button";
 import DigestEditorCard from "./digest-editor-card";
+import { getAppState } from "../../base/ConfigProviderApp";
 
 const ArticleEditSettingButton = ({
     article,
@@ -49,7 +49,7 @@ const ArticleEditSettingButton = ({
                     borderRadius: 8,
                     height: 47,
                     cursor: "pointer",
-                    background: EnvUtils.isDarkMode() ? "#141414" : "white",
+                    background: getAppState().dark ? "#141414" : "white",
                     color: "rgb(102, 102, 102)",
                 }}
                 icon={

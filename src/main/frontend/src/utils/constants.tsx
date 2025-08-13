@@ -42,18 +42,6 @@ export const getDefaultLoginInfo = (): LoginUserInfo => {
     return defaultLoginInfo;
 };
 
-export const getColorPrimary = (): string => {
-    const color: string | undefined = getRes()["admin_color_primary"];
-    if (color === undefined || (color as string).length === 0) {
-        return "#1677ff";
-    }
-    return color;
-};
-
-export const isCompactMode = () => {
-    return getRes()["admin_compactMode"] === true;
-};
-
 export const setRes = (r: Record<string, never>) => {
     getSsDate().resourceInfo = r;
 };
@@ -61,10 +49,6 @@ export const setRes = (r: Record<string, never>) => {
 export const cacheIgnoreReloadTime = "_t";
 
 export const cacheIgnoreReloadKeys = "_t,v";
-
-export const removeRes = () => {
-    getSsDate().resourceInfo = undefined;
-};
 
 export const isDev = () => {
     return process.env.NODE_ENV != "production";

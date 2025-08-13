@@ -1,4 +1,4 @@
-import { getColorPrimary, getRes } from "../../utils/constants";
+import { getRes } from "../../utils/constants";
 import { CheckOutlined, EditOutlined } from "@ant-design/icons";
 import BaseTextArea from "../../common/BaseTextArea";
 import HtmlPreviewPanel from "../../common/editor/html-preview-panel";
@@ -6,6 +6,7 @@ import Card from "antd/es/card";
 import { FunctionComponent, memo, RefObject, useEffect, useRef, useState } from "react";
 import { InputRef } from "antd";
 import { ArticleChangeableValue } from "./index.types";
+import { getAppState } from "../../base/ConfigProviderApp";
 
 type DigestEditorCardProps = {
     digestRef: RefObject<InputRef>;
@@ -75,7 +76,7 @@ const DigestEditorCard: FunctionComponent<DigestEditorCardProps> = memo(
                         onClick={() => {
                             setEditDigest(false);
                         }}
-                        style={{ color: getColorPrimary(), cursor: "pointer" }}
+                        style={{ color: getAppState().colorPrimary, cursor: "pointer" }}
                     />
                 );
             }
@@ -84,7 +85,7 @@ const DigestEditorCard: FunctionComponent<DigestEditorCardProps> = memo(
                     onClick={() => {
                         setEditDigest(true);
                     }}
-                    style={{ color: getColorPrimary(), cursor: "pointer" }}
+                    style={{ color: getAppState().colorPrimary, cursor: "pointer" }}
                 />
             );
         };

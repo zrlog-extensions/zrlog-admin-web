@@ -1,9 +1,9 @@
 import { getRes } from "../../utils/constants";
 import Col from "antd/es/grid/col";
 import TimeAgo from "../../common/TimeAgo";
-import EnvUtils from "../../utils/env-utils";
 import { FunctionComponent } from "react";
 import { Button } from "antd";
+import { getAppState } from "../../base/ConfigProviderApp";
 
 type RubbishTextProps = {
     offline: boolean;
@@ -46,7 +46,7 @@ const RubbishText: FunctionComponent<RubbishTextProps> = ({ offline, rubbish, la
                 paddingRight: 8,
                 height: "auto",
                 cursor: "auto",
-                backgroundColor: fullScreen ? (EnvUtils.isDarkMode() ? "rgb(20 20 20)" : "white") : "inherit",
+                backgroundColor: fullScreen ? (getAppState().dark ? "rgb(20 20 20)" : "white") : "inherit",
             }}
         >
             {tips}

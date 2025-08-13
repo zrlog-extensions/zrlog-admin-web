@@ -2,7 +2,8 @@ import { Input, InputRef, Space, Tag } from "antd";
 import { PlusOutlined, TagOutlined } from "@ant-design/icons";
 import Title from "antd/es/typography/Title";
 import { FunctionComponent, useRef, useState } from "react";
-import { getColorPrimary, getRes } from "../../utils/constants";
+import { getRes } from "../../utils/constants";
+import { getAppState } from "base/ConfigProviderApp";
 
 type ArticleEditTagProps = {
     allTags: string[];
@@ -79,7 +80,7 @@ const ArticleEditTag: FunctionComponent<ArticleEditTagProps> = ({ allTags, keywo
         return (
             <Tag
                 icon={<TagOutlined />}
-                color={getColorPrimary()}
+                color={getAppState().colorPrimary}
                 closable
                 onClose={(e) => {
                     e.preventDefault();
@@ -117,7 +118,7 @@ const ArticleEditTag: FunctionComponent<ArticleEditTagProps> = ({ allTags, keywo
                 onClick={(e) => allTagsOnClick(e)}
                 closable={false}
                 style={{ userSelect: "none", cursor: "pointer" }}
-                color={getColorPrimary()}
+                color={getAppState().colorPrimary}
             >
                 {tag}
             </Tag>
@@ -163,7 +164,7 @@ const ArticleEditTag: FunctionComponent<ArticleEditTagProps> = ({ allTags, keywo
             {!inputVisible && (
                 <>
                     <Space size={[0, 8]} wrap>
-                        <Tag color={getColorPrimary()} onClick={showInput} style={{ userSelect: "none" }}>
+                        <Tag color={getAppState().colorPrimary} onClick={showInput} style={{ userSelect: "none" }}>
                             <PlusOutlined /> {getRes()["tagTips"]}
                         </Tag>
                     </Space>

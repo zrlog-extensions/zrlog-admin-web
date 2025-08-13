@@ -1,9 +1,8 @@
 import { HomeOutlined, MenuFoldOutlined, MenuUnfoldOutlined } from "@ant-design/icons";
 import { Alert, Button, Col, FloatButton, Layout, Row } from "antd";
 
-import { getColorPrimary, getRes } from "../utils/constants";
+import { getRes } from "../utils/constants";
 import { FunctionComponent, PropsWithChildren, useEffect, useState } from "react";
-import EnvUtils from "../utils/env-utils";
 import UserInfo from "./user-info";
 import SliderMenu from "./slider";
 import { BasicUserInfo } from "../type";
@@ -14,6 +13,7 @@ import type { ScreenMap } from "antd/es/_util/responsiveObserver";
 import useBreakpoint from "antd/es/grid/hooks/useBreakpoint";
 import { addToCache, getCacheByKey } from "../utils/cache";
 import StaticSite from "../components/StaticSite";
+import { getAppState } from "../base/ConfigProviderApp";
 
 const { Header, Content, Sider } = Layout;
 
@@ -24,7 +24,6 @@ type AdminManageLayoutProps = PropsWithChildren & {
     basicUserInfo: BasicUserInfo;
     syncStaticSite: boolean;
     systemNotification: string;
-    compact: boolean;
 };
 
 const AdminManageLayout: FunctionComponent<AdminManageLayoutProps> = ({
@@ -35,7 +34,6 @@ const AdminManageLayout: FunctionComponent<AdminManageLayoutProps> = ({
     basicUserInfo,
     syncStaticSite,
     systemNotification,
-    compact,
 }) => {
     const screens = useBreakpoint();
 
@@ -68,11 +66,11 @@ const AdminManageLayout: FunctionComponent<AdminManageLayoutProps> = ({
     };
 
     const getHeaderHeight = () => {
-        return compact ? 54 : 64;
+        return getAppState().compactMode ? 54 : 64;
     };
 
     const getSiderWidth = () => {
-        return compact ? 58 : 70;
+        return getAppState().compactMode ? 58 : 70;
     };
 
     const getMainButton = () => {
@@ -124,7 +122,7 @@ const AdminManageLayout: FunctionComponent<AdminManageLayoutProps> = ({
 
     return (
         <PWAHandler>
-            <StyledIndexLayout>
+            <StyledIndexLayout compactMode={getAppState().compactMode} colorPrimary={getAppState().colorPrimary}>
                 {systemNotification && systemNotification.length > 0 && (
                     <Alert
                         showIcon={true}
@@ -148,7 +146,7 @@ const AdminManageLayout: FunctionComponent<AdminManageLayoutProps> = ({
                         display: fullScreen ? "none" : "flex",
                         justifyContent: "space-between",
                         alignItems: "center",
-                        backgroundColor: EnvUtils.isDarkMode() ? "#1f1f1f" : "#011529",
+                        backgroundColor: getAppState().dark ? "#1f1f1f" : "#011529",
                     }}
                 >
                     {getMainButton()}
@@ -160,7 +158,7 @@ const AdminManageLayout: FunctionComponent<AdminManageLayoutProps> = ({
                                 fontSize: 20,
                                 paddingLeft: 24,
                                 userSelect: "none",
-                                color: getColorPrimary(),
+                                color: getAppState().colorPrimary,
                             }}
                         >
                             {getRes()["admin.offline.desc"]}
@@ -183,7 +181,7 @@ const AdminManageLayout: FunctionComponent<AdminManageLayoutProps> = ({
                             left: hiddenSlider ? `-${getSiderWidth()}px` : "0", // 动画控制显示隐藏
                             height: "100%",
                             transform: fullScreen || hiddenSlider ? "translateX(-100%)" : "translateX(0)",
-                            backgroundColor: EnvUtils.isDarkMode() ? "#1f1f1f" : "#001529",
+                            backgroundColor: getAppState().dark ? "#1f1f1f" : "#001529",
                         }}
                     >
                         <SliderMenu />

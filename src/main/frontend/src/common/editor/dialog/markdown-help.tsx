@@ -1,7 +1,6 @@
-import { Content } from "antd/es/layout/layout";
-import EnvUtils from "../../../utils/env-utils";
 import { StyledPreview } from "../styles/styled-preview";
 import { marked } from "marked";
+import HtmlPreviewPanel from "../html-preview-panel";
 
 const helpMd = `
 ### Markdown语法教程 (Markdown syntax tutorial)
@@ -30,11 +29,7 @@ const MarkdownHelp = () => {
     const helpHtml = marked(helpMd);
     return (
         <StyledPreview style={{ borderRadius: 8 }}>
-            <Content
-                className={"markdown-body"}
-                style={{ padding: 0, background: EnvUtils.isDarkMode() ? "#202020" : "#FFFFFF" }}
-                dangerouslySetInnerHTML={{ __html: helpHtml as string }}
-            />
+            <HtmlPreviewPanel htmlContent={helpHtml as string} />
         </StyledPreview>
     );
 };

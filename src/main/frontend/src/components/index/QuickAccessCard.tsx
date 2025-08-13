@@ -1,8 +1,9 @@
 import { Col, Row, Typography } from "antd";
 import Card from "antd/es/card";
 import { Link } from "react-router-dom";
-import { getColorPrimary, getRealRouteUrl } from "utils/constants";
+import { getRealRouteUrl } from "utils/constants";
 import { DatabaseOutlined, FolderAddFilled, PlusCircleOutlined } from "@ant-design/icons";
+import { getAppState } from "../../base/ConfigProviderApp";
 
 const QuickAccessCard = () => {
     return (
@@ -29,7 +30,7 @@ const QuickAccessCard = () => {
                                     justifyContent: "center",
                                 }}
                             >
-                                <PlusCircleOutlined style={{ fontSize: 28, color: getColorPrimary() }} />
+                                <PlusCircleOutlined style={{ fontSize: 28, color: getAppState().colorPrimary }} />
                                 <Typography.Text style={{ lineHeight: 2, paddingTop: 8, whiteSpace: "nowrap" }}>
                                     写文章
                                 </Typography.Text>
@@ -48,7 +49,7 @@ const QuickAccessCard = () => {
                                     justifyContent: "center",
                                 }}
                             >
-                                <FolderAddFilled style={{ fontSize: 28, color: getColorPrimary() }} />
+                                <FolderAddFilled style={{ fontSize: 28, color: getAppState().colorPrimary }} />
                                 <Typography.Text style={{ lineHeight: 2, paddingTop: 4, whiteSpace: "nowrap" }}>
                                     分类
                                 </Typography.Text>
@@ -67,7 +68,7 @@ const QuickAccessCard = () => {
                                     justifyContent: "center",
                                 }}
                             >
-                                <DatabaseOutlined style={{ fontSize: 28, color: getColorPrimary() }} />
+                                <DatabaseOutlined style={{ fontSize: 28, color: getAppState().colorPrimary }} />
                                 <Typography.Text style={{ lineHeight: 2, paddingTop: 4, whiteSpace: "nowrap" }}>
                                     备份数据
                                 </Typography.Text>

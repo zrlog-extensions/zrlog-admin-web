@@ -1,11 +1,12 @@
 import AppBase, { useAxiosBaseInstance } from "base/AppBase";
 import { FunctionComponent, useEffect, useState } from "react";
-import { getColorPrimary, getRes, isStaticPage, setBackendServerUrl, setRes } from "../utils/constants";
-import EnvUtils, { isOffline } from "../utils/env-utils";
+import { getRes, isStaticPage, setBackendServerUrl, setRes } from "../utils/constants";
 import Init from "../components/init";
 import Spin from "antd/es/spin";
 import UnknownErrorPage from "../components/unknown-error-page";
 import { AppState } from "../type";
+import { changeAppState } from "./ConfigProviderApp";
+import { isOffline } from "../utils/env-utils";
 
 type AppInitProps = {
     offline: boolean;
@@ -19,7 +20,38 @@ type AppInitState = {
     requiredBackendServerUrl: boolean;
 };
 
-const AppInit: FunctionComponent<AppInitProps> = ({ onInit, lang, offline }) => {
+export const getColorPrimaryByRes = (): string => {
+    const color: string | undefined = getRes()["admin_color_primary"];
+    if (color === undefined || (color as string).length === 0) {
+        return "#1677ff";
+    }
+    return color;
+};
+
+const getPreferredColorScheme = (): string => {
+    if (window.matchMedia) {
+        if (window.matchMedia("(prefers-color-scheme: dark)").matches) {
+            return "dark";
+        } else {
+            return "dark";
+        }
+    }
+    return "light";
+};
+
+export const isDarkModeByRes = (): boolean => {
+    const configDarkMode = getRes()["admin_darkMode"];
+    if (configDarkMode !== undefined) {
+        return configDarkMode;
+    }
+    return getPreferredColorScheme() === "dark";
+};
+
+export const isCompactModeByRes = (): boolean => {
+    return getRes()["admin_compactMode"] === true;
+};
+
+const AppInit: FunctionComponent<AppInitProps> = ({ lang, offline }) => {
     const [appState, setAppState] = useState<AppInitState>({
         resLoaded: false,
         resLoadErrorMsg: "",
@@ -68,13 +100,20 @@ const AppInit: FunctionComponent<AppInitProps> = ({ onInit, lang, offline }) => 
         // @ts-ignore
         data.copyrightTips =
             data.copyright + ' <a target="_blank" href="https://blog.zrlog.com/about.html?footer">ZrLog</a>';
-        setRes(data);
-        onInit({
-            offline: isOffline(),
-            lang: data.lang,
-            dark: EnvUtils.isDarkMode(),
-            colorPrimary: getColorPrimary(),
-        });
+        // @ts-ignore
+        if (window.inited === undefined || window.inited === null) {
+            setRes(data);
+            changeAppState({
+                offline: isOffline(),
+                lang: data.lang,
+                dark: isDarkModeByRes(),
+                colorPrimary: getColorPrimaryByRes(),
+                compactMode: isCompactModeByRes(),
+            });
+            // @ts-ignore
+            window.inited = true;
+        }
+
         setAppState((prevState) => {
             return {
                 ...prevState,

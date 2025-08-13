@@ -1,17 +1,17 @@
 import Row from "antd/es/grid/row";
 import Col from "antd/es/grid/col";
-import { getColorPrimary, getRes } from "../../utils/constants";
+import { getRes } from "../../utils/constants";
 
 import { FunctionComponent } from "react";
 import { IndexData } from "../../type";
 import ActivityGraph, { generateCompleteData } from "./ActivityGraph";
 import Card from "antd/es/card";
 import IndexTipBg from "./IndexTipBg";
-import EnvUtils from "../../utils/env-utils";
 import StatisticsInfo from "./StatisticsInfo";
 import styled from "styled-components";
 import BaseTitle from "../../base/BaseTitle";
 import QuickAccessCard from "./QuickAccessCard";
+import { getAppState } from "../../base/ConfigProviderApp";
 
 type IndexProps = {
     data: IndexData;
@@ -25,7 +25,7 @@ const classes = {
 
 const StyledIndex = styled(`div`)({
     [`& .${PREFIX}-card`]: {
-        background: EnvUtils.isDarkMode() ? "#141414" : getColorPrimary(),
+        background: getAppState().dark ? "#141414" : getAppState().colorPrimary,
         padding: 0,
         marginBottom: 8,
         color: "white",

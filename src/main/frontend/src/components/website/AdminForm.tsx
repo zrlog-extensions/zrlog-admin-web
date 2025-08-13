@@ -13,6 +13,7 @@ import FaviconUpload from "./FaviconUpload";
 import { colorPickerBgColors } from "../../utils/helpers";
 import zh_CN from "antd/es/locale/zh_CN";
 import en_US from "antd/es/locale/en_US";
+import { changeAppState, getAppState } from "../../base/ConfigProviderApp";
 
 const layout = {
     labelCol: { span: 8 },
@@ -46,9 +47,32 @@ const BlogForm = ({
         return en_US.Pagination.items_per_page;
     };
 
+    const getPreset = () => {
+        if (getRes()["lang"] === "zh_CN") {
+            // @ts-ignore
+            return "预设";
+        }
+        // @ts-ignore
+        return "preset";
+    };
+
+    const onValueChange = (value: any) => {
+        setState({ ...state, ...value });
+    };
+
+    const getRealState = () => {
+        return {
+            admin_darkMode: getAppState().dark,
+            admin_compactMode: getAppState().compactMode,
+            admin_color_primary: getAppState().colorPrimary,
+        };
+    };
+
     useEffect(() => {
-        setState(data);
-        form.setFieldsValue(data);
+        form.setFieldsValue({
+            ...data,
+            ...getRealState(),
+        });
     }, [data]);
 
     return (
@@ -57,8 +81,10 @@ const BlogForm = ({
             form={form}
             disabled={offline || offlineData}
             initialValues={data}
-            onValuesChange={(_k, v) => setState({ ...state, ...v })}
-            onFinish={(nv) => onSubmit({ ...state, ...nv })}
+            onValuesChange={(nv) => {
+                onValueChange(nv);
+            }}
+            onFinish={(nv) => onSubmit({ ...state, ...nv, ...getRealState() })}
         >
             <Title level={4}>{getRes()["admin.admin.manage"]}</Title>
             <Divider />
@@ -75,10 +101,20 @@ const BlogForm = ({
                 </Select>
             </Form.Item>
             <Form.Item valuePropName="checked" name="admin_darkMode" label={getRes()["admin.dark.mode"]}>
-                <Switch />
+                <Switch
+                    onChange={(admin_darkMode) => {
+                        changeAppState({
+                            dark: admin_darkMode,
+                        });
+                    }}
+                />
             </Form.Item>
             <Form.Item valuePropName="checked" name="admin_compactMode" label={getRes()["admin.compact.mode"]}>
-                <Switch />
+                <Switch
+                    onChange={(admin_compactMode) => {
+                        changeAppState({ compactMode: admin_compactMode });
+                    }}
+                />
             </Form.Item>
             <Form.Item name="admin_article_page_size" label={getRes()["admin_article_page_size"]}>
                 <Select
@@ -106,19 +142,21 @@ const BlogForm = ({
             <Form.Item label={getRes()["admin.color.primary"]}>
                 <div style={{ display: "flex", justifyContent: "flex-start", alignItems: "center" }}>
                     <ColorPicker
-                        value={state.admin_color_primary}
+                        value={getAppState().colorPrimary}
                         onChange={(color) => {
-                            setState({ ...state, admin_color_primary: color.toHexString() });
+                            changeAppState({
+                                colorPrimary: color.toHexString(),
+                            });
                         }}
                         presets={[
                             {
                                 defaultOpen: true,
-                                label: "预设",
+                                label: getPreset(),
                                 colors: colorPickerBgColors,
                             },
                         ]}
                     />
-                    <span style={{ paddingLeft: 8 }}>{state.admin_color_primary}</span>
+                    <span style={{ paddingLeft: 8 }}>{getAppState().colorPrimary}</span>
                 </div>
             </Form.Item>
             <Form.Item name="favicon_png_pwa_192_base64" label={`${getRes()["favicon"]} PWA (192px)`}>

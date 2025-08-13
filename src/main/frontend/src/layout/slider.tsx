@@ -1,6 +1,6 @@
 import React, { CSSProperties, ReactElement, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { getColorPrimary, getRealRouteUrl, getRes } from "../utils/constants";
+import { getRealRouteUrl, getRes } from "../utils/constants";
 import {
     ApiFilled,
     ApiOutlined,
@@ -17,9 +17,9 @@ import {
     SettingOutlined,
 } from "@ant-design/icons";
 import { Menu, MenuProps, Modal } from "antd";
-import EnvUtils from "../utils/env-utils";
 import { useLocation } from "react-router";
 import { tryBlock } from "../utils/helpers";
+import { getAppState } from "../base/ConfigProviderApp";
 
 type MenuItem = Required<MenuProps>["items"][number];
 
@@ -93,7 +93,7 @@ const SliderMenu = () => {
             <Link
                 to={getRealRouteUrl(entry.link)}
                 style={{
-                    color: info.selected && EnvUtils.isDarkMode() ? getColorPrimary() : "#FFF",
+                    color: info.selected && getAppState().dark ? getAppState().colorPrimary : "#FFF",
                 }}
                 onClick={(e) => {
                     tryBlock(e, modal);
@@ -110,7 +110,7 @@ const SliderMenu = () => {
             color: "#FFF",
         };
         if (info.selected) {
-            style.background = colorToRgba(getColorPrimary(), 0.3);
+            style.background = colorToRgba(getAppState().colorPrimary, 0.3);
         }
         if (children.length > 0) {
             return {
@@ -261,10 +261,10 @@ const SliderMenu = () => {
             <Menu
                 selectedKeys={[selectMenu]}
                 items={items}
-                theme={EnvUtils.isDarkMode() ? "light" : "dark"}
+                theme={getAppState().dark ? "light" : "dark"}
                 style={{
                     minHeight: "100%",
-                    backgroundColor: EnvUtils.isDarkMode() ? "#1f1f1f" : "#001529",
+                    backgroundColor: getAppState().dark ? "#1f1f1f" : "#001529",
                     borderInlineEnd: "unset",
                 }}
             />

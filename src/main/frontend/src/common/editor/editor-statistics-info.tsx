@@ -1,7 +1,7 @@
-import EnvUtils from "../../utils/env-utils";
 import { getRes } from "../../utils/constants";
 import { FunctionComponent } from "react";
 import { getBorder } from "./editor-helpers";
+import { getAppState } from "../../base/ConfigProviderApp";
 
 export type EditorStatisticsInfo = {
     contentWordsLength: number;
@@ -35,7 +35,7 @@ const EditorStatistics: FunctionComponent<EditorStatisticsInfoProps> = ({ data, 
                 fontSize: 14,
                 bottom: 0,
                 userSelect: "none",
-                background: EnvUtils.isDarkMode() ? "#141414" : "white",
+                background: getAppState().dark ? "#141414" : "white",
             }}
         >
             <span style={{ padding: 16, paddingLeft: 40, whiteSpace: "nowrap" }}>

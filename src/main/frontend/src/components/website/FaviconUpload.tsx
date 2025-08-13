@@ -3,7 +3,7 @@ import Image from "antd/es/image";
 import Dragger from "antd/es/upload/Dragger";
 import { FunctionComponent } from "react";
 import { RcFile } from "antd/es/upload";
-import { getColorPrimary } from "../../utils/constants";
+import { getAppState } from "../../base/ConfigProviderApp";
 
 type ThumbnailUploadProps = {
     onChange?: (e: string | null) => void;
@@ -61,7 +61,7 @@ const FaviconUpload: FunctionComponent<ThumbnailUploadProps> = ({ onChange, url 
                             top: 0,
                             borderRadius: "0 8px",
                             padding: 4,
-                            background: getColorPrimary() + "5e",
+                            background: getAppState().colorPrimary + "5e",
                             color: "white",
                             fontSize: 16,
                         }}

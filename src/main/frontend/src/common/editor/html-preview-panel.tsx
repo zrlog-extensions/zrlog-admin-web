@@ -1,8 +1,8 @@
-import EnvUtils from "../../utils/env-utils";
 import { StyledHighlightDark } from "./highlight/styled-highlight-dark";
 import { StyledHighlightDefault } from "./highlight/styled-highlight-default";
 import { CSSProperties, FunctionComponent, MutableRefObject, useEffect, useRef } from "react";
 import { StyledPreview } from "./styles/styled-preview";
+import { getAppState } from "../../base/ConfigProviderApp";
 
 export type EditorPreviewProps = {
     htmlContent: string;
@@ -47,7 +47,7 @@ const HtmlPreviewPanel: FunctionComponent<EditorPreviewProps> = ({
 
     return (
         <StyledPreview ref={previewRef} style={style}>
-            {EnvUtils.isDarkMode() ? (
+            {getAppState().dark ? (
                 <StyledHighlightDark {...commonProps} />
             ) : (
                 <StyledHighlightDefault {...commonProps} />

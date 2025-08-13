@@ -4,7 +4,7 @@ import { Space, TableColumnsType, Tag, Tooltip } from "antd";
 import Search from "antd/es/input/Search";
 import Title from "antd/es/typography/Title";
 import Divider from "antd/es/divider";
-import { getColorPrimary, getRealRouteUrl, getRes } from "../../utils/constants";
+import { getRealRouteUrl, getRes } from "../../utils/constants";
 import type * as React from "react";
 import { ReactElement, useEffect, useRef, useState } from "react";
 import BaseTable, { ArticlePageDataSource } from "../../common/BaseTable";
@@ -13,6 +13,7 @@ import { removeCacheDataByKey } from "../../utils/cache";
 import { useLocation } from "react-router";
 import { SortOrder } from "antd/es/table/interface";
 import Image from "antd/es/image";
+import { getAppState } from "../../base/ConfigProviderApp";
 
 const genTypes = (d: ArticlePageDataSource, search: string) => {
     const types = new URLSearchParams(search).get("types") as unknown as string;
@@ -33,7 +34,12 @@ const Index = ({ data, offline }: { data: ArticlePageDataSource; offline: boolea
 
     const tagForMap = (tag: string) => {
         const tagElem = (
-            <Tag icon={<TagOutlined />} closable={false} color={getColorPrimary()} style={{ userSelect: "none" }}>
+            <Tag
+                icon={<TagOutlined />}
+                closable={false}
+                color={getAppState().colorPrimary}
+                style={{ userSelect: "none" }}
+            >
                 {tag}
             </Tag>
         );
@@ -275,7 +281,7 @@ const Index = ({ data, offline }: { data: ArticlePageDataSource; offline: boolea
                 columns={getColumns()}
                 editBtnRender={(id) => (
                     <Link to={getRealRouteUrl("/article-edit?id=" + id)}>
-                        <EditOutlined style={{ color: getColorPrimary() }} />
+                        <EditOutlined style={{ color: getAppState().colorPrimary }} />
                     </Link>
                 )}
                 deleteSuccessCallback={(id) => {
