@@ -7,11 +7,11 @@ import en_US from "antd/es/locale/en_US";
 import { legacyLogicalPropertiesTransformer, StyleProvider } from "@ant-design/cssinjs";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import AppInit, { getColorPrimaryByRes, isCompactModeByRes, isDarkModeByRes } from "./AppInit";
-import { AppColorPrimaryState, AppCompactModeState, AppDarkState, AppState } from "../type";
+import { AppColorPrimaryState, AppCompactModeState, AppDarkState, AppLangState, AppState } from "../type";
 
 const { darkAlgorithm, defaultAlgorithm, compactAlgorithm } = theme;
 
-type ChangeAbleState = AppCompactModeState | AppColorPrimaryState | AppDarkState;
+type ChangeAbleState = AppCompactModeState | AppColorPrimaryState | AppDarkState | AppLangState;
 
 export const changeAppState = (appState: ChangeAbleState | AppState) => {
     //@ts-ignore
@@ -20,7 +20,7 @@ export const changeAppState = (appState: ChangeAbleState | AppState) => {
 
 const getDefaultAppState = (): AppState => {
     return {
-        lang: document.documentElement.lang ? document.documentElement.lang : "zh_CN",
+        lang: "",
         dark: isDarkModeByRes(),
         colorPrimary: getColorPrimaryByRes(),
         offline: isOffline(),
@@ -88,7 +88,7 @@ const ConfigProviderApp = () => {
     return (
         <ConfigProvider
             //key={appState.lang + "_" + appState.dark + "_" + appState.colorPrimary}
-            locale={appState.lang.startsWith("zh") ? zh_CN : en_US}
+            locale={appState.lang.startsWith("en") ? en_US : zh_CN}
             theme={{
                 algorithm: themeAlgorithms,
                 token: {

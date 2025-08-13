@@ -65,6 +65,7 @@ const BlogForm = ({
             admin_darkMode: getAppState().dark,
             admin_compactMode: getAppState().compactMode,
             admin_color_primary: getAppState().colorPrimary,
+            language: getAppState().lang,
         };
     };
 
@@ -88,14 +89,28 @@ const BlogForm = ({
         >
             <Title level={4}>{getRes()["admin.admin.manage"]}</Title>
             <Divider />
-            <Form.Item name="admin_static_resource_base_url" label="管理页静态资源（URL）">
-                <Input style={{ maxWidth: "300px" }} placeholder="留空，及禁用" />
+            <Form.Item name="admin_static_resource_base_url" label={getRes()["adminStaticResourceUrl"]}>
+                <Input style={{ maxWidth: "300px" }} placeholder={getRes()["adminStaticResourceUrlTips"]} />
             </Form.Item>
-            <Form.Item name="session_timeout" label="管理界面会话超时" rules={[{ required: true }]}>
-                <Input suffix="分钟" style={{ maxWidth: "120px" }} max={99999} type={"number"} min={5} placeholder="" />
+            <Form.Item name="session_timeout" label={getRes()["adminSessionTimeout"]} rules={[{ required: true }]}>
+                <Input
+                    suffix={getRes()["adminSessionTimeoutUnit"]}
+                    style={{ maxWidth: "120px" }}
+                    max={99999}
+                    type={"number"}
+                    min={5}
+                    placeholder=""
+                />
             </Form.Item>
             <Form.Item name="language" label={getRes()["language"]}>
-                <Select style={{ maxWidth: "120px" }}>
+                <Select
+                    style={{ maxWidth: "120px" }}
+                    onChange={(lang: string) => {
+                        changeAppState({
+                            lang: lang,
+                        });
+                    }}
+                >
                     <Option value="zh_CN">{getRes()["languageChinese"]}</Option>
                     <Option value="en_US">{getRes()["languageEnglish"]}</Option>
                 </Select>
@@ -175,11 +190,18 @@ const BlogForm = ({
                     }}
                 />
             </Form.Item>
-            <Title level={4}>文章/编辑器设置</Title>
+            <Title level={4}>{getRes()["adminMoreSettings"]}</Title>
             <Divider />
 
-            <Form.Item name="article_auto_digest_length" label="文章自动摘要最大长度">
-                <Input suffix="字" style={{ maxWidth: "120px" }} max={99999} type={"number"} min={-1} placeholder="" />
+            <Form.Item name="article_auto_digest_length" label={getRes()["article_auto_digest_length_tips"]}>
+                <Input
+                    suffix={getRes()["editor.wordsCount"]}
+                    style={{ maxWidth: "120px" }}
+                    max={99999}
+                    type={"number"}
+                    min={-1}
+                    placeholder=""
+                />
             </Form.Item>
             <Divider />
             <Button

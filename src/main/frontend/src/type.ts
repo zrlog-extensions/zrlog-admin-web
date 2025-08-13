@@ -12,10 +12,14 @@ export type AppDarkState = {
     dark: boolean;
 };
 
+export type AppLangState = {
+    lang: string;
+};
+
 export type AppState = AppCompactModeState &
     AppColorPrimaryState &
-    AppDarkState & {
-        lang: string;
+    AppDarkState &
+    AppLangState & {
         offline: boolean;
     };
 

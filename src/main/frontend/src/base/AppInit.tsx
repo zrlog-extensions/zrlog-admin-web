@@ -1,12 +1,11 @@
 import AppBase, { useAxiosBaseInstance } from "base/AppBase";
-import { FunctionComponent, useEffect, useState } from "react";
+import { FunctionComponent, useEffect, useRef, useState } from "react";
 import { getRes, isStaticPage, setBackendServerUrl, setRes } from "../utils/constants";
 import Init from "../components/init";
 import Spin from "antd/es/spin";
 import UnknownErrorPage from "../components/unknown-error-page";
 import { AppState } from "../type";
 import { changeAppState } from "./ConfigProviderApp";
-import { isOffline } from "../utils/env-utils";
 
 type AppInitProps = {
     offline: boolean;
@@ -61,7 +60,7 @@ const AppInit: FunctionComponent<AppInitProps> = ({ lang, offline }) => {
     const axiosInstance = useAxiosBaseInstance();
 
     const loadResourceFromServer = (baseUrl: string) => {
-        const resourceApi = "/api/public/adminResource";
+        const resourceApi = `/api/public/adminResource${lang.length > 0 ? "?lang=" + lang : ""}`;
         if (baseUrl.length > 0) {
             axiosInstance.defaults.baseURL = baseUrl;
         }
@@ -100,11 +99,10 @@ const AppInit: FunctionComponent<AppInitProps> = ({ lang, offline }) => {
         // @ts-ignore
         data.copyrightTips =
             data.copyright + ' <a target="_blank" href="https://blog.zrlog.com/about.html?footer">ZrLog</a>';
+        setRes(data);
         // @ts-ignore
         if (window.inited === undefined || window.inited === null) {
-            setRes(data);
             changeAppState({
-                offline: isOffline(),
                 lang: data.lang,
                 dark: isDarkModeByRes(),
                 colorPrimary: getColorPrimaryByRes(),
@@ -112,6 +110,10 @@ const AppInit: FunctionComponent<AppInitProps> = ({ lang, offline }) => {
             });
             // @ts-ignore
             window.inited = true;
+        } else {
+            changeAppState({
+                lang: data.lang,
+            });
         }
 
         setAppState((prevState) => {
@@ -133,9 +135,19 @@ const AppInit: FunctionComponent<AppInitProps> = ({ lang, offline }) => {
         }
     };
 
+    const langFirst = useRef<boolean>(true);
+
     useEffect(() => {
         initRes();
     }, []);
+
+    useEffect(() => {
+        if (langFirst.current) {
+            langFirst.current = false;
+            return;
+        }
+        loadResourceFromServer("");
+    }, [lang]);
 
     if (appState.requiredBackendServerUrl) {
         return (

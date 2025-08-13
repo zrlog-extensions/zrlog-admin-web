@@ -168,7 +168,8 @@ public class AdminResourceImpl implements AdminResource {
 
     @Override
     public Map<String, Object> adminResourceInfo(HttpRequest request) {
-        Map<String, Object> stringObjectMap = I18nUtil.getAdmin();
+        String lang = request.getParaToStr("lang", I18nUtil.getCurrentLocale());
+        Map<String, Object> stringObjectMap = I18nUtil.getI18nVOCache().getAdmin().get(lang);
         PublicWebSiteInfo publicWebSiteInfo = AdminConstants.getPublicWebSiteInfo();
         stringObjectMap.put("currentVersion", BlogBuildInfoUtil.getBuildId());
         stringObjectMap.put("websiteTitle", publicWebSiteInfo.getTitle());
@@ -186,7 +187,7 @@ public class AdminResourceImpl implements AdminResource {
         stringObjectMap.put("buildId", BlogBuildInfoUtil.getBuildId());
         stringObjectMap.put("appId", publicWebSiteInfo.getAppId());
         stringObjectMap.put("admin_color_primary", publicWebSiteInfo.getAdmin_color_primary());
-        stringObjectMap.put("lang", I18nUtil.getCurrentLocale());
+        stringObjectMap.put("lang", lang);
         stringObjectMap.put("staticPage", BaseStaticSitePlugin.isStaticPluginRequest(request));
         //remove
         stringObjectMap.put("staticPlugin", BaseStaticSitePlugin.isStaticPluginRequest(request));
