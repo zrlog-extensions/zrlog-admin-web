@@ -46,14 +46,14 @@ const BasicForm = ({
         >
             <Title level={4}>{getRes()["admin.basic.manage"]}</Title>
             <Divider />
-            <Form.Item name="title" label="网站标题" rules={[{ required: true }]}>
-                <Input placeholder="请输入网站标题" showCount={true} maxLength={30} />
+            <Form.Item name="title" label={getRes()["title"]} rules={[{ required: true }]}>
+                <Input placeholder="" showCount={true} maxLength={30} />
             </Form.Item>
-            <Form.Item name="second_title" label="网站副标题">
-                <Input placeholder="请输入网站副标题" showCount={true} maxLength={30} />
+            <Form.Item name="second_title" label={getRes()["subTitle"]}>
+                <Input placeholder="" showCount={true} maxLength={30} />
             </Form.Item>
-            <Form.Item name="keywords" label="网站关键词">
-                <Input showCount={true} placeholder="请输入网站关键词" maxLength={40} />
+            <Form.Item name="keywords" label={getRes()["keywords"]}>
+                <Input showCount={true} placeholder="" maxLength={40} />
             </Form.Item>
             <Form.Item name="description" label={getRes()["websiteDesc"]}>
                 <TextArea showCount={true} rows={5} maxLength={160} />

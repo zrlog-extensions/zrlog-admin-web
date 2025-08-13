@@ -131,6 +131,28 @@ const BlogForm = ({
                     }}
                 />
             </Form.Item>
+            <Form.Item label={getRes()["admin.color.primary"]}>
+                <div style={{ display: "flex", justifyContent: "flex-start", alignItems: "center" }}>
+                    <ColorPicker
+                        value={getAppState().colorPrimary}
+                        onChange={(color) => {
+                            changeAppState({
+                                colorPrimary: color.toHexString(),
+                            });
+                        }}
+                        presets={[
+                            {
+                                defaultOpen: true,
+                                label: getPreset(),
+                                colors: colorPickerBgColors,
+                            },
+                        ]}
+                    />
+                    <span style={{ paddingLeft: 8 }}>{getAppState().colorPrimary}</span>
+                </div>
+            </Form.Item>
+            <Title level={4}>{getRes()["adminMoreSettings"]}</Title>
+            <Divider />
             <Form.Item name="admin_article_page_size" label={getRes()["admin_article_page_size"]}>
                 <Select
                     style={{ maxWidth: "120px" }}
@@ -154,26 +176,18 @@ const BlogForm = ({
                     ]}
                 />
             </Form.Item>
-            <Form.Item label={getRes()["admin.color.primary"]}>
-                <div style={{ display: "flex", justifyContent: "flex-start", alignItems: "center" }}>
-                    <ColorPicker
-                        value={getAppState().colorPrimary}
-                        onChange={(color) => {
-                            changeAppState({
-                                colorPrimary: color.toHexString(),
-                            });
-                        }}
-                        presets={[
-                            {
-                                defaultOpen: true,
-                                label: getPreset(),
-                                colors: colorPickerBgColors,
-                            },
-                        ]}
-                    />
-                    <span style={{ paddingLeft: 8 }}>{getAppState().colorPrimary}</span>
-                </div>
+            <Form.Item name="article_auto_digest_length" label={getRes()["article_auto_digest_length_tips"]}>
+                <Input
+                    suffix={getRes()["editor.wordsCount"]}
+                    style={{ maxWidth: "120px" }}
+                    max={99999}
+                    type={"number"}
+                    min={-1}
+                    placeholder=""
+                />
             </Form.Item>
+            <Title level={4}>PWA</Title>
+            <Divider />
             <Form.Item name="favicon_png_pwa_192_base64" label={`${getRes()["favicon"]} PWA (192px)`}>
                 <FaviconUpload
                     url={state.favicon_png_pwa_192_base64}
@@ -188,19 +202,6 @@ const BlogForm = ({
                     onChange={(e) => {
                         setState({ ...state, favicon_png_pwa_512_base64: e ? e : "" });
                     }}
-                />
-            </Form.Item>
-            <Title level={4}>{getRes()["adminMoreSettings"]}</Title>
-            <Divider />
-
-            <Form.Item name="article_auto_digest_length" label={getRes()["article_auto_digest_length_tips"]}>
-                <Input
-                    suffix={getRes()["editor.wordsCount"]}
-                    style={{ maxWidth: "120px" }}
-                    max={99999}
-                    type={"number"}
-                    min={-1}
-                    placeholder=""
                 />
             </Form.Item>
             <Divider />

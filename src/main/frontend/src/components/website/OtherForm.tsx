@@ -7,6 +7,7 @@ import { getRes } from "../../utils/constants";
 import { useEffect, useState } from "react";
 
 import { Other } from "./index";
+import { getAppState } from "../../base/ConfigProviderApp";
 
 const layout = {
     labelCol: { span: 8 },
@@ -45,10 +46,13 @@ const OtherForm = ({
         >
             <Title level={4}>{getRes()["admin.other.manage"]}</Title>
             <Divider />
-            <Form.Item name="icp" label="ICP备案信息">
-                <TextArea />
-            </Form.Item>
-            <Form.Item name="webCm" label="网站统计">
+            {getAppState().lang == "zh_CN" && (
+                <Form.Item name="icp" label="ICP备案信息">
+                    <TextArea />
+                </Form.Item>
+            )}
+
+            <Form.Item name="webCm" label={getRes()["website.statistics"]}>
                 <TextArea rows={7} />
             </Form.Item>
             <Form.Item name="robotRuleContent" label="robots.txt">
