@@ -23,7 +23,7 @@ const StatisticsInfo = ({ data, versionInfo }: { data: StatisticsInfoState; vers
                 }}
             >
                 {icon}
-                <Typography.Text style={{ fontSize: 18, lineHeight: 28 }} ellipsis={true}>
+                <Typography.Text style={{ fontSize: 18, lineHeight: 1.5 }} ellipsis={true}>
                     {text}
                 </Typography.Text>
             </div>

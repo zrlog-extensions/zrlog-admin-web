@@ -110,7 +110,6 @@ const ConfigProviderApp = () => {
                 styles: {
                     header: {
                         padding: "0 8px",
-                        lineHeight: 24,
                         minHeight: appState.compactMode ? 36 : 42,
                     },
                     body: {
