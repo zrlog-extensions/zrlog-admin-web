@@ -47,17 +47,18 @@ const ConfigProviderApp = () => {
         });
     };
 
+    //@ts-ignore
+    window.changeAppState = (newAppState: ChangeAbleState) => {
+        setState((prevState) => {
+            gAppState = {
+                ...prevState,
+                ...newAppState,
+            };
+            return gAppState;
+        });
+    };
+
     useEffect(() => {
-        //@ts-ignore
-        window.changeAppState = (newAppState: ChangeAbleState) => {
-            setState((prevState) => {
-                gAppState = {
-                    ...prevState,
-                    ...newAppState,
-                };
-                return gAppState;
-            });
-        };
         window.addEventListener("online", updateOnlineStatus);
         window.addEventListener("offline", updateOnlineStatus);
         // Cleanup event listeners on component unmount
