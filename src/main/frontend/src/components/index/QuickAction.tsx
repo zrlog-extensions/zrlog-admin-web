@@ -1,14 +1,14 @@
 import { Col, Row, Typography } from "antd";
 import Card from "antd/es/card";
 import { Link } from "react-router-dom";
-import { getRealRouteUrl } from "utils/constants";
+import { getRealRouteUrl, getRes } from "utils/constants";
 import { DatabaseOutlined, FolderAddFilled, PlusCircleOutlined } from "@ant-design/icons";
 import { getAppState } from "../../base/ConfigProviderApp";
 
-const QuickAccessCard = () => {
+const QuickActionCard = () => {
     return (
         <Card
-            title={"快捷操作"}
+            title={getRes()["quickAction"]}
             styles={{
                 body: {
                     overflow: "auto",
@@ -32,7 +32,7 @@ const QuickAccessCard = () => {
                             >
                                 <PlusCircleOutlined style={{ fontSize: 28, color: getAppState().colorPrimary }} />
                                 <Typography.Text style={{ lineHeight: 2, paddingTop: 8, whiteSpace: "nowrap" }}>
-                                    写文章
+                                    {getRes()["writeArticle"]}
                                 </Typography.Text>
                             </div>
                         </Card>
@@ -50,8 +50,8 @@ const QuickAccessCard = () => {
                                 }}
                             >
                                 <FolderAddFilled style={{ fontSize: 28, color: getAppState().colorPrimary }} />
-                                <Typography.Text style={{ lineHeight: 2, paddingTop: 4, whiteSpace: "nowrap" }}>
-                                    分类
+                                <Typography.Text style={{ lineHeight: 2, paddingTop: 8, whiteSpace: "nowrap" }}>
+                                    {getRes()["admin.type.manage"]}
                                 </Typography.Text>
                             </div>
                         </Card>
@@ -69,8 +69,8 @@ const QuickAccessCard = () => {
                                 }}
                             >
                                 <DatabaseOutlined style={{ fontSize: 28, color: getAppState().colorPrimary }} />
-                                <Typography.Text style={{ lineHeight: 2, paddingTop: 4, whiteSpace: "nowrap" }}>
-                                    备份数据
+                                <Typography.Text style={{ lineHeight: 2, paddingTop: 8, whiteSpace: "nowrap" }}>
+                                    {getRes()["backupFiles"]}
                                 </Typography.Text>
                             </div>
                         </Card>
@@ -81,4 +81,4 @@ const QuickAccessCard = () => {
     );
 };
 
-export default QuickAccessCard;
+export default QuickActionCard;

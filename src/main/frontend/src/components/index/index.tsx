@@ -10,7 +10,7 @@ import IndexTipBg from "./IndexTipBg";
 import StatisticsInfo from "./StatisticsInfo";
 import styled from "styled-components";
 import BaseTitle from "../../base/BaseTitle";
-import QuickAccessCard from "./QuickAccessCard";
+import QuickActionCard from "./QuickAction";
 import { getAppState } from "../../base/ConfigProviderApp";
 
 type IndexProps = {
@@ -85,7 +85,7 @@ const Index: FunctionComponent<IndexProps> = ({ data }) => {
                     >
                         <ActivityGraph data={generateCompleteData(data.activityData)} />
                     </Card>
-                    <QuickAccessCard />
+                    <QuickActionCard />
                 </Col>
             </Row>
         </StyledIndex>
