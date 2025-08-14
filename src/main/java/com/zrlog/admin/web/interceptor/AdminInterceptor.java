@@ -1,7 +1,6 @@
 package com.zrlog.admin.web.interceptor;
 
 import com.hibegin.common.util.EnvKit;
-import com.hibegin.common.util.LoggerUtil;
 import com.hibegin.common.util.StringUtils;
 import com.hibegin.http.HttpMethod;
 import com.hibegin.http.server.api.HandleAbleInterceptor;
@@ -10,33 +9,28 @@ import com.hibegin.http.server.api.HttpResponse;
 import com.hibegin.http.server.web.MethodInterceptor;
 import com.zrlog.admin.business.AdminConstants;
 import com.zrlog.admin.util.AdminWebTools;
-import com.zrlog.admin.util.PluginUtils;
 import com.zrlog.admin.web.annotation.RefreshCache;
 import com.zrlog.admin.web.annotation.RequestLock;
 import com.zrlog.admin.web.token.AdminTokenThreadLocal;
 import com.zrlog.business.plugin.PluginCorePlugin;
+import com.zrlog.business.util.CacheUtils;
 import com.zrlog.common.Constants;
 import com.zrlog.common.TokenService;
-import com.zrlog.common.cache.vo.BaseDataInitVO;
 import com.zrlog.common.exception.ArgsException;
 import com.zrlog.common.exception.ResourceLockedException;
 import com.zrlog.common.vo.AdminFullTokenVO;
 import com.zrlog.data.service.DistributedLock;
 import com.zrlog.plugin.BaseStaticSitePlugin;
-import com.zrlog.util.ThreadUtils;
 
 import java.lang.reflect.Method;
+import java.util.Arrays;
 import java.util.Objects;
 import java.util.concurrent.locks.Lock;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  * 负责全部后台请求的处理（/admin/plugins/*,/api/admin/plugins/* 除外）
  */
 public class AdminInterceptor implements HandleAbleInterceptor {
-
-    private static final Logger LOGGER = LoggerUtil.getLogger(AdminInterceptor.class);
 
     private void validPluginToken(HttpRequest request) {
         String requestToken = request.getHeader("X-Plugin-Token");
@@ -50,10 +44,6 @@ public class AdminInterceptor implements HandleAbleInterceptor {
     }
 
     private void doRefreshCache(HttpRequest request, Method method) {
-        if (Objects.equals(request.getAttr().get(AdminConstants.SYNC_UPDATE_CACHE_KEY), true)) {
-            updateCache(false, request);
-            return;
-        }
         RefreshCache annotation = method.getAnnotation(RefreshCache.class);
         if (Objects.nonNull(annotation)) {
             //跳过非更新
@@ -62,24 +52,10 @@ public class AdminInterceptor implements HandleAbleInterceptor {
             }
             //FaaS 强制同步完成请求
             boolean async = annotation.async() && !EnvKit.isFaaSMode();
-            updateCache(async, request);
+            CacheUtils.updateCache(async, request, Arrays.asList(annotation.updateStaticSites()));
         }
     }
 
-    private void updateCache(boolean async, HttpRequest request) {
-        try {
-            BaseDataInitVO initVO = Constants.zrLogConfig.getCacheService().refreshInitData();
-            if (async) {
-                ThreadUtils.start(() -> {
-                    PluginUtils.refreshPluginCacheData(initVO.getVersion() + "", request);
-                });
-            } else {
-                PluginUtils.refreshPluginCacheData(initVO.getVersion() + "", request);
-            }
-        } catch (Exception e) {
-            LOGGER.log(Level.SEVERE, "Refresh cache error ", e);
-        }
-    }
 
     private Lock getLock(Method method, HttpRequest request) {
         if (Objects.isNull(method)) {

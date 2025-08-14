@@ -8,6 +8,7 @@ import com.zrlog.admin.business.rest.response.AdminApiPageDataStandardResponse;
 import com.zrlog.admin.business.rest.response.UpdateRecordResponse;
 import com.zrlog.admin.web.annotation.RefreshCache;
 import com.zrlog.admin.web.annotation.RequestLock;
+import com.zrlog.business.plugin.type.StaticSiteType;
 import com.zrlog.business.util.ControllerUtil;
 import com.zrlog.common.cache.dto.LinkDTO;
 import com.zrlog.common.controller.BaseController;
@@ -20,7 +21,7 @@ import java.util.Objects;
 
 public class LinkController extends BaseController {
 
-    @RefreshCache(async = true)
+    @RefreshCache(async = true, updateStaticSites = StaticSiteType.BLOG)
     @ResponseBody
     @RequestLock
     public UpdateRecordResponse delete() throws SQLException {
@@ -31,11 +32,11 @@ public class LinkController extends BaseController {
         return new UpdateRecordResponse(new Link().deleteById(id));
     }
 
-    @RefreshCache(async = true)
+    @RefreshCache(async = true, updateStaticSites = StaticSiteType.BLOG)
     @ResponseBody
     @RequestLock
     public UpdateRecordResponse update() throws IOException, SQLException {
-        UpdateLinkRequest typeRequest = getRequestBodyWithNullCheck( UpdateLinkRequest.class);
+        UpdateLinkRequest typeRequest = getRequestBodyWithNullCheck(UpdateLinkRequest.class);
         new Link().set("linkName", typeRequest.getLinkName())
                 .set("sort", typeRequest.getSort())
                 .set("url", typeRequest.getUrl())
@@ -46,14 +47,14 @@ public class LinkController extends BaseController {
 
     @ResponseBody
     public AdminApiPageDataStandardResponse<PageData<LinkDTO>> index() throws SQLException {
-        return new AdminApiPageDataStandardResponse<>(new Link().find(ControllerUtil.unPageRequest()),"", request.getUri());
+        return new AdminApiPageDataStandardResponse<>(new Link().find(ControllerUtil.unPageRequest()), "", request.getUri());
     }
 
-    @RefreshCache(async = true)
+    @RefreshCache(async = true, updateStaticSites = StaticSiteType.BLOG)
     @ResponseBody
     @RequestLock
     public UpdateRecordResponse add() throws IOException, SQLException {
-        CreateLinkRequest typeRequest = getRequestBodyWithNullCheck( CreateLinkRequest.class);
+        CreateLinkRequest typeRequest = getRequestBodyWithNullCheck(CreateLinkRequest.class);
         return new UpdateRecordResponse(new Link().set("linkName", typeRequest.getLinkName())
                 .set("sort", Objects.requireNonNullElse(typeRequest.getSort(), 0))
                 .set("url", typeRequest.getUrl()).set("alt", Objects.requireNonNullElse(typeRequest.getAlt(), "")).save());

@@ -25,7 +25,6 @@ public class AdminConstants {
     public static final String INDEX_URI_PATH = "/index";
     public static final String ADMIN_PWA_MANIFEST_JSON = ADMIN_URI_BASE_PATH + "/manifest.json";
     public static final String ADMIN_SERVICE_WORKER_JS = ADMIN_URI_BASE_PATH + "/service-worker.js";
-    public static final String SYNC_UPDATE_CACHE_KEY = "syncUpdateCache";
 
     public static final String FAVICON_ICO_URI_PATH = "/favicon.ico";
     public static final String FAVICON_PNG_PWA_192_URI_PATH = ADMIN_URI_BASE_PATH + "/pwa/icon/favicon-192.png";

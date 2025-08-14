@@ -7,6 +7,7 @@ import com.zrlog.admin.business.rest.response.AdminApiPageDataStandardResponse;
 import com.zrlog.admin.business.rest.response.UpdateRecordResponse;
 import com.zrlog.admin.business.service.AdminCommentService;
 import com.zrlog.admin.web.annotation.RefreshCache;
+import com.zrlog.business.plugin.type.StaticSiteType;
 import com.zrlog.business.util.ControllerUtil;
 import com.zrlog.common.controller.BaseController;
 import com.zrlog.common.rest.response.StandardResponse;
@@ -18,7 +19,7 @@ public class CommentController extends BaseController {
 
     private final AdminCommentService commentService = new AdminCommentService();
 
-    @RefreshCache
+    @RefreshCache(updateStaticSites = StaticSiteType.BLOG)
     @ResponseBody
     public StandardResponse delete() throws SQLException {
         return commentService.delete(getParamWithEmptyCheck("id").split(","));

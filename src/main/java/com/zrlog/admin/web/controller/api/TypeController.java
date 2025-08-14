@@ -10,6 +10,7 @@ import com.zrlog.admin.business.rest.response.UpdateRecordResponse;
 import com.zrlog.admin.business.service.ArticleTypeService;
 import com.zrlog.admin.web.annotation.RefreshCache;
 import com.zrlog.admin.web.annotation.RequestLock;
+import com.zrlog.business.plugin.type.StaticSiteType;
 import com.zrlog.business.util.ControllerUtil;
 import com.zrlog.common.Constants;
 import com.zrlog.common.cache.dto.TypeDTO;
@@ -24,7 +25,7 @@ import java.util.Objects;
 
 public class TypeController extends BaseController {
 
-    @RefreshCache(async = true)
+    @RefreshCache(async = true, updateStaticSites = StaticSiteType.BLOG)
     @ResponseBody
     @RequestLock
     public UpdateRecordResponse delete() throws SQLException {
@@ -40,7 +41,7 @@ public class TypeController extends BaseController {
         return new AdminApiPageDataStandardResponse<>(new ArticleTypeService().find(ZrLogUtil.getHomeUrlWithHost(request), ControllerUtil.unPageRequest(), Constants.isStaticHtmlStatus()), "", request.getUri());
     }
 
-    @RefreshCache(async = true)
+    @RefreshCache(async = true, updateStaticSites = StaticSiteType.BLOG)
     @ResponseBody
     @RequestLock
     public UpdateRecordResponse add() throws IOException, SQLException {
@@ -50,7 +51,7 @@ public class TypeController extends BaseController {
     }
 
 
-    @RefreshCache(async = true)
+    @RefreshCache(async = true, updateStaticSites = StaticSiteType.BLOG)
     @ResponseBody
     @RequestLock
     public UpdateRecordResponse update() throws IOException, SQLException {

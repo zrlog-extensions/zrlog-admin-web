@@ -13,6 +13,7 @@ import com.zrlog.admin.web.annotation.RefreshCache;
 import com.zrlog.admin.web.annotation.RequestLock;
 import com.zrlog.admin.web.plugin.UpdateVersionInfoPlugin;
 import com.zrlog.admin.web.type.AutoUpgradeVersionType;
+import com.zrlog.business.plugin.type.StaticSiteType;
 import com.zrlog.common.Constants;
 import com.zrlog.common.cache.vo.BaseDataInitVO;
 import com.zrlog.common.controller.BaseController;
@@ -50,7 +51,7 @@ public class WebSiteController extends BaseController {
         return basic();
     }
 
-    @RefreshCache(onlyOnPostMethod = true)
+    @RefreshCache(onlyOnPostMethod = true, updateStaticSites = {StaticSiteType.BLOG, StaticSiteType.ADMIN})
     @RequestLock(onlyOnPostMethod = true)
     @ResponseBody
     public AdminApiPageDataStandardResponse<BasicWebSiteInfo> basic() throws SQLException {
@@ -78,7 +79,7 @@ public class WebSiteController extends BaseController {
         return updateResponse;
     }
 
-    @RefreshCache(onlyOnPostMethod = true)
+    @RefreshCache(onlyOnPostMethod = true, updateStaticSites = StaticSiteType.BLOG)
     @RequestLock(onlyOnPostMethod = true)
     @ResponseBody
     public AdminApiPageDataStandardResponse<BlogWebSiteInfo> blog() throws SQLException {
@@ -88,7 +89,7 @@ public class WebSiteController extends BaseController {
         return new AdminApiPageDataStandardResponse<>(webSiteService.blogWebSiteInfo(), I18nUtil.getAdminBackendStringFromRes("updateSuccess"), request.getUri());
     }
 
-    @RefreshCache(onlyOnPostMethod = true)
+    @RefreshCache(onlyOnPostMethod = true, updateStaticSites = StaticSiteType.BLOG)
     @RequestLock(onlyOnPostMethod = true)
     @ResponseBody
     public AdminApiPageDataStandardResponse<OtherWebSiteInfo> other() throws SQLException {
@@ -98,7 +99,7 @@ public class WebSiteController extends BaseController {
         return new AdminApiPageDataStandardResponse<>(webSiteService.other(), I18nUtil.getAdminBackendStringFromRes("updateSuccess"), request.getUri());
     }
 
-    @RefreshCache(onlyOnPostMethod = true)
+    @RefreshCache(onlyOnPostMethod = true, updateStaticSites = StaticSiteType.ADMIN)
     @RequestLock(onlyOnPostMethod = true)
     @ResponseBody
     public AdminApiPageDataStandardResponse<AdminWebSiteInfo> admin() throws SQLException {

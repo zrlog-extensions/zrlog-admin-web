@@ -1,5 +1,6 @@
 package com.zrlog.admin.web.controller.api;
 
+import com.hibegin.common.util.EnvKit;
 import com.hibegin.common.util.FileUtils;
 import com.hibegin.common.util.StringUtils;
 import com.hibegin.http.HttpMethod;
@@ -15,6 +16,7 @@ import com.zrlog.admin.util.AdminTemplateUtils;
 import com.zrlog.admin.web.annotation.RefreshCache;
 import com.zrlog.admin.web.annotation.RequestLock;
 import com.zrlog.admin.web.token.AdminTokenThreadLocal;
+import com.zrlog.business.plugin.type.StaticSiteType;
 import com.zrlog.business.template.HtmlTemplateProcessor;
 import com.zrlog.common.Constants;
 import com.zrlog.common.controller.BaseController;
@@ -38,7 +40,7 @@ public class TemplateController extends BaseController {
     private final TemplateService templateService = new TemplateService();
 
 
-    @RefreshCache
+    @RefreshCache(updateStaticSites = StaticSiteType.BLOG)
     @ResponseBody
     @RequestLock
     public AdminApiPageDataStandardResponse<Void> apply() throws SQLException {
@@ -56,9 +58,14 @@ public class TemplateController extends BaseController {
         return apiStandardResponse;
     }
 
-    @RefreshCache
     @ResponseBody
     public AdminApiPageDataStandardResponse<Void> preview() {
+        if (EnvKit.isFaaSMode()) {
+            AdminApiPageDataStandardResponse<Void> apiStandardResponse = new AdminApiPageDataStandardResponse<>();
+            apiStandardResponse.setError(1);
+            apiStandardResponse.setMessage("Not support preview");
+            return apiStandardResponse;
+        }
         String template = AdminTemplateUtils.loadTemplatePathByRequestInfo(this);
         Cookie cookie = new Cookie();
         cookie.setName("template");
@@ -82,7 +89,6 @@ public class TemplateController extends BaseController {
         return apiStandardResponse;
     }
 
-    @RefreshCache
     @ResponseBody
     public UploadTemplateResponse upload() throws IOException {
         String uploadFieldName = "file";
@@ -93,7 +99,7 @@ public class TemplateController extends BaseController {
         return templateService.upload("", templateName);
     }
 
-    @RefreshCache
+    @RefreshCache(updateStaticSites = StaticSiteType.BLOG)
     @ResponseBody
     @RequestMethod(method = HttpMethod.POST)
     @RequestLock

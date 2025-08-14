@@ -2,7 +2,6 @@ package com.zrlog.admin.web.controller.api;
 
 import com.hibegin.common.util.StringUtils;
 import com.hibegin.http.annotation.ResponseBody;
-import com.zrlog.admin.business.AdminConstants;
 import com.zrlog.admin.business.exception.PermissionErrorException;
 import com.zrlog.admin.business.rest.request.CreateArticleRequest;
 import com.zrlog.admin.business.rest.request.UpdateArticleRequest;
@@ -10,6 +9,8 @@ import com.zrlog.admin.business.rest.response.*;
 import com.zrlog.admin.business.service.AdminArticleService;
 import com.zrlog.admin.web.annotation.RefreshCache;
 import com.zrlog.admin.web.token.AdminTokenThreadLocal;
+import com.zrlog.business.plugin.type.StaticSiteType;
+import com.zrlog.business.util.CacheUtils;
 import com.zrlog.business.util.ControllerUtil;
 import com.zrlog.common.controller.BaseController;
 import com.zrlog.common.exception.ArgsException;
@@ -18,6 +19,7 @@ import com.zrlog.util.I18nUtil;
 import com.zrlog.util.ZrLogUtil;
 
 import java.sql.SQLException;
+import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.ExecutionException;
 
@@ -25,7 +27,7 @@ public class AdminArticleController extends BaseController {
 
     private final AdminArticleService articleService = new AdminArticleService();
 
-    @RefreshCache(async = true)
+    @RefreshCache(async = true, updateStaticSites = StaticSiteType.BLOG)
     @ResponseBody
     public AdminApiPageDataStandardResponse<DeleteLogResponse> delete() throws SQLException {
         if (ZrLogUtil.isPreviewMode()) {
@@ -52,7 +54,7 @@ public class AdminArticleController extends BaseController {
         LoadEditArticleResponse loadEditArticleResponse = detail.getData().getArticle();
         //为发布状态才需要更新缓存信息（避免无用更新）
         if (Objects.equals(loadEditArticleResponse.isRubbish(), false)) {
-            request.getAttr().put(AdminConstants.SYNC_UPDATE_CACHE_KEY, true);
+            CacheUtils.updateCache(false, request, List.of(StaticSiteType.BLOG));
         }
         detail.setMessage(getResponseMsg(createOrUpdateArticleResponse));
         return detail;
