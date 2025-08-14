@@ -10,7 +10,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * 当Controller的方法变更到了 {@link BaseDataInitVO} 的数据时，需要清除缓存数据
+ * 当Controller的方法变更到了 {@link BaseDataInitVO} 的数据时，需要刷新缓存数据
  */
 @Target(value = ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)
