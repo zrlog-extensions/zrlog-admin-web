@@ -103,7 +103,7 @@ public class UpdateVersionInfoPlugin implements IPlugin {
      * 获取最新的版本信息。
      *
      * @param fetch 是否发起新的请求
-     * @return
+     * @return 版本信息
      */
     public Version getLastVersion(boolean fetch) {
         if (updateVersionTimerTask == null) {
