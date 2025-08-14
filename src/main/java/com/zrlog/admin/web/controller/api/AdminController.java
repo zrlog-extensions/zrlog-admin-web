@@ -82,7 +82,7 @@ public class AdminController extends BaseController {
      * 触发更新缓存
      */
     @ResponseBody
-    @RefreshCache(async = true, updateStaticSites = {StaticSiteType.ADMIN, StaticSiteType.BLOG})
+    @RefreshCache(updateStaticSites = {StaticSiteType.ADMIN, StaticSiteType.BLOG})
     public UpdateRecordResponse refreshCache() {
         return new UpdateRecordResponse();
     }
