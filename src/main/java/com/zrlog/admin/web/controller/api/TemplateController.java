@@ -60,7 +60,7 @@ public class TemplateController extends BaseController {
 
     @ResponseBody
     public AdminApiPageDataStandardResponse<Void> preview() {
-        if (EnvKit.isDevMode()) {
+        if (EnvKit.isFaaSMode()) {
             AdminApiPageDataStandardResponse<Void> apiStandardResponse = new AdminApiPageDataStandardResponse<>();
             apiStandardResponse.setError(1);
             apiStandardResponse.setMessage("Not support preview");
