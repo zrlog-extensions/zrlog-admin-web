@@ -9,6 +9,7 @@ import com.hibegin.http.server.ApplicationContext;
 import com.zrlog.admin.business.AdminConstants;
 import com.zrlog.admin.business.service.AdminResource;
 import com.zrlog.business.plugin.StaticSitePlugin;
+import com.zrlog.business.plugin.type.StaticSiteType;
 import com.zrlog.common.ZrLogConfig;
 import com.zrlog.data.dto.FaviconBase64DTO;
 import com.zrlog.model.WebSite;
@@ -148,5 +149,10 @@ public class AdminStaticResourcePlugin extends BaseLockObject implements StaticS
     @Override
     public List<File> getCacheFiles() {
         return cacheFiles;
+    }
+
+    @Override
+    public StaticSiteType getType() {
+        return StaticSiteType.ADMIN;
     }
 }

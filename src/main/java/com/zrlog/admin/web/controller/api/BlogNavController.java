@@ -8,6 +8,7 @@ import com.zrlog.admin.business.rest.response.AdminApiPageDataStandardResponse;
 import com.zrlog.admin.business.rest.response.UpdateRecordResponse;
 import com.zrlog.admin.web.annotation.RefreshCache;
 import com.zrlog.admin.web.annotation.RequestLock;
+import com.zrlog.business.plugin.type.StaticSiteType;
 import com.zrlog.business.util.ControllerUtil;
 import com.zrlog.common.cache.dto.LogNavDTO;
 import com.zrlog.common.controller.BaseController;
@@ -19,7 +20,7 @@ import java.util.Objects;
 
 public class BlogNavController extends BaseController {
 
-    @RefreshCache(async = true)
+    @RefreshCache(async = true, updateStaticSites = StaticSiteType.BLOG)
     @ResponseBody
     @RequestLock
     public UpdateRecordResponse delete() throws SQLException {
@@ -40,7 +41,7 @@ public class BlogNavController extends BaseController {
         return new AdminApiPageDataStandardResponse<>(mapPageData, "", request.getUri());
     }
 
-    @RefreshCache(async = true)
+    @RefreshCache(async = true, updateStaticSites = StaticSiteType.BLOG)
     @ResponseBody
     @RequestLock
     public UpdateRecordResponse add() throws IOException, SQLException {
@@ -49,7 +50,7 @@ public class BlogNavController extends BaseController {
                 createNavRequest.getUrl()).set("sort", createNavRequest.getSort()).save());
     }
 
-    @RefreshCache(async = true)
+    @RefreshCache(async = true, updateStaticSites = StaticSiteType.BLOG)
     @ResponseBody
     @RequestLock
     public UpdateRecordResponse update() throws IOException, SQLException {

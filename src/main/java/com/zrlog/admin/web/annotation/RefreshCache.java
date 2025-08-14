@@ -1,6 +1,7 @@
 package com.zrlog.admin.web.annotation;
 
 
+import com.zrlog.business.plugin.type.StaticSiteType;
 import com.zrlog.common.cache.vo.BaseDataInitVO;
 
 import java.lang.annotation.ElementType;
@@ -21,4 +22,6 @@ public @interface RefreshCache {
     boolean async() default false;
 
     boolean onlyOnPostMethod() default false;
+
+    StaticSiteType[] updateStaticSites();
 }

@@ -17,6 +17,7 @@ import com.zrlog.admin.web.annotation.RefreshCache;
 import com.zrlog.admin.web.controller.page.AdminPageController;
 import com.zrlog.blog.web.util.WebTools;
 import com.zrlog.business.exception.MissingInstallException;
+import com.zrlog.business.plugin.type.StaticSiteType;
 import com.zrlog.common.Constants;
 import com.zrlog.common.controller.BaseController;
 import com.zrlog.common.vo.PublicWebSiteInfo;
@@ -81,7 +82,7 @@ public class AdminController extends BaseController {
      * 触发更新缓存
      */
     @ResponseBody
-    @RefreshCache(async = true)
+    @RefreshCache(async = true, updateStaticSites = {StaticSiteType.ADMIN, StaticSiteType.BLOG})
     public UpdateRecordResponse refreshCache() {
         return new UpdateRecordResponse();
     }

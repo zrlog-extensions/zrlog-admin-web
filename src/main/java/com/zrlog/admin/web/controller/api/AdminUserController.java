@@ -15,6 +15,7 @@ import com.zrlog.admin.business.rest.response.UserInfoResponse;
 import com.zrlog.admin.business.service.UserService;
 import com.zrlog.admin.web.annotation.RefreshCache;
 import com.zrlog.admin.web.token.AdminTokenThreadLocal;
+import com.zrlog.business.plugin.type.StaticSiteType;
 import com.zrlog.common.controller.BaseController;
 import com.zrlog.common.vo.AdminTokenVO;
 import com.zrlog.util.I18nUtil;
@@ -58,7 +59,7 @@ public class AdminUserController extends BaseController {
         return new AdminApiPageDataStandardResponse<>(userService.getUserInfoWithCache(adminTokenVO.getUserId(), adminTokenVO.getSessionId()), "", request.getUri());
     }
 
-    @RefreshCache
+    @RefreshCache(updateStaticSites = StaticSiteType.BLOG)
     @ResponseBody
     @RequestMethod(method = HttpMethod.POST)
     public UpdateRecordResponse update() throws SQLException {
