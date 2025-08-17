@@ -48,13 +48,13 @@ public class WarUpdateVersionHandle implements Serializable, UpdateVersionHandle
             if (Objects.isNull(backup)) {
                 backup = updater.backup();
             }
-            sb.append("- ").append(backendRes.get("upgradeBackup")).append(backup).append("\n");
+            sb.append("- ").append(backendRes.get("upgradeBackup")).append(" ").append(backup).append("\n");
             message = sb.toString();
             if (Objects.isNull(upgradeFile)) {
                 updater.restartProcessAsync(version);
                 upgradeFile = updater.buildUpgradeFile(file.toString(), upgradeKey);
             }
-            sb.append("- ").append(backendRes.get("upgradeMerge")).append(upgradeFile).append("\n");
+            sb.append("- ").append(backendRes.get("upgradeMerge")).append(" ").append(upgradeFile).append("\n");
             sb.append("- ").append(backendRes.get("upgradeRestarting")).append("\n");
             message = sb.toString();
             finish = true;
