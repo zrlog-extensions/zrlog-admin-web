@@ -22,7 +22,8 @@ public class AdminStaticSiteController extends BaseController {
     @RequestLock
     public AdminApiPageDataStandardResponse<AdminStaticSiteSyncResponse> startSync() {
         if (StaticSitePlugin.isDisabled()) {
-            return new AdminApiPageDataStandardResponse<>(new AdminStaticSiteSyncResponse(false));
+            //仅让浏览器刷新
+            return new AdminApiPageDataStandardResponse<>(new AdminStaticSiteSyncResponse(true));
         }
         AdminStaticResourcePlugin adminStaticResourcePlugin = Constants.zrLogConfig.getPlugin(AdminStaticResourcePlugin.class);
         if (Objects.isNull(adminStaticResourcePlugin)) {
@@ -34,7 +35,7 @@ public class AdminStaticSiteController extends BaseController {
     @ResponseBody
     public AdminApiPageDataStandardResponse<AdminStaticSiteSyncResponse> index() {
         if (StaticSitePlugin.isDisabled()) {
-            return new AdminApiPageDataStandardResponse<>(new AdminStaticSiteSyncResponse(false));
+            return new AdminApiPageDataStandardResponse<>(new AdminStaticSiteSyncResponse(true));
         }
         AdminStaticResourcePlugin adminStaticResourcePlugin = Constants.zrLogConfig.getPlugin(AdminStaticResourcePlugin.class);
         if (Objects.isNull(adminStaticResourcePlugin)) {
