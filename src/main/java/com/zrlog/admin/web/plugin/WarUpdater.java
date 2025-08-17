@@ -68,8 +68,7 @@ public class WarUpdater implements Updater {
         if (new File(warPath).exists()) {
             FileUtils.moveOrCopyFolder(warPath, backupFolder, false);
         }
-        //return warName;
-        return backupFolder;
+        return new File(backupFolder).toString();
     }
 
     private void deregister() {
