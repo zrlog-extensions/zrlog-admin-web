@@ -142,8 +142,8 @@ const Index = ({ data, offline }: { data: ArticlePageDataSource; offline: boolea
                                 </div>
                             }
                         >
-                            <div
-                                style={{ overflow: "hidden", textOverflow: "ellipsis" }}
+                            <span
+                                style={{ overflow: "hidden", textOverflow: "ellipsis", wordBreak: "break-word" }}
                                 dangerouslySetInnerHTML={{ __html: text }}
                             />
                         </Tooltip>
