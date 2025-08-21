@@ -1,6 +1,7 @@
 package com.zrlog.admin.web.plugin;
 
 import com.hibegin.common.util.EnvKit;
+import com.zrlog.business.util.NativeUtils;
 import com.zrlog.common.vo.Version;
 
 import java.util.Map;
@@ -15,7 +16,7 @@ public class FaasUpdateVersionHandler implements UpdateVersionHandler {
     }
 
     private static String getS3UpdateShell(String downloadUrl, String functionName) {
-        String finalName = "zrlog-latest.zip";
+        String finalName = "zrlog-" + NativeUtils.getRealFileArch() + "-latest.zip";
         String lambdaRepoName = Objects.requireNonNullElse(System.getenv("LAMBDA_S3_REPO_NAME"), "zrlog-update-bucket");
         String s3FileUrl = "s3://" + lambdaRepoName + "/" + finalName;
         return "UA=\"Mozilla/5.0 (X11; Ubuntu; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/115.0.0.0 Safari/537.36\"\n" +
