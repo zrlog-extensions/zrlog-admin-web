@@ -103,7 +103,7 @@ public class TemplateController extends BaseController {
     @ResponseBody
     @RequestMethod(method = HttpMethod.POST)
     @RequestLock
-    public UpdateRecordResponse config() throws SQLException {
+    public UpdateRecordResponse config() throws SQLException, IOException {
         UpdateTemplateConfigRequest param = getRequestBodyWithNullCheck(UpdateTemplateConfigRequest.class);
         String template = param.getTemplate();
         if (StringUtils.isNotEmpty(template)) {

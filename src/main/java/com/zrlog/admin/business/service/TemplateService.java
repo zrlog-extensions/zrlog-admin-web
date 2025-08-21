@@ -16,6 +16,8 @@ import com.zrlog.common.Constants;
 import com.zrlog.common.vo.TemplateVO;
 import com.zrlog.model.WebSite;
 import com.zrlog.util.I18nUtil;
+import org.jsoup.Jsoup;
+import org.jsoup.safety.Safelist;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -32,7 +34,30 @@ public class TemplateService {
 
     private static final Logger LOGGER = LoggerUtil.getLogger(TemplateController.class);
 
-    public UpdateRecordResponse save(String template, Map<String, Object> settingMap) throws SQLException {
+    private boolean isNeedClean(String contentType) {
+        return !Objects.equals(contentType, "html");
+    }
+
+    public UpdateRecordResponse save(String template, Map<String, Object> settingMap) throws SQLException, IOException {
+        TemplateVO.TemplateConfigMap configMap = getConfigMap(template);
+        for (Map.Entry<String, Object> entry : settingMap.entrySet()) {
+            if (Objects.isNull(entry.getValue())) {
+                continue;
+            }
+            String key = entry.getKey();
+            TemplateVO.TemplateConfigVO templateConfigVO = configMap.get(key);
+            if (Objects.isNull(templateConfigVO)) {
+                continue;
+            }
+            if (Objects.equals("css", templateConfigVO.getContentType())) {
+                settingMap.put(key, Jsoup.clean((String) entry.getValue(), Safelist.none().addTags("style")));
+                continue;
+            }
+            //校验输入内容
+            if (isNeedClean(templateConfigVO.getContentType())) {
+                settingMap.put(key, Jsoup.clean((String) entry.getValue(), Safelist.none()));
+            }
+        }
         new WebSite().updateTemplateConfigMap(template, settingMap);
         UpdateRecordResponse updateRecordResponse = new UpdateRecordResponse();
         updateRecordResponse.setMessage(I18nUtil.getAdminBackendStringFromRes("templateUpdateSuccess"));

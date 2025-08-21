@@ -8,6 +8,7 @@ import { useEffect, useState } from "react";
 
 import { Other } from "./index";
 import { getAppState } from "../../base/ConfigProviderApp";
+import PreviewConfig from "../template/preview-config";
 
 const layout = {
     labelCol: { span: 8 },
@@ -51,10 +52,10 @@ const OtherForm = ({
                     <TextArea />
                 </Form.Item>
             )}
-
             <Form.Item name="webCm" label={getRes()["website.statistics"]}>
                 <TextArea rows={7} />
             </Form.Item>
+            <PreviewConfig contentType={"html"} value={state.webCm} />
             <Form.Item name="robotRuleContent" label="robots.txt">
                 <TextArea rows={7} placeholder={"User-agent: *\n" + "Disallow: /admin/"} />
             </Form.Item>

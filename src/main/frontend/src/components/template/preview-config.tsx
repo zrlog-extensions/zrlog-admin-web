@@ -3,6 +3,7 @@ import Card from "antd/es/card";
 import { getRes } from "../../utils/constants";
 import { FunctionComponent, useEffect, useRef, useState } from "react";
 import { useAxiosBaseInstance } from "../../base/AppBase";
+import XxsTips from "../xxs-tips";
 
 type PreviewConfigProps = {
     contentType: string;
@@ -38,6 +39,7 @@ const PreviewConfig: FunctionComponent<PreviewConfigProps> = ({ contentType, val
 
     return (
         <Form.Item label={" "} colon={false}>
+            <XxsTips />
             <Card
                 title={getRes()["preview"] + " (" + contentType + ")"}
                 size={"small"}
