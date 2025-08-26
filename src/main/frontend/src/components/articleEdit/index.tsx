@@ -3,7 +3,6 @@ import { App, Button, Grid, InputRef, message, Space } from "antd";
 import Row from "antd/es/grid/row";
 import Col from "antd/es/grid/col";
 import Divider from "antd/es/divider";
-import Title from "antd/es/typography/Title";
 import Card from "antd/es/card";
 import { createUri, getRes, updateUri } from "../../utils/constants";
 import Select from "antd/es/select";
@@ -30,6 +29,7 @@ import { getPageDataCacheKeyByPath } from "../../utils/cache";
 import RubbishText from "./RubbishText";
 import { LockOutlined } from "@ant-design/icons";
 import { getAppState } from "../../base/ConfigProviderApp";
+import BaseTitle from "../../base/BaseTitle";
 
 const Index: FunctionComponent<ArticleEditProps> = ({
     offline,
@@ -395,9 +395,11 @@ const Index: FunctionComponent<ArticleEditProps> = ({
     return (
         <>
             <div style={{ paddingTop: fullScreen ? 0 : 20, gap: 8, display: "flex", justifyContent: "space-between" }}>
-                <Title className="page-header" style={{ marginTop: 0, marginBottom: 0 }} level={3} hidden={fullScreen}>
-                    {getRes()["admin.log.edit"]}
-                </Title>
+                <BaseTitle
+                    noBottomBorder={true}
+                    title={getRes()["admin.log.edit"]}
+                    style={{ marginTop: 0, marginBottom: 0, display: fullScreen ? "none" : "inherit" }}
+                />
                 {!fullScreen && (
                     <ArticleEditActionBar
                         key={data.article.logId + "actionbar_offline:" + offline}

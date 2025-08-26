@@ -2,7 +2,6 @@ import { EditOutlined, LockOutlined, TagOutlined } from "@ant-design/icons";
 
 import { Space, TableColumnsType, Tag, Tooltip } from "antd";
 import Search from "antd/es/input/Search";
-import Title from "antd/es/typography/Title";
 import Divider from "antd/es/divider";
 import { getRealRouteUrl, getRes } from "../../utils/constants";
 import type * as React from "react";
@@ -14,6 +13,7 @@ import { useLocation } from "react-router";
 import { SortOrder } from "antd/es/table/interface";
 import Image from "antd/es/image";
 import { getAppState } from "../../base/ConfigProviderApp";
+import BaseTitle from "../../base/BaseTitle";
 
 const genTypes = (d: ArticlePageDataSource, search: string) => {
     const types = new URLSearchParams(search).get("types") as unknown as string;
@@ -261,9 +261,11 @@ const Index = ({ data, offline }: { data: ArticlePageDataSource; offline: boolea
     return (
         <>
             <div style={{ paddingTop: 20, justifyContent: "space-between", display: "flex", alignItems: "center" }}>
-                <Title className="page-header" style={{ marginTop: 0, marginBottom: 0 }} level={3}>
-                    {getRes()["blogManage"]}
-                </Title>
+                <BaseTitle
+                    noBottomBorder={true}
+                    style={{ marginTop: 0, marginBottom: 0 }}
+                    title={getRes()["blogManage"]}
+                />
                 <Search
                     disabled={offline}
                     placeholder={getRes().searchTip}
