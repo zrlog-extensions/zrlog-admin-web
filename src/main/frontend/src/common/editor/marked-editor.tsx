@@ -17,7 +17,7 @@ import { addToCache, getCacheByKey } from "../../utils/cache";
 import { getAppState } from "../../base/ConfigProviderApp";
 
 type MarkdownEditorState = {
-    markdownValue: string;
+    initValue: string;
     content: string;
     preview: boolean;
 };
@@ -43,7 +43,7 @@ const MarkedEditor: FunctionComponent<MarkdownEditorProps> = ({
     };
 
     const [state, setState] = useState<MarkdownEditorState>({
-        markdownValue: value ? value : "",
+        initValue: value ? value : "",
         //默认开启
         preview: getDefaultConfig().preview,
         content: content,
@@ -165,7 +165,7 @@ const MarkedEditor: FunctionComponent<MarkdownEditorProps> = ({
                     <CodeMirror
                         basicSetup={{ searchKeymap: true }}
                         placeholder={getRes()["editorPlaceholder"]}
-                        value={state.markdownValue}
+                        value={state.initValue}
                         height={height}
                         width={"100%"}
                         onUpdate={(viewUpdate) => {
@@ -221,7 +221,7 @@ const MarkedEditor: FunctionComponent<MarkdownEditorProps> = ({
                 </div>
             </div>
             {editorRef.current && previewRef.current && editorRef.current.scrollDOM && (
-                <ScrollSync mdKey={state.markdownValue} editorRef={editorRef} previewRef={previewRef} />
+                <ScrollSync mdKey={state.content} editorRef={editorRef} previewRef={previewRef} />
             )}
         </StyledEditor>
     );
