@@ -1,8 +1,15 @@
 import Divider from "antd/es/divider";
 import Title from "antd/es/typography/Title";
 import { getAppState } from "./ConfigProviderApp";
+import { CSSProperties, FunctionComponent } from "react";
 
-const BaseTitle = ({ title }: { title: string }) => {
+type BaseTitleProps = {
+    title: string;
+    noBottomBorder?: boolean;
+    style?: CSSProperties;
+};
+
+const BaseTitle: FunctionComponent<BaseTitleProps> = ({ title, noBottomBorder, style }) => {
     return (
         <>
             <Title
@@ -10,11 +17,12 @@ const BaseTitle = ({ title }: { title: string }) => {
                 level={3}
                 style={{
                     borderLeft: `3px solid ${getAppState().colorPrimary}`,
+                    ...style,
                 }}
             >
                 {title}
             </Title>
-            <Divider />
+            {noBottomBorder ? <></> : <Divider />}
         </>
     );
 };
