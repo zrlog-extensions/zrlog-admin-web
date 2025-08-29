@@ -8,7 +8,6 @@ import ActivityGraph, { generateCompleteData } from "./ActivityGraph";
 import Card from "antd/es/card";
 import IndexTipBg from "./IndexTipBg";
 import StatisticsInfo from "./StatisticsInfo";
-import styled from "styled-components";
 import BaseTitle from "../../base/BaseTitle";
 import QuickActionCard from "./QuickAction";
 import { getAppState } from "../../base/ConfigProviderApp";
@@ -17,27 +16,12 @@ type IndexProps = {
     data: IndexData;
 };
 
-const PREFIX = "index";
-
-const classes = {
-    card: `${PREFIX}-card`,
-};
-
-const StyledIndex = styled(`div`)({
-    [`& .${PREFIX}-card`]: {
-        background: getAppState().dark ? "#141414" : getAppState().colorPrimary,
-        padding: 0,
-        marginBottom: 8,
-        color: "white",
-    },
-});
-
 const Index: FunctionComponent<IndexProps> = ({ data }) => {
     if (data.statisticsInfo === null) {
         return <></>;
     }
     return (
-        <StyledIndex>
+        <>
             <BaseTitle title={getRes().dashboard} />
             <Row gutter={[8, 8]}>
                 <Col xs={24} md={12}>
@@ -48,7 +32,12 @@ const Index: FunctionComponent<IndexProps> = ({ data }) => {
                                 padding: 0,
                             },
                         }}
-                        className={classes.card}
+                        style={{
+                            background: getAppState().dark ? "#141414" : getAppState().colorPrimary,
+                            padding: 0,
+                            marginBottom: 8,
+                            color: "white",
+                        }}
                     >
                         <IndexTipBg style={{ position: "absolute", height: "100%", width: "100%", zIndex: 2 }} />
                         <div style={{ padding: 12 }}>
@@ -88,7 +77,7 @@ const Index: FunctionComponent<IndexProps> = ({ data }) => {
                     <QuickActionCard />
                 </Col>
             </Row>
-        </StyledIndex>
+        </>
     );
 };
 

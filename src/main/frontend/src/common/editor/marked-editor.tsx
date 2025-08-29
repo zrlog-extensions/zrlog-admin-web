@@ -130,7 +130,7 @@ const MarkedEditor: FunctionComponent<MarkdownEditorProps> = ({
     }, [lang]);
 
     return (
-        <StyledEditor style={{ paddingBottom: 30 }}>
+        <StyledEditor mainColor={getAppState().colorPrimary} style={{ paddingBottom: 30 }}>
             {editorRef.current && (
                 <PasteUpload
                     onUploadSuccess={(imgUrl) => {

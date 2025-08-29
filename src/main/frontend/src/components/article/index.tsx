@@ -1,6 +1,6 @@
 import { EditOutlined, LockOutlined, TagOutlined } from "@ant-design/icons";
 
-import { Space, TableColumnsType, Tag, Tooltip } from "antd";
+import { TableColumnsType, Tag, Tooltip } from "antd";
 import Search from "antd/es/input/Search";
 import Divider from "antd/es/divider";
 import { getRealRouteUrl, getRes } from "../../utils/constants";
@@ -38,7 +38,7 @@ const Index = ({ data, offline }: { data: ArticlePageDataSource; offline: boolea
                 icon={<TagOutlined />}
                 closable={false}
                 color={getAppState().colorPrimary}
-                style={{ userSelect: "none" }}
+                style={{ userSelect: "none", marginRight: 0 }}
             >
                 {tag}
             </Tag>
@@ -52,10 +52,11 @@ const Index = ({ data, offline }: { data: ArticlePageDataSource; offline: boolea
 
     const wrapperArticleStateInfo = (record: any, children: ReactElement) => {
         return (
-            <span style={{ display: "flex", gap: 4, whiteSpace: "normal" }}>
+            <span style={{ display: "flex", gap: 4, whiteSpace: "normal", flexFlow: "wrap" }}>
                 {children}
                 {record.rubbish && <span style={{ color: "rgb(119, 119, 119)" }}>{getRes()["draft"]}</span>}
                 {record.privacy && <LockOutlined style={{ color: "rgb(119, 119, 119)" }} />}
+                {record.keywords && <>{record.keywords.split(",").map(tagForMap)}</>}
             </span>
         );
     };
@@ -158,18 +159,6 @@ const Index = ({ data, offline }: { data: ArticlePageDataSource; offline: boolea
                         </a>
                     );
                 },
-            },
-            {
-                title: getRes().tag,
-                dataIndex: "keywords",
-                key: "keywords",
-                width: 150,
-                render: (text: string) =>
-                    text ? (
-                        <Space size={[0, 8]} wrap>
-                            {text.split(",").map(tagForMap)}
-                        </Space>
-                    ) : null,
             },
             /*{
                 title: "作者",
