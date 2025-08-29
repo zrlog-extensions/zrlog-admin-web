@@ -32,6 +32,18 @@ renderer.code = function ({ text, lang }) {
         const id = "seq_" + md5(text);
         // 返回占位 div
         return `<div id="${id}" data-code="${encodeURIComponent(text)}" class="seq"></div>`;
+    } else if (lang === "katex") {
+        const id = "katex_" + md5(text);
+        // 返回占位 div
+        return `<div id="${id}" data-code="${encodeURIComponent(text)}" class="katex"></div>`;
+    } else if (lang === "latex") {
+        const id = "latex_" + md5(text);
+        // 返回占位 div
+        return `<div id="${id}" data-code="${encodeURIComponent(text)}" class="katex"></div>`;
+    } else if (lang === "math") {
+        const id = "math_" + md5(text);
+        // 返回占位 div
+        return `<div id="${id}" data-code="${encodeURIComponent(text)}" class="katex"></div>`;
     }
     const highlighted = hljs.highlightAuto(text).value;
     return `<pre><code class="hljs">${highlighted}</code></pre>`;

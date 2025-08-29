@@ -3,6 +3,7 @@ import { StyledHighlightDefault } from "./highlight/styled-highlight-default";
 import { CSSProperties, FunctionComponent, MutableRefObject, useEffect, useRef } from "react";
 import { StyledPreview } from "./styles/styled-preview";
 import { getAppState } from "../../base/ConfigProviderApp";
+import "katex/dist/katex.min.css";
 
 export type EditorPreviewProps = {
     htmlContent: string;

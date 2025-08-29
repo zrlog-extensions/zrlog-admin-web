@@ -25,13 +25,26 @@ export const StyledEditor = styled("div")<{ mainColor: string }>(({ mainColor })
         ".cm-panel.cm-search": { fontSize: "14px !important" },
         ".cm-panels.cm-panels-bottom": { borderTop: "none" },
         ".cm-panel": {
-            borderTop: `${mainColor} solid 1px !important`,
+            borderTop: `${getBorderColor()} solid 1px !important`,
         },
         ".cm-panel.cm-search .cm-button": {
             fontSize: "14px !important",
             background: mainColor,
             color: "white",
             borderRadius: 4,
+            border: "none",
+        },
+        ".cm-panel.cm-search input[type=checkbox]": {
+            accentColor: mainColor,
+            height: 16,
+            width: 16,
+        },
+        ".cm-panel label": {
+            display: "inline-flex",
+            alignItems: "center",
+            justifyContent: "center",
+            height: "24px!important",
+            boxSizing: "border-box",
         },
         ".cm-panel.cm-search > button": { cursor: "pointer" },
         '.cm-panel.cm-search [name="close"]': {

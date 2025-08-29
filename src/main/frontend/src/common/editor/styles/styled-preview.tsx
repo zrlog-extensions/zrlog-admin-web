@@ -264,4 +264,7 @@ export const StyledPreview = styled("div")`
         font-size: 85%;
         border-radius: 8px;
     }
+    .markdown-body .katex-display {
+        display: inline-block;
+    }
 `;

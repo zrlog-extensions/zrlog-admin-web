@@ -181,6 +181,8 @@ const MarkedEditor: FunctionComponent<MarkdownEditorProps> = ({
                         }}
                         onChange={async (md) => {
                             const html = await markdownToHtml(md);
+                            console.info(html + "=..");
+
                             const changeValues = {
                                 content: html,
                                 markdown: md,
