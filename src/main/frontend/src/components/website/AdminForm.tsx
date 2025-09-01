@@ -3,7 +3,7 @@ import Divider from "antd/es/divider";
 import Form from "antd/es/form";
 import Input from "antd/es/input";
 import Switch from "antd/es/switch";
-import { getRes } from "../../utils/constants";
+import { getPreset, getRes } from "../../utils/constants";
 import Select from "antd/es/select";
 import Button from "antd/es/button";
 import { useEffect, useState } from "react";
@@ -45,15 +45,6 @@ const BlogForm = ({
         }
         // @ts-ignore
         return en_US.Pagination.items_per_page;
-    };
-
-    const getPreset = () => {
-        if (getRes()["lang"] === "zh_CN") {
-            // @ts-ignore
-            return "预设";
-        }
-        // @ts-ignore
-        return "preset";
     };
 
     const onValueChange = (value: any) => {
@@ -140,6 +131,7 @@ const BlogForm = ({
                                 colorPrimary: color.toHexString(),
                             });
                         }}
+                        disabledAlpha={true}
                         presets={[
                             {
                                 defaultOpen: true,

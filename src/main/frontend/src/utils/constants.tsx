@@ -107,6 +107,15 @@ export const getRealRouteUrl = (url: string) => {
     return pathname + ext + "?" + query.toString();
 };
 
+export const getPreset = () => {
+    if (getRes()["lang"] === "zh_CN") {
+        // @ts-ignore
+        return "预设";
+    }
+    // @ts-ignore
+    return "preset";
+};
+
 export const createUri = "/api/admin/article/create";
 export const updateUri = "/api/admin/article/update";
 

@@ -5,7 +5,7 @@ import Button from "antd/es/button";
 import Image from "antd/es/image";
 import TextArea from "antd/es/input/TextArea";
 import Col from "antd/es/grid/col";
-import { getRes } from "../../utils/constants";
+import { getPreset, getRes } from "../../utils/constants";
 import Switch from "antd/es/switch";
 import { colorPickerBgColors } from "../../utils/helpers";
 import { useAxiosBaseInstance } from "../../base/AppBase";
@@ -137,10 +137,11 @@ const TemplateConfig = ({
                                 dataMap: state.dataMap,
                             });
                         }}
+                        disabledAlpha={true}
                         presets={[
                             {
                                 defaultOpen: true,
-                                label: "预设",
+                                label: getPreset(),
                                 colors: colorPickerBgColors,
                             },
                         ]}
