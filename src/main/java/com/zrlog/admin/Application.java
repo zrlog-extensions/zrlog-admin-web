@@ -84,7 +84,7 @@ class DevZrLogConfig extends ZrLogConfig {
     @Override
     public List<IPlugin> getBasePluginList() {
         Plugins basePlugins = new Plugins();
-        basePlugins.add(new PluginCorePluginImpl(dbPropertiesFile));
+        basePlugins.add(new PluginCorePluginImpl(dbPropertiesFile, serverConfig.getContextPath()));
         basePlugins.add(new CacheManagerPlugin(this));
         return basePlugins;
     }
