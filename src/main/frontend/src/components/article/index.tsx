@@ -1,6 +1,6 @@
-import { EditOutlined, LockOutlined, TagOutlined } from "@ant-design/icons";
+import { EditOutlined, LockOutlined } from "@ant-design/icons";
 
-import { TableColumnsType, Tag, Tooltip } from "antd";
+import { TableColumnsType, Tooltip } from "antd";
 import Search from "antd/es/input/Search";
 import Divider from "antd/es/divider";
 import { getRealRouteUrl, getRes } from "../../utils/constants";
@@ -14,6 +14,7 @@ import { SortOrder } from "antd/es/table/interface";
 import Image from "antd/es/image";
 import { getAppState } from "../../base/ConfigProviderApp";
 import BaseTitle from "../../base/BaseTitle";
+import Tags from "../../common/Tags";
 
 const genTypes = (d: ArticlePageDataSource, search: string) => {
     const types = new URLSearchParams(search).get("types") as unknown as string;
@@ -32,31 +33,13 @@ const Index = ({ data, offline }: { data: ArticlePageDataSource; offline: boolea
     const [filters, setFilters] = useState<Record<string, any>[]>(ds); // 用于存储选中的筛选项
     const jumped = useRef(false);
 
-    const tagForMap = (tag: string) => {
-        const tagElem = (
-            <Tag
-                icon={<TagOutlined />}
-                closable={false}
-                color={getAppState().colorPrimary}
-                style={{ userSelect: "none", marginRight: 0 }}
-            >
-                {tag}
-            </Tag>
-        );
-        return (
-            <span key={"all-" + tag} style={{ display: "inline-block" }}>
-                {tagElem}
-            </span>
-        );
-    };
-
     const wrapperArticleStateInfo = (record: any, children: ReactElement) => {
         return (
             <span style={{ display: "flex", gap: 4, whiteSpace: "normal", flexFlow: "wrap" }}>
                 {children}
                 {record.rubbish && <span style={{ color: "rgb(119, 119, 119)" }}>{getRes()["draft"]}</span>}
                 {record.privacy && <LockOutlined style={{ color: "rgb(119, 119, 119)" }} />}
-                {record.keywords && <>{record.keywords.split(",").map(tagForMap)}</>}
+                {record.keywords && <Tags closeable={false} keywords={record.keywords} />}
             </span>
         );
     };

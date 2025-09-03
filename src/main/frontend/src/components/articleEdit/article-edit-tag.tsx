@@ -1,9 +1,10 @@
 import { Input, InputRef, Space, Tag } from "antd";
-import { PlusOutlined, TagOutlined } from "@ant-design/icons";
+import { PlusOutlined } from "@ant-design/icons";
 import Title from "antd/es/typography/Title";
 import { FunctionComponent, useRef, useState } from "react";
 import { getRes } from "../../utils/constants";
 import { getAppState } from "base/ConfigProviderApp";
+import Tags from "../../common/Tags";
 
 type ArticleEditTagProps = {
     allTags: string[];
@@ -76,23 +77,6 @@ const ArticleEditTag: FunctionComponent<ArticleEditTagProps> = ({ allTags, keywo
         onKeywordsChange(keywords);
     };
 
-    const forMap = (tag: string) => {
-        return (
-            <Tag
-                icon={<TagOutlined />}
-                color={getAppState().colorPrimary}
-                closable
-                onClose={(e) => {
-                    e.preventDefault();
-                    handleClose(tag);
-                }}
-                style={{ userSelect: "none" }}
-            >
-                {tag}
-            </Tag>
-        );
-    };
-
     const allTagsOnClick = (e: any) => {
         e.currentTarget.remove();
         let tags: any[];
@@ -110,23 +94,7 @@ const ArticleEditTag: FunctionComponent<ArticleEditTagProps> = ({ allTags, keywo
         onKeywordsChange(nowKeywords);
     };
 
-    const tagForMap = (tag: string) => {
-        return (
-            <Tag
-                key={"all-" + tag}
-                icon={<TagOutlined />}
-                onClick={(e) => allTagsOnClick(e)}
-                closable={false}
-                style={{ userSelect: "none", cursor: "pointer" }}
-                color={getAppState().colorPrimary}
-            >
-                {tag}
-            </Tag>
-        );
-    };
-
     const { inputVisible, inputValue } = state;
-    let tagChild;
     if (state.keywords === "") {
         if (keywords != null) {
             state.keywords = keywords;
@@ -135,18 +103,22 @@ const ArticleEditTag: FunctionComponent<ArticleEditTagProps> = ({ allTags, keywo
     if (state.keywords !== undefined && state.keywords != null) {
         const newTags = Array.from(new Set(state.keywords.split(",").filter((x) => x !== "")));
         state.keywords = newTags.join(",");
-        tagChild = newTags.map(forMap);
     } else {
         state.keywords = "";
-        tagChild = [].map(forMap);
     }
-    const allTagChild = allTags.map(tagForMap);
     return (
         <>
-            {tagChild && tagChild.length > 0 && (
-                <div style={{ marginBottom: 16 }}>
-                    <Space size={[0, 8]} wrap>
-                        {tagChild}
+            {state.keywords.length > 0 && (
+                <div style={{ marginBottom: 8 }}>
+                    <Space size={[0, 4]} wrap>
+                        <Tags
+                            keywords={state.keywords}
+                            closeable={true}
+                            onClose={(e, tag) => {
+                                e.preventDefault();
+                                handleClose(tag);
+                            }}
+                        />
                     </Space>
                 </div>
             )}
@@ -171,10 +143,20 @@ const ArticleEditTag: FunctionComponent<ArticleEditTagProps> = ({ allTags, keywo
                     <Title level={5} style={{ marginTop: 12, fontSize: 14 }}>
                         {getRes()["allTag"]}
                     </Title>
-                    <div style={{ maxHeight: 240, overflowY: "auto" }}>
-                        <Space size={[0, 8]} wrap>
-                            {allTagChild}
-                        </Space>
+                    <div
+                        style={{
+                            maxHeight: 240,
+                            overflowY: "auto",
+                        }}
+                    >
+                        <Tags
+                            onClick={(e) => {
+                                allTagsOnClick(e);
+                            }}
+                            keywords={allTags.join(",")}
+                            tagStyle={{ cursor: "pointer" }}
+                            closeable={false}
+                        />
                     </div>
                 </>
             )}
