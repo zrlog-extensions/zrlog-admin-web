@@ -29,7 +29,7 @@ const Tags: FunctionComponent<TagsProps> = ({ keywords, closeable, tagStyle, onC
                 color={getAppState().colorPrimary}
                 style={{ userSelect: "none", marginRight: 0, ...tagStyle }}
             >
-                {tag}
+                {tag.trim()}
             </Tag>
         );
     };
