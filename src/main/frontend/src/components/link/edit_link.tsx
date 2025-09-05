@@ -23,20 +23,28 @@ const EditLink: FunctionComponent<EditLinkProps> = ({ record, editSuccessCall, o
     const [showModel, setShowModel] = useState<boolean>(false);
     const [updateForm, setUpdateForm] = useState<any>(record);
     const [messageApi, contextHolder] = message.useMessage({ maxCount: 3 });
+    const [loading, setLoading] = useState<boolean>(false);
+
     const axiosInstance = useAxiosBaseInstance();
     const handleOk = () => {
-        axiosInstance.post("/api/admin/link/update", updateForm).then(async ({ data }) => {
-            if (data.error) {
-                await messageApi.error(data.message);
-                return;
-            }
-            if (data.error === 0) {
-                setShowModel(false);
-                if (editSuccessCall) {
-                    editSuccessCall();
+        setLoading(true);
+        axiosInstance
+            .post("/api/admin/link/update", updateForm)
+            .then(async ({ data }) => {
+                if (data.error) {
+                    await messageApi.error(data.message);
+                    return;
                 }
-            }
-        });
+                if (data.error === 0) {
+                    setShowModel(false);
+                    if (editSuccessCall) {
+                        editSuccessCall();
+                    }
+                }
+            })
+            .finally(() => {
+                setLoading(false);
+            });
     };
 
     useEffect(() => {
@@ -63,7 +71,15 @@ const EditLink: FunctionComponent<EditLinkProps> = ({ record, editSuccessCall, o
             >
                 <EditOutlined style={{ color: getAppState().colorPrimary }} />
             </Link>
-            <Modal title={getRes()["edit"]} open={showModel} onOk={handleOk} onCancel={() => setShowModel(false)}>
+            <Modal
+                title={getRes()["edit"]}
+                open={showModel}
+                onOk={handleOk}
+                okButtonProps={{
+                    loading: loading,
+                }}
+                onCancel={() => setShowModel(false)}
+            >
                 <Form initialValues={updateForm} onValuesChange={(_k, v) => setValue(v)} {...layout}>
                     <Form.Item name="id" style={{ display: "none" }}>
                         <Input hidden={true} />

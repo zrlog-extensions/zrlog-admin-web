@@ -14,18 +14,25 @@ const AddLink = ({ addSuccessCall, offline }: { addSuccessCall: () => void; offl
     const [showModel, setShowModel] = useState<boolean>(false);
     const [form, setForm] = useState<any>();
     const [messageApi, contextHolder] = message.useMessage({ maxCount: 3 });
+    const [loading, setLoading] = useState<boolean>(false);
     const axiosInstance = useAxiosBaseInstance();
     const handleOk = () => {
-        axiosInstance.post("/api/admin/link/add", form).then(async ({ data }) => {
-            if (data.error) {
-                await messageApi.error(data.message);
-                return;
-            }
-            if (data.error === 0) {
-                setShowModel(false);
-                addSuccessCall();
-            }
-        });
+        setLoading(true);
+        axiosInstance
+            .post("/api/admin/link/add", form)
+            .then(async ({ data }) => {
+                if (data.error) {
+                    await messageApi.error(data.message);
+                    return;
+                }
+                if (data.error === 0) {
+                    setShowModel(false);
+                    addSuccessCall();
+                }
+            })
+            .finally(() => {
+                setLoading(false);
+            });
     };
 
     const setValue = (changedValues: any) => {
@@ -38,7 +45,15 @@ const AddLink = ({ addSuccessCall, offline }: { addSuccessCall: () => void; offl
             <Button type="primary" disabled={offline} onClick={() => setShowModel(true)} style={{ marginBottom: 8 }}>
                 {getRes()["add"]}
             </Button>
-            <Modal title={getRes()["add"]} open={showModel} onOk={handleOk} onCancel={() => setShowModel(false)}>
+            <Modal
+                title={getRes()["add"]}
+                open={showModel}
+                onOk={handleOk}
+                okButtonProps={{
+                    loading: loading,
+                }}
+                onCancel={() => setShowModel(false)}
+            >
                 <Form onValuesChange={(_k, v) => setValue(v)} {...layout}>
                     <Row>
                         <Col span={24}>
