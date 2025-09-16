@@ -2,20 +2,18 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <groupId>com.hibegin</groupId>
+        <artifactId>zrlog-base</artifactId>
+        <version>3.2.115</version>
+    </parent>
     <artifactId>zrlog-admin-web</artifactId>
-    <groupId>com.hibegin</groupId>
-    <version>3.2.117-SNAPSHOT</version>
+    <version>3.2.117</version>
     <modelVersion>4.0.0</modelVersion>
 
-
     <properties>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <java.version>11</java.version>
-        <maven.compiler.source>${java.version}</maven.compiler.source>
-        <maven.compiler.target>${java.version}</maven.compiler.target>
         <finalName>zrlog-admin-web</finalName>
         <libOutputPath>lib</libOutputPath>
-        <zrlog-base.version>3.2.113</zrlog-base.version>
         <gpg.passphrase/>
     </properties>
 
@@ -73,21 +71,6 @@
             <artifactId>zrlog-admin-token</artifactId>
         </dependency>
     </dependencies>
-
-    <dependencyManagement>
-        <dependencies>
-            <dependency>
-                <groupId>com.hibegin</groupId>
-                <artifactId>zrlog-service</artifactId>
-                <version>${zrlog-base.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.hibegin</groupId>
-                <artifactId>zrlog-admin-token</artifactId>
-                <version>${zrlog-base.version}</version>
-            </dependency>
-        </dependencies>
-    </dependencyManagement>
 
     <profiles>
         <profile>
@@ -205,6 +188,7 @@
 
 
     <build>
+        <sourceDirectory>src/main/java</sourceDirectory>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>

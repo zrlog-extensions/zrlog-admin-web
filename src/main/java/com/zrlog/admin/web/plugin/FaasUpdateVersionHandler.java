@@ -18,15 +18,17 @@ public class FaasUpdateVersionHandler implements UpdateVersionHandler {
 
     private static String getS3UpdateShell(String downloadUrl, String functionName) {
         String finalName = "zrlog-" + NativeUtils.getRealFileArch() + "-latest.zip";
-        String lambdaRepoName = Objects.requireNonNullElse(System.getenv("LAMBDA_S3_REPO_NAME"), "zrlog-update-bucket");
-        String s3FileUrl = "s3://" + lambdaRepoName + "/" + finalName;
+        String envKey = "LAMBDA_S3_REPO_NAME";
+        String lambdaRepoName = Objects.requireNonNullElse(System.getenv(envKey), "zrlog-update-bucket");
         File localFile = new File("/tmp/" + finalName);
-        return "UA=\"Mozilla/5.0 (X11; Ubuntu; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/115.0.0.0 Safari/537.36\"\n" +
+        return "export LAMBDA_S3_REPO_NAME=\"" + lambdaRepoName + "\"\n" +
+                "export AWS_LAMBDA_FUNCTION_NAME=\"" + functionName + "\"\n" +
+                "UA=\"Mozilla/5.0 (X11; Ubuntu; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/115.0.0.0 Safari/537.36\"\n" +
                 "wget --user-agent=\"${UA}\" -O \"" + localFile + "\" \"" + downloadUrl + "\"\n" +
-                "aws s3 cp " + localFile + " " + s3FileUrl + "\n" +
+                "aws s3 cp " + localFile + " s3://${LAMBDA_S3_REPO_NAME}/" + finalName + "\n" +
                 "aws lambda update-function-code \\\n" +
-                "  --function-name " + functionName + " \\\n" +
-                "  --s3-bucket " + lambdaRepoName + " \\\n" +
+                "  --function-name ${AWS_LAMBDA_FUNCTION_NAME} \\\n" +
+                "  --s3-bucket ${LAMBDA_S3_REPO_NAME} \\\n" +
                 "  --s3-key " + finalName + "\n\n";
     }
 
