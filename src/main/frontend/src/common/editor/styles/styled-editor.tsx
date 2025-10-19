@@ -73,6 +73,5 @@ export const StyledEditor = styled("div")<{ mainColor: string }>(({ mainColor })
         ".editor-dark .markdown-body table tr:nth-child(2n)": {
             backgroundColor: "#212529 !important",
         },
-        ".editor-dark .markdown-body pre": { backgroundColor: "#1f1f1f !important" },
     };
 });
