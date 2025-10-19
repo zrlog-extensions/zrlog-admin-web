@@ -53,7 +53,7 @@ const BasicForm = ({
                 <Input placeholder="" showCount={true} maxLength={30} />
             </Form.Item>
             <Form.Item name="keywords" label={getRes()["keywords"]}>
-                <Input showCount={true} placeholder="" maxLength={40} />
+                <TextArea showCount={true} rows={2} maxLength={160} />
             </Form.Item>
             <Form.Item name="description" label={getRes()["websiteDesc"]}>
                 <TextArea showCount={true} rows={5} maxLength={160} />
