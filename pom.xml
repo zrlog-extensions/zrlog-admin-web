@@ -5,10 +5,10 @@
     <parent>
         <groupId>com.hibegin</groupId>
         <artifactId>zrlog-base</artifactId>
-        <version>3.2.116</version>
+        <version>3.2.121</version>
     </parent>
     <artifactId>zrlog-admin-web</artifactId>
-    <version>3.2.118-SNAPSHOT</version>
+    <version>3.2.121</version>
     <modelVersion>4.0.0</modelVersion>
 
     <properties>
