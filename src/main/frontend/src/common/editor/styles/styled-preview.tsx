@@ -38,7 +38,6 @@ export const StyledPreview = styled("div")`
     }
 
     .markdown-body a {
-        background: 0 0;
         text-decoration: none;
     }
 
@@ -51,7 +50,6 @@ export const StyledPreview = styled("div")`
     .markdown-body hr {
         margin: 12px 0;
         overflow: hidden;
-        background: 0 0;
         border: 0;
         border-bottom: 1px solid #ddd;
     }
@@ -235,7 +233,6 @@ export const StyledPreview = styled("div")`
         font-size: 12px;
         word-break: normal;
         white-space: pre;
-        background: 0 0;
         border: 0;
     }
 

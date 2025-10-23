@@ -21,7 +21,7 @@ export const StyledHighlightDark = styled("div")`
 */
     .hljs {
         color: #c9d1d9;
-        background: #1f1f1f !important;
+        background: #232323;
     }
     .hljs-doctag,
     .hljs-keyword,

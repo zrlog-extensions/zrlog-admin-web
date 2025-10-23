@@ -1,7 +1,7 @@
 import styled from "styled-components";
 
 export const StyledHighlightDefault = styled("div")`
-/*!
+    /*!
   Theme: Default
   Description: Original highlight.js style
   Author: (c) Ivan Sagalaev <maniac@softwaremaniacs.org>
@@ -10,129 +10,127 @@ export const StyledHighlightDefault = styled("div")`
   License: see project LICENSE
   Touched: 2021
 */
-/*
+    /*
 This is left on purpose making default.css the single file that can be lifted
 as-is from the repository directly without the need for a build step
 
 Typically this "required" baseline CSS is added by \`makestuff.js\` during build.
 */
 
-pre code.hljs {
-    display: block;
-    overflow-x: auto;
-    padding: 1em
-}
+    pre code.hljs {
+        display: block;
+        overflow-x: auto;
+        padding: 1em;
+    }
 
-code.hljs {
-    padding: 3px 5px
-}
+    code.hljs {
+        padding: 3px 5px;
+    }
 
-/* end baseline CSS */
+    /* end baseline CSS */
 
-.hljs {
-    background: #F3F3F3!important;
-    color: #444
-}
+    .hljs {
+        background: #f3f3f3;
+        color: #444;
+    }
 
-/* Base color: saturation 0; */
+    /* Base color: saturation 0; */
 
-.hljs-subst {
-    /* default */
+    .hljs-subst {
+        /* default */
+    }
 
-}
+    /* purposely ignored */
 
-/* purposely ignored */
+    .hljs-formula,
+    .hljs-attr,
+    .hljs-property,
+    .hljs-params {
+    }
 
-.hljs-formula,
-.hljs-attr,
-.hljs-property,
-.hljs-params {
+    .hljs-comment {
+        color: #697070;
+    }
 
-}
+    .hljs-tag,
+    .hljs-punctuation {
+        color: #444a;
+    }
 
-.hljs-comment {
-    color: #697070
-}
+    .hljs-tag .hljs-name,
+    .hljs-tag .hljs-attr {
+        color: #444;
+    }
 
-.hljs-tag,
-.hljs-punctuation {
-    color: #444a
-}
+    .hljs-keyword,
+    .hljs-attribute,
+    .hljs-selector-tag,
+    .hljs-meta .hljs-keyword,
+    .hljs-doctag,
+    .hljs-name {
+        font-weight: bold;
+    }
 
-.hljs-tag .hljs-name,
-.hljs-tag .hljs-attr {
-    color: #444
-}
+    /* User color: hue: 0 */
 
-.hljs-keyword,
-.hljs-attribute,
-.hljs-selector-tag,
-.hljs-meta .hljs-keyword,
-.hljs-doctag,
-.hljs-name {
-    font-weight: bold
-}
+    .hljs-type,
+    .hljs-string,
+    .hljs-number,
+    .hljs-selector-id,
+    .hljs-selector-class,
+    .hljs-quote,
+    .hljs-template-tag,
+    .hljs-deletion {
+        color: #880000;
+    }
 
-/* User color: hue: 0 */
+    .hljs-title,
+    .hljs-section {
+        color: #880000;
+        font-weight: bold;
+    }
 
-.hljs-type,
-.hljs-string,
-.hljs-number,
-.hljs-selector-id,
-.hljs-selector-class,
-.hljs-quote,
-.hljs-template-tag,
-.hljs-deletion {
-    color: #880000
-}
+    .hljs-regexp,
+    .hljs-symbol,
+    .hljs-variable,
+    .hljs-template-variable,
+    .hljs-link,
+    .hljs-selector-attr,
+    .hljs-operator,
+    .hljs-selector-pseudo {
+        color: #ab5656;
+    }
 
-.hljs-title,
-.hljs-section {
-    color: #880000;
-    font-weight: bold
-}
+    /* Language color: hue: 90; */
 
-.hljs-regexp,
-.hljs-symbol,
-.hljs-variable,
-.hljs-template-variable,
-.hljs-link,
-.hljs-selector-attr,
-.hljs-operator,
-.hljs-selector-pseudo {
-    color: #ab5656
-}
+    .hljs-literal {
+        color: #695;
+    }
 
-/* Language color: hue: 90; */
+    .hljs-built_in,
+    .hljs-bullet,
+    .hljs-code,
+    .hljs-addition {
+        color: #397300;
+    }
 
-.hljs-literal {
-    color: #695
-}
+    /* Meta color: hue: 200 */
 
-.hljs-built_in,
-.hljs-bullet,
-.hljs-code,
-.hljs-addition {
-    color: #397300
-}
+    .hljs-meta {
+        color: #1f7199;
+    }
 
-/* Meta color: hue: 200 */
+    .hljs-meta .hljs-string {
+        color: #38a;
+    }
 
-.hljs-meta {
-    color: #1f7199
-}
+    /* Misc effects */
 
-.hljs-meta .hljs-string {
-    color: #38a
-}
+    .hljs-emphasis {
+        font-style: italic;
+    }
 
-/* Misc effects */
-
-.hljs-emphasis {
-    font-style: italic
-}
-
-.hljs-strong {
-    font-weight: bold
-}
-`
+    .hljs-strong {
+        font-weight: bold;
+    }
+`;
