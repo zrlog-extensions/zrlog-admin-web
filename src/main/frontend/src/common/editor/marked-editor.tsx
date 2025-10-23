@@ -207,7 +207,6 @@ const MarkedEditor: FunctionComponent<MarkdownEditorProps> = ({
                             display: state.preview ? "block" : "none",
                             minWidth: `calc((100% - ${guttersWidth}px) / 2)`,
                             width: `calc((100% - ${guttersWidth}px) / 2)`,
-                            background: getAppState().dark ? "#1a1a17" : "inherit",
                             paddingTop: 4,
                             paddingBottom: 4,
                             paddingRight: 2,

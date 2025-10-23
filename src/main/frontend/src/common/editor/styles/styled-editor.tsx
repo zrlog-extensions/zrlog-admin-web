@@ -58,8 +58,8 @@ export const StyledEditor = styled("div")<{ mainColor: string }>(({ mainColor })
             height: 26,
             borderRadius: 4,
         },
-        ".editor-dark .cm-scroller": { backgroundColor: "#1a1a17" },
-        ".editor-dark .cm-gutters": { backgroundColor: "#141414" },
+        ".editor-dark .cm-scroller": { backgroundColor: "#141414" },
+        ".editor-dark .cm-gutters": { backgroundColor: "rgb(31, 31, 31)" },
         ".editor-dark .markdown-body table th": {
             border: "1px solid rgba(198, 198, 198, 0.5)",
         },

@@ -224,7 +224,6 @@ export const StyledPreview = styled("div")`
     .markdown-body code {
         padding: 0 0.25rem;
         margin: 0;
-        background-color: rgba(0, 0, 0, 0.04);
         border-radius: 8px;
     }
 
