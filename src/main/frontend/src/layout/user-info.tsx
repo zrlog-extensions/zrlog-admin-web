@@ -1,5 +1,5 @@
 import { DownOutlined, KeyOutlined, LogoutOutlined, SoundOutlined, UserOutlined } from "@ant-design/icons";
-import { Badge, MenuProps, Modal, Typography } from "antd";
+import { Badge, Button, MenuProps, Modal, Typography } from "antd";
 import { Link } from "react-router-dom";
 
 import Dropdown from "antd/es/dropdown";
@@ -27,8 +27,9 @@ const UserInfo = ({ data, offline }: { data: BasicUserInfo; offline: boolean }) 
                 key: "1",
                 label: (
                     <Link to={getRealRouteUrl("/user")} onClick={(e) => tryBlock(e, modal)}>
-                        <UserOutlined />
-                        <Text style={{ paddingLeft: "5px", paddingRight: 16 }}>{res["admin.user.info"]}</Text>
+                        <Button icon={<UserOutlined />} type={"text"} size={"small"} style={{ padding: 0 }}>
+                            {res["admin.user.info"]}
+                        </Button>
                     </Link>
                 ),
             },
@@ -36,8 +37,9 @@ const UserInfo = ({ data, offline }: { data: BasicUserInfo; offline: boolean }) 
                 key: "2",
                 label: (
                     <Link to={getRealRouteUrl("/user-update-password")} onClick={(e) => tryBlock(e, modal)}>
-                        <KeyOutlined />
-                        <Text style={{ paddingLeft: "5px", paddingRight: 16 }}>{res["admin.changePwd"]}</Text>
+                        <Button icon={<KeyOutlined />} type={"text"} size={"small"} style={{ padding: 0 }}>
+                            {res["admin.changePwd"]}
+                        </Button>
                     </Link>
                 ),
             },
@@ -56,8 +58,9 @@ const UserInfo = ({ data, offline }: { data: BasicUserInfo; offline: boolean }) 
                         href={getBackendServerUrl() + "admin/logout" + (isStaticPage() ? "?sp=true" : "")}
                         onClick={(e) => tryBlock(e, modal)}
                     >
-                        <LogoutOutlined />
-                        <Text style={{ paddingLeft: "5px", paddingRight: 16 }}>{res["admin.user.logout"]}</Text>
+                        <Button icon={<LogoutOutlined />} type={"text"} size={"small"} style={{ padding: 0 }}>
+                            {res["admin.user.logout"]}
+                        </Button>
                     </a>
                 ),
             });
@@ -76,11 +79,10 @@ const UserInfo = ({ data, offline }: { data: BasicUserInfo; offline: boolean }) 
                                     },
                                 }}
                             >
-                                <SoundOutlined />
-                                <Text style={{ paddingLeft: "6px" }}>
+                                <Button icon={<SoundOutlined />} type={"text"} size={"small"} style={{ padding: 0 }}>
                                     {res["newVersion"]} - ({data.lastVersion.version.version}#
                                     {data.lastVersion.version.type})
-                                </Text>
+                                </Button>
                             </Badge>
                         </Link>
                     ),
