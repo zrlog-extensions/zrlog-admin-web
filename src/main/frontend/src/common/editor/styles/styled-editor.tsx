@@ -34,6 +34,9 @@ export const StyledEditor = styled("div")<{ mainColor: string }>(({ mainColor })
             borderRadius: 4,
             border: "none",
         },
+        ".cm-panel input:hover": {
+            border: `1px solid ${mainColor}`,
+        },
         ".cm-panel.cm-search input[type=checkbox]": {
             accentColor: mainColor,
             height: 16,
@@ -59,7 +62,7 @@ export const StyledEditor = styled("div")<{ mainColor: string }>(({ mainColor })
             borderRadius: 4,
         },
         ".editor-dark .cm-scroller": { backgroundColor: "#141414" },
-        ".editor-dark .cm-gutters": { backgroundColor: "rgb(31, 31, 31)" },
+        ".editor-dark .cm-gutters": { backgroundColor: "#1f1f1f" },
         ".editor-dark .markdown-body table th": {
             border: "1px solid rgba(198, 198, 198, 0.5)",
         },
@@ -72,6 +75,12 @@ export const StyledEditor = styled("div")<{ mainColor: string }>(({ mainColor })
         },
         ".editor-dark .markdown-body table tr:nth-child(2n)": {
             backgroundColor: "#212529 !important",
+        },
+        ".editor-dark .cm-panel": {
+            backgroundColor: "#1f1f1f",
+        },
+        ".editor-dark .cm-panel.cm-search [name=close]": {
+            color: "white",
         },
     };
 });
