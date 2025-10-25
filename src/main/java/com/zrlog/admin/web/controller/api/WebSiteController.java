@@ -58,8 +58,11 @@ public class WebSiteController extends BaseController {
         if (request.getMethod() == HttpMethod.POST) {
             update(getRequestBodyWithNullCheck(BasicWebSiteInfo.class));
         }
-        return new AdminApiPageDataStandardResponse<>(webSiteService.basicWebSiteInfo(), I18nUtil.getAdminBackendStringFromRes("updateSuccess"), request.getUri());
+        return new AdminApiPageDataStandardResponse<>(webSiteService.basicWebSiteInfo(), getRespMessage(), request.getUri());
+    }
 
+    private String getRespMessage() {
+        return request.getMethod() == HttpMethod.POST ? I18nUtil.getAdminBackendStringFromRes("updateSuccess") : "";
     }
 
     private AdminApiPageDataStandardResponse<Void> update(Object t) throws SQLException {
@@ -71,7 +74,7 @@ public class WebSiteController extends BaseController {
         }
         AdminApiPageDataStandardResponse<Void> updateResponse = new AdminApiPageDataStandardResponse<>();
         updateResponse.setError(0);
-        updateResponse.setMessage(I18nUtil.getAdminBackendStringFromRes("updateSuccess"));
+        updateResponse.setMessage(getRespMessage());
         BaseDataInitVO dataInitVO = Constants.zrLogConfig.getCacheService().getInitData();
         if (Objects.nonNull(dataInitVO)) {
             dataInitVO.setWebSite(new WebSite().getPublicWebSite());
@@ -86,7 +89,7 @@ public class WebSiteController extends BaseController {
         if (request.getMethod() == HttpMethod.POST) {
             update(getRequestBodyWithNullCheck(BlogWebSiteInfo.class));
         }
-        return new AdminApiPageDataStandardResponse<>(webSiteService.blogWebSiteInfo(), I18nUtil.getAdminBackendStringFromRes("updateSuccess"), request.getUri());
+        return new AdminApiPageDataStandardResponse<>(webSiteService.blogWebSiteInfo(), getRespMessage(), request.getUri());
     }
 
     @RefreshCache(onlyOnPostMethod = true, updateStaticSites = StaticSiteType.BLOG)
@@ -96,7 +99,7 @@ public class WebSiteController extends BaseController {
         if (request.getMethod() == HttpMethod.POST) {
             update(getRequestBodyWithNullCheck(OtherWebSiteInfo.class));
         }
-        return new AdminApiPageDataStandardResponse<>(webSiteService.other(), I18nUtil.getAdminBackendStringFromRes("updateSuccess"), request.getUri());
+        return new AdminApiPageDataStandardResponse<>(webSiteService.other(), getRespMessage(), request.getUri());
     }
 
     @RefreshCache(onlyOnPostMethod = true, updateStaticSites = StaticSiteType.ADMIN)
@@ -108,7 +111,7 @@ public class WebSiteController extends BaseController {
             update(adminWebSiteInfo);
             Constants.zrLogConfig.getTokenService().updateSessionTimeout(adminWebSiteInfo.getSession_timeout());
         }
-        return new AdminApiPageDataStandardResponse<>(webSiteService.adminWebSiteInfo(), I18nUtil.getAdminBackendStringFromRes("updateSuccess"), request.getUri());
+        return new AdminApiPageDataStandardResponse<>(webSiteService.adminWebSiteInfo(), getRespMessage(), request.getUri());
     }
 
     @RequestLock(onlyOnPostMethod = true)
@@ -126,6 +129,6 @@ public class WebSiteController extends BaseController {
                 updateVersionInfoPlugin.start();
             }
         }
-        return new AdminApiPageDataStandardResponse<>(webSiteService.upgradeWebSiteInfo(), I18nUtil.getAdminBackendStringFromRes("updateSuccess"), request.getUri());
+        return new AdminApiPageDataStandardResponse<>(webSiteService.upgradeWebSiteInfo(), getRespMessage(), request.getUri());
     }
 }

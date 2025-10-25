@@ -227,8 +227,13 @@ export const StyledPreview = styled("div")`
         border-radius: 8px;
     }
 
+    .markdown-body p > code {
+        background-color: #f6f6f6;
+        color: #777;
+        border-radius: 4px;
+    }
+
     .markdown-body pre > code {
-        margin: 4px;
         font-size: 12px;
         word-break: normal;
         white-space: pre;
