@@ -113,10 +113,12 @@ type LoginResponse = {
 const asyncSaveApiCache = async (axiosInstance: AxiosInstance, responseBody: LoginResponse) => {
     getSsDate().pageBuildId = responseBody.pageBuildId;
     getSsDate().user = responseBody.data;
-    addToCache("/user", responseBody.data);
+    getSsDate().key = responseBody.data.key;
+    //save to local
     if (isStaticPage()) {
         localStorage.setItem(ssKeyStorageKey, responseBody.data.key);
     }
+    addToCache("/user", responseBody.data);
 
     const uris = responseBody.data.cacheableApiUris ?? [];
 
