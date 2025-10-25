@@ -70,6 +70,10 @@ export type BasicUserInfo = {
     header: string;
     key: string;
     lastVersion?: LastVersion;
+};
+
+export type LoginUserResponseInfo = BasicUserInfo & {
+    key: string;
     cacheableApiUris?: string[];
 };
 

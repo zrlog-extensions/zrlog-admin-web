@@ -19,7 +19,7 @@ import styled from "styled-components";
 import { getContextPath } from "../../utils/helpers";
 import { useAxiosBaseInstance } from "../../base/AppBase";
 import { getCsrData } from "../../api";
-import { BasicUserInfo } from "../../type";
+import { LoginUserResponseInfo } from "../../type";
 import { AxiosInstance } from "axios";
 import { getSsDate, ssKeyStorageKey } from "../../base/SsData";
 import { getAppState } from "../../base/ConfigProviderApp";
@@ -106,7 +106,7 @@ export const LoginBg = (): ReactElement => {
 };
 
 type LoginResponse = {
-    data: BasicUserInfo;
+    data: LoginUserResponseInfo;
     pageBuildId: string;
 };
 
