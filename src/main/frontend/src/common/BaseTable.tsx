@@ -136,7 +136,7 @@ const BaseTable: FunctionComponent<BaseTableProps> = ({
             return false;
         }
         if (response.data.error === 0) {
-            messageApi.success(getRes()["deleteSuccess"]);
+            messageApi.success(response.data.message);
             fetchDataWithReload(pagination.page, pagination.size, tableDataState.query, tableDataState.pagination.sort);
             return true;
         }

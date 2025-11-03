@@ -19,6 +19,7 @@ import com.zrlog.util.I18nUtil;
 import com.zrlog.util.ZrLogUtil;
 
 import java.sql.SQLException;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.ExecutionException;
@@ -29,7 +30,7 @@ public class AdminArticleController extends BaseController {
 
     @RefreshCache(async = true, updateStaticSites = StaticSiteType.BLOG)
     @ResponseBody
-    public AdminApiPageDataStandardResponse<DeleteLogResponse> delete() throws SQLException {
+    public DeleteResponse delete() throws SQLException {
         if (ZrLogUtil.isPreviewMode()) {
             throw new PermissionErrorException();
         }
@@ -38,10 +39,14 @@ public class AdminArticleController extends BaseController {
             throw new ArgsException("id");
         }
         String[] ids = idStr.split(",");
-        for (String id : ids) {
-            articleService.delete(Long.valueOf(id));
-        }
-        return new AdminApiPageDataStandardResponse<>(new DeleteLogResponse(true));
+        boolean deleted = Arrays.stream(ids).allMatch(id -> {
+            try {
+                return articleService.delete(Long.valueOf(id));
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
+        });
+        return new DeleteResponse(deleted);
     }
 
     private String getResponseMsg(CreateOrUpdateArticleResponse response) {

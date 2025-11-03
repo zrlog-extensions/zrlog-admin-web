@@ -162,8 +162,8 @@ public class AdminArticleService {
 
     }
 
-    public UpdateRecordResponse delete(Long logId) throws SQLException {
-        return new UpdateRecordResponse(new Log().deleteById(Math.toIntExact(logId)));
+    public boolean delete(Long logId) throws SQLException {
+        return new Log().deleteById(Math.toIntExact(logId));
     }
 
     private Map<String, Object> getLog(AdminTokenVO adminTokenVO, CreateArticleRequest createArticleRequest) throws SQLException {

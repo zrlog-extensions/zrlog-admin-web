@@ -6,6 +6,7 @@ import com.zrlog.admin.business.exception.DeleteTypeException;
 import com.zrlog.admin.business.rest.request.CreateTypeRequest;
 import com.zrlog.admin.business.rest.request.UpdateTypeRequest;
 import com.zrlog.admin.business.rest.response.AdminApiPageDataStandardResponse;
+import com.zrlog.admin.business.rest.response.DeleteResponse;
 import com.zrlog.admin.business.rest.response.UpdateRecordResponse;
 import com.zrlog.admin.business.service.ArticleTypeService;
 import com.zrlog.admin.web.annotation.RefreshCache;
@@ -28,12 +29,12 @@ public class TypeController extends BaseController {
     @RefreshCache(async = true, updateStaticSites = StaticSiteType.BLOG)
     @ResponseBody
     @RequestLock
-    public UpdateRecordResponse delete() throws SQLException {
+    public DeleteResponse delete() throws SQLException {
         int typeId = Integer.parseInt(getParamWithEmptyCheck("id"));
         if (new Log().countByTypeId(typeId) > 0) {
             throw new DeleteTypeException();
         }
-        return new UpdateRecordResponse(new Type().deleteById(typeId));
+        return new DeleteResponse(new Type().deleteById(typeId));
     }
 
     @ResponseBody

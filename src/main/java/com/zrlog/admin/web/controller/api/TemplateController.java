@@ -78,15 +78,13 @@ public class TemplateController extends BaseController {
 
     @ResponseBody
     @RequestLock
-    public AdminApiPageDataStandardResponse<Void> delete() {
+    public DeleteResponse delete() {
         String shortTemplate = getParamWithEmptyCheck("shortTemplate");
         File file = PathUtil.safeAppendFilePath(PathUtil.getStaticPath() + Constants.TEMPLATE_BASE_PATH, shortTemplate);
         if (file.exists()) {
-            FileUtils.deleteFile(file.toString());
+            return new DeleteResponse(FileUtils.deleteFile(file.toString()));
         }
-        AdminApiPageDataStandardResponse<Void> apiStandardResponse = new AdminApiPageDataStandardResponse<>();
-        apiStandardResponse.setMessage(I18nUtil.getAdminBackendStringFromRes("updateSuccess"));
-        return apiStandardResponse;
+        return new DeleteResponse(false);
     }
 
     @ResponseBody

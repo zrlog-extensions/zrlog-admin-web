@@ -5,6 +5,7 @@ import com.hibegin.http.annotation.ResponseBody;
 import com.zrlog.admin.business.rest.request.CreateNavRequest;
 import com.zrlog.admin.business.rest.request.UpdateNavRequest;
 import com.zrlog.admin.business.rest.response.AdminApiPageDataStandardResponse;
+import com.zrlog.admin.business.rest.response.DeleteResponse;
 import com.zrlog.admin.business.rest.response.UpdateRecordResponse;
 import com.zrlog.admin.web.annotation.RefreshCache;
 import com.zrlog.admin.web.annotation.RequestLock;
@@ -16,6 +17,7 @@ import com.zrlog.model.LogNav;
 
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.Arrays;
 import java.util.Objects;
 
 public class BlogNavController extends BaseController {
@@ -23,13 +25,17 @@ public class BlogNavController extends BaseController {
     @RefreshCache(async = true, updateStaticSites = StaticSiteType.BLOG)
     @ResponseBody
     @RequestLock
-    public UpdateRecordResponse delete() throws SQLException {
+    public DeleteResponse delete() throws SQLException {
         String idStr = getParamWithEmptyCheck("id");
         String[] ids = idStr.split(",");
-        for (String id : ids) {
-            new LogNav().deleteById(Integer.parseInt(id));
-        }
-        return new UpdateRecordResponse();
+        boolean deleted = Arrays.stream(ids).allMatch(id -> {
+            try {
+                return new LogNav().deleteById(Integer.parseInt(id));
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
+        });
+        return new DeleteResponse(deleted);
     }
 
     @ResponseBody
