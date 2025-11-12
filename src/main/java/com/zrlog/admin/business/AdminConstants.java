@@ -80,14 +80,14 @@ public class AdminConstants {
     }
 
     public static PublicWebSiteInfo getPublicWebSiteInfo() {
-        CacheService cacheService = Constants.zrLogConfig.getCacheService();
-        PublicWebSiteInfo publicWebSiteInfo;
-        if (Objects.nonNull(cacheService)) {
-            publicWebSiteInfo = cacheService.getPublicWebSiteInfo();
-        } else {
-            publicWebSiteInfo = WebSiteUtils.fillDefaultInfo(new PublicWebSiteInfo());
+        if (Objects.isNull(Constants.zrLogConfig)) {
+            return WebSiteUtils.fillDefaultInfo(new PublicWebSiteInfo());
         }
-        return publicWebSiteInfo;
+        CacheService cacheService = Constants.zrLogConfig.getCacheService();
+        if (Objects.isNull(cacheService)) {
+            return WebSiteUtils.fillDefaultInfo(new PublicWebSiteInfo());
+        }
+        return cacheService.getPublicWebSiteInfo();
     }
 
     public static String getAdminTitle(String startTitle) {
