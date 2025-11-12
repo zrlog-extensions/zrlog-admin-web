@@ -20,6 +20,7 @@ type MarkdownEditorState = {
     initValue: string;
     content: string;
     preview: boolean;
+    imageUploading: boolean;
 };
 
 const MarkedEditor: FunctionComponent<MarkdownEditorProps> = ({
@@ -47,6 +48,7 @@ const MarkedEditor: FunctionComponent<MarkdownEditorProps> = ({
         //默认开启
         preview: getDefaultConfig().preview,
         content: content,
+        imageUploading: false,
     });
 
     const [guttersWidth, setGuttersWidth] = useState<number>(27);
@@ -125,17 +127,43 @@ const MarkedEditor: FunctionComponent<MarkdownEditorProps> = ({
 
     const lang = getRes()["lang"];
 
-    const i18nExtension = useMemo(() => {
-        return EditorState.phrases.of(lang === "zh_CN" ? phrases : {});
+    const extensions = useMemo(() => {
+        const extArr = [];
+        extArr.push(markdown({ codeLanguages: languages }));
+        extArr.push(EditorView.lineWrapping);
+        extArr.push(EditorState.phrases.of(lang === "zh_CN" ? phrases : {}));
+        return extArr;
     }, [lang]);
 
     return (
         <StyledEditor mainColor={getAppState().colorPrimary} style={{ paddingBottom: 30 }}>
             {editorRef.current && (
                 <PasteUpload
+                    onUploading={() => {
+                        setState((prevState) => {
+                            return {
+                                ...prevState,
+                                imageUploading: true,
+                            };
+                        });
+                    }}
+                    onUploadFailure={() => {
+                        setState((prevState) => {
+                            return {
+                                ...prevState,
+                                imageUploading: false,
+                            };
+                        });
+                    }}
                     onUploadSuccess={(imgUrl) => {
                         const content = "![](" + imgUrl + ")\n";
                         insertTextAtCursor(content, content.length);
+                        setState((prevState) => {
+                            return {
+                                ...prevState,
+                                imageUploading: false,
+                            };
+                        });
                     }}
                     editorView={editorRef.current.contentDOM as HTMLElement}
                 />
@@ -143,6 +171,7 @@ const MarkedEditor: FunctionComponent<MarkdownEditorProps> = ({
             <div className={getAppState().dark ? "editor-dark" : "editor-light"} style={{ overflow: "hidden" }}>
                 {contextHolder}
                 <EditorToolBar
+                    imageUploading={state.imageUploading}
                     getContainer={getContainer}
                     onChange={(mdStr, cursorPosition) => {
                         insertTextAtCursor(mdStr, cursorPosition);
@@ -174,7 +203,7 @@ const MarkedEditor: FunctionComponent<MarkdownEditorProps> = ({
                             }
                         }}
                         theme={getAppState().dark ? "dark" : "light"}
-                        extensions={[markdown({ codeLanguages: languages }), EditorView.lineWrapping, i18nExtension]}
+                        extensions={extensions}
                         onCreateEditor={(view) => {
                             editorRef.current = view;
                             onViewChange();

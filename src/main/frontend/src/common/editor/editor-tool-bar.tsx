@@ -3,6 +3,8 @@ import { EditorDialogState } from "./editor.types";
 import EditorDialog from "./dialog/editor-dialog";
 import EditorIcon from "./editor-icon";
 import { getBorder } from "./editor-helpers";
+import Spin from "antd/es/spin";
+import { CloudUploadOutlined } from "@ant-design/icons";
 
 type EditorToolBarProps = {
     onChange: (val: string, cursorPosition: number) => void;
@@ -10,6 +12,7 @@ type EditorToolBarProps = {
     preview: boolean;
     onEditorModeChange: (preview: boolean) => void;
     getContainer?: () => HTMLElement;
+    imageUploading?: boolean;
 };
 
 const EditorToolBarDivider = () => {
@@ -34,6 +37,7 @@ const EditorToolBar: FunctionComponent<EditorToolBarProps> = ({
     preview,
     onEditorModeChange,
     getContainer,
+    imageUploading,
 }) => {
     const [dialogState, setDialogState] = useState<EditorDialogState>({
         open: false,
@@ -153,16 +157,18 @@ const EditorToolBar: FunctionComponent<EditorToolBarProps> = ({
                         });
                     }}
                 />
-                <EditorIcon
-                    name={"image"}
-                    onClick={() => {
-                        setDialogState({
-                            open: true,
-                            title: "添加图片",
-                            type: "image",
-                        });
-                    }}
-                />
+                <Spin spinning={imageUploading} indicator={<CloudUploadOutlined />}>
+                    <EditorIcon
+                        name={"image"}
+                        onClick={() => {
+                            setDialogState({
+                                open: true,
+                                title: "添加图片",
+                                type: "image",
+                            });
+                        }}
+                    />
+                </Spin>
 
                 <EditorIcon
                     name={"file-video"}
