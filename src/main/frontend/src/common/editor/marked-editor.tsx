@@ -56,7 +56,7 @@ const MarkedEditor: FunctionComponent<MarkdownEditorProps> = ({
     const editorRef = useRef<EditorView | null>(null);
     const previewRef = useRef<HTMLDivElement | null>(null);
 
-    const [messageApi, contextHolder] = useMessage({ maxCount: 3 });
+    const [messageApi, contextHolder] = useMessage({ maxCount: 3, getContainer: getContainer });
 
     const insertTextAtCursor = (text: string, cursorPosition: number) => {
         const view = editorRef.current;
