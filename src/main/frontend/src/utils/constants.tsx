@@ -114,6 +114,20 @@ export const getPreset = () => {
     return "preset";
 };
 
+export const getEnterFullScreen = () => {
+    if (getRes()["lang"] === "zh_CN") {
+        return "进入全屏";
+    }
+    return "Full screen";
+};
+
+export const getExitFullScreen = () => {
+    if (getRes()["lang"] === "zh_CN") {
+        return "退出全屏";
+    }
+    return "Exit full screen";
+};
+
 export const createUri = "/api/admin/article/create";
 export const updateUri = "/api/admin/article/update";
 

@@ -83,6 +83,7 @@ public class AdminConstants {
         if (Objects.isNull(Constants.zrLogConfig)) {
             return WebSiteUtils.fillDefaultInfo(new PublicWebSiteInfo());
         }
+
         CacheService cacheService = Constants.zrLogConfig.getCacheService();
         if (Objects.isNull(cacheService)) {
             return WebSiteUtils.fillDefaultInfo(new PublicWebSiteInfo());
