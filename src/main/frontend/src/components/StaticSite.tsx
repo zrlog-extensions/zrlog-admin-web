@@ -3,6 +3,7 @@ import { AdminCommonProps } from "../type";
 import { FloatButton, message } from "antd";
 import { useAxiosBaseInstance } from "../base/AppBase";
 import { LoadingOutlined, SyncOutlined } from "@ant-design/icons";
+import { cacheIgnoreReloadTime } from "../utils/constants";
 
 type StaticSiteData = {
     synced: boolean;
@@ -54,7 +55,7 @@ const StaticSite: FunctionComponent<AdminCommonProps<StaticSiteData>> = ({ data 
                                 syncing: false,
                             });
                             const url = new URL(window.location.href);
-                            url.searchParams.set("_t", new Date().getTime() + "");
+                            url.searchParams.set(cacheIgnoreReloadTime, new Date().getTime() + "");
                             window.location.replace(url.toString());
                         } else {
                             messageApi.info("同步未完成");

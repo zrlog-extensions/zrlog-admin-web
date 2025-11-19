@@ -48,7 +48,7 @@ export const setRes = (r: Record<string, never>) => {
 
 export const cacheIgnoreReloadTime = "_t";
 
-export const cacheIgnoreReloadKeys = "_t,v";
+export const cacheIgnoreReloadKeys = cacheIgnoreReloadTime + ",v";
 
 export const isDev = () => {
     return process.env.NODE_ENV != "production";
