@@ -53,7 +53,9 @@ const StaticSite: FunctionComponent<AdminCommonProps<StaticSiteData>> = ({ data 
                                 synced: data.data.synced,
                                 syncing: false,
                             });
-                            window.location.reload();
+                            const url = new URL(window.location.href);
+                            url.searchParams.set("_t", new Date().getTime() + "");
+                            window.location.replace(url.toString());
                         } else {
                             messageApi.info("同步未完成");
                             setState({
