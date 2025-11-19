@@ -114,14 +114,14 @@ export const getPreset = () => {
     return "preset";
 };
 
-export const getEnterFullScreen = () => {
+export const getEnterFullscreen = () => {
     if (getRes()["lang"] === "zh_CN") {
         return "进入全屏";
     }
     return "Full screen";
 };
 
-export const getExitFullScreen = () => {
+export const getExitFullscreen = () => {
     if (getRes()["lang"] === "zh_CN") {
         return "退出全屏";
     }

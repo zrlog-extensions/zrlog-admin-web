@@ -5,7 +5,7 @@ import screenfull from "screenfull";
 import { FunctionComponent, useEffect } from "react";
 import { FullScreenProps } from "./index.types";
 import { getAppState } from "../../base/ConfigProviderApp";
-import { getEnterFullScreen, getExitFullScreen } from "../../utils/constants";
+import { getEnterFullscreen, getExitFullscreen } from "../../utils/constants";
 
 type ArticleEditFullscreenButton = FullScreenProps & {
     fullScreenElement: HTMLDivElement;
@@ -85,9 +85,9 @@ const ArticleEditFullscreenButton: FunctionComponent<ArticleEditFullscreenButton
             type={"text"}
             icon={
                 fullScreen ? (
-                    <FullscreenExitOutlined title={getExitFullScreen()} style={{ fontSize: 24 }} />
+                    <FullscreenExitOutlined title={getExitFullscreen()} style={{ fontSize: 24 }} />
                 ) : (
-                    <FullscreenOutlined title={getEnterFullScreen()} style={{ fontSize: 24 }} />
+                    <FullscreenOutlined title={getEnterFullscreen()} style={{ fontSize: 24 }} />
                 )
             }
             href={
