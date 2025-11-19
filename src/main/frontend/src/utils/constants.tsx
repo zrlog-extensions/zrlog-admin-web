@@ -109,10 +109,8 @@ export const getRealRouteUrl = (url: string) => {
 
 export const getPreset = () => {
     if (getRes()["lang"] === "zh_CN") {
-        // @ts-ignore
         return "预设";
     }
-    // @ts-ignore
     return "preset";
 };
 
