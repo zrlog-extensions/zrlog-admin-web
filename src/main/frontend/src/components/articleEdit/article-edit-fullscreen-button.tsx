@@ -83,12 +83,11 @@ const ArticleEditFullscreenButton: FunctionComponent<ArticleEditFullscreenButton
     return (
         <Button
             type={"text"}
-            title={fullScreen ? getExitFullScreen() : getEnterFullScreen()}
             icon={
                 fullScreen ? (
-                    <FullscreenExitOutlined style={{ fontSize: 24 }} />
+                    <FullscreenExitOutlined title={getExitFullScreen()} style={{ fontSize: 24 }} />
                 ) : (
-                    <FullscreenOutlined style={{ fontSize: 24 }} />
+                    <FullscreenOutlined title={getEnterFullScreen()} style={{ fontSize: 24 }} />
                 )
             }
             href={
