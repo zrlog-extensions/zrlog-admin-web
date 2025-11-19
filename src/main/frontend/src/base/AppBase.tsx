@@ -111,10 +111,14 @@ export const useAxiosBaseInstance = (getContainer?: () => HTMLElement): AxiosIns
     return axiosInstance;
 };
 
+export const buildUriPaths = (uri: string) => {
+    return [uri, uri + ".html"];
+};
+
 const AppBase = ({ offline }: { offline: boolean }) => {
     return (
         <Routes>
-            {["login", "login.html"].map((e) => {
+            {buildUriPaths("login").map((e) => {
                 return (
                     <Route
                         key={e}
