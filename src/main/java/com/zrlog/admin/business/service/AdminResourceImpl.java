@@ -42,7 +42,7 @@ public class AdminResourceImpl implements AdminResource {
         Map<String, Object> resourceMap = new TreeMap<>();
         resourceMap.put("uris", pageUris);
         resourceMap.put("static", staticUris);
-        resourceMap.put("i18n", I18nUtil.getAdmin());
+        resourceMap.put("i18n/admin", I18nUtil.getI18nVOCache().getAdmin());
         this.fileBuildId = Math.abs(SecurityUtils.md5(new Gson().toJson(resourceMap)).hashCode());
     }
 
