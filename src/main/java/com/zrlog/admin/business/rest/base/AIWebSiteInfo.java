@@ -7,10 +7,13 @@ import com.zrlog.common.exception.ArgsException;
 
 import java.util.Objects;
 
+/**
+ * 与 AI 的 api 服务交互的配置信息
+ */
 public class AIWebSiteInfo implements Validator {
 
     private AIProviderType ai_provider;
-    private String ai_model_name;
+    private String ai_model;
     private String ai_api_key;
     private String ai_prompt;
 
@@ -22,12 +25,12 @@ public class AIWebSiteInfo implements Validator {
         this.ai_provider = ai_provider;
     }
 
-    public String getAi_model_name() {
-        return ai_model_name;
+    public String getAi_model() {
+        return ai_model;
     }
 
-    public void setAi_model_name(String ai_model_name) {
-        this.ai_model_name = ai_model_name;
+    public void setAi_model(String ai_model) {
+        this.ai_model = ai_model;
     }
 
     public String getAi_api_key() {
@@ -51,8 +54,8 @@ public class AIWebSiteInfo implements Validator {
         if (Objects.isNull(ai_provider)) {
             throw new ArgsException("ai_provider");
         }
-        if (StringUtils.isEmpty(ai_model_name)) {
-            throw new ArgsException("ai_model_name");
+        if (StringUtils.isEmpty(ai_model)) {
+            throw new ArgsException("ai_model");
         }
         if (StringUtils.isEmpty(ai_api_key)) {
             throw new ArgsException("ai_api_key");
