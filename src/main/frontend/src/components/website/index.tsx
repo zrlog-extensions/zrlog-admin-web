@@ -15,6 +15,7 @@ import BaseTitle from "../../base/BaseTitle";
 import { getPageDataCacheKeyByPath } from "../../utils/cache";
 import { useAxiosBaseInstance } from "../../base/AppBase";
 import { getAppState } from "../../base/ConfigProviderApp";
+import AIForm from "./AIForm";
 
 export interface Basic {
     second_title: string;
@@ -51,17 +52,30 @@ export interface Other {
     robotRuleContent: string;
 }
 
+export interface AI {
+    ai_provider: string;
+    ai_api_key: string;
+    ai_model: string;
+    ai_prompt: string;
+    allProviders: AIProvider[];
+}
+
+export interface AIProvider {
+    name: string;
+    models: string[];
+}
+
 export interface Upgrade {
     autoUpgradeVersion: number;
     upgradePreview: boolean;
 }
 
-export type WebSiteEntry = Basic | Admin | Upgrade | Other | Blog | TemplateEntry[];
+export type WebSiteEntry = Basic | Admin | Upgrade | Other | Blog | TemplateEntry[] | AI;
 
 export type WebSiteProps = AdminCommonProps<WebSiteEntry> & {
     offline: boolean;
     offlineData: boolean;
-    activeKey: "basic" | "other" | "upgrade" | "admin" | "template" | "blog";
+    activeKey: "basic" | "other" | "upgrade" | "admin" | "template" | "blog" | "ai";
 };
 
 const WebSite: FunctionComponent<WebSiteProps> = ({ data, offline, offlineData, activeKey, updateCache }) => {
@@ -220,6 +234,24 @@ const WebSite: FunctionComponent<WebSiteProps> = ({ data, offline, offlineData, 
                     </Col>
                 </Row>
             );
+        } else if (activeKey === "ai") {
+            return (
+                <Row>
+                    <Col xs={24} style={{ maxWidth: 600 }}>
+                        <AIForm
+                            loading={loading}
+                            offlineData={offlineData}
+                            onSubmit={(newData) => {
+                                onSubmit(newData).then(() => {
+                                    //ignore
+                                });
+                            }}
+                            offline={offline}
+                            data={data as AI}
+                        />
+                    </Col>
+                </Row>
+            );
         }
         return <></>;
     };
@@ -254,6 +286,11 @@ const WebSite: FunctionComponent<WebSiteProps> = ({ data, offline, offlineData, 
                     {
                         key: "other",
                         label: buildLink("other", getRes()["admin.other.manage"]),
+                        children: getItemBody(),
+                    },
+                    {
+                        key: "ai",
+                        label: buildLink("ai", getRes()["admin.ai.manage"]),
                         children: getItemBody(),
                     },
                     {

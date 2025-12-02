@@ -58,6 +58,10 @@ public class WebSiteService {
         return admin;
     }
 
+    public AIWebSiteInfo ai() {
+        return queryToMap(Arrays.asList("ai_provider", "ai_model", "ai_api_key", "ai_prompt"), AIWebSiteInfo.class);
+    }
+
     private <T> T queryToMap(List<String> names, Class<T> clazz) {
         Map<String, Object> webSiteByNameIn = new WebSite().getWebSiteByNameIn(names);
         return ResultBeanUtils.convert(webSiteByNameIn, clazz);

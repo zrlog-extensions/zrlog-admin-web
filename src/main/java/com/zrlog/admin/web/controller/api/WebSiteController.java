@@ -6,9 +6,11 @@ import com.hibegin.http.HttpMethod;
 import com.hibegin.http.annotation.ResponseBody;
 import com.zrlog.admin.business.AdminConstants;
 import com.zrlog.admin.business.rest.base.*;
+import com.zrlog.admin.business.rest.response.AIWebSiteInfoResponse;
 import com.zrlog.admin.business.rest.response.AdminApiPageDataStandardResponse;
 import com.zrlog.admin.business.rest.response.VersionResponse;
 import com.zrlog.admin.business.service.WebSiteService;
+import com.zrlog.admin.business.type.AIProviderType;
 import com.zrlog.admin.web.annotation.RefreshCache;
 import com.zrlog.admin.web.annotation.RequestLock;
 import com.zrlog.admin.web.plugin.UpdateVersionInfoPlugin;
@@ -23,9 +25,11 @@ import com.zrlog.util.I18nUtil;
 
 import java.io.InputStream;
 import java.sql.SQLException;
+import java.util.Arrays;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 public class WebSiteController extends BaseController {
 
@@ -130,5 +134,22 @@ public class WebSiteController extends BaseController {
             }
         }
         return new AdminApiPageDataStandardResponse<>(webSiteService.upgradeWebSiteInfo(), getRespMessage(), request.getUri());
+    }
+
+    @ResponseBody
+    public AdminApiPageDataStandardResponse<AIWebSiteInfo> ai() throws SQLException {
+        if (request.getMethod() == HttpMethod.POST) {
+            AIWebSiteInfo request = getRequestBodyWithNullCheck(AIWebSiteInfo.class);
+            update(request);
+        }
+        AIWebSiteInfo ai = webSiteService.ai();
+        AIWebSiteInfoResponse infoResponse = BeanUtil.convert(ai, AIWebSiteInfoResponse.class);
+        infoResponse.setAllProviders(Arrays.stream(AIProviderType.values()).map(e -> {
+            AIWebSiteInfoResponse.AIProvider aiProvider = new AIWebSiteInfoResponse.AIProvider();
+            aiProvider.setName(e);
+            aiProvider.setModels(e.getModels());
+            return aiProvider;
+        }).collect(Collectors.toList()));
+        return new AdminApiPageDataStandardResponse<>(infoResponse, getRespMessage(), request.getUri());
     }
 }

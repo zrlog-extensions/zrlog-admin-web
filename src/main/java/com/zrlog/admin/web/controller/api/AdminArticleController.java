@@ -6,6 +6,7 @@ import com.zrlog.admin.business.exception.PermissionErrorException;
 import com.zrlog.admin.business.rest.request.CreateArticleRequest;
 import com.zrlog.admin.business.rest.request.UpdateArticleRequest;
 import com.zrlog.admin.business.rest.response.*;
+import com.zrlog.admin.business.service.AIService;
 import com.zrlog.admin.business.service.AdminArticleService;
 import com.zrlog.admin.web.annotation.RefreshCache;
 import com.zrlog.admin.web.token.AdminTokenThreadLocal;
@@ -18,6 +19,7 @@ import com.zrlog.model.WebSite;
 import com.zrlog.util.I18nUtil;
 import com.zrlog.util.ZrLogUtil;
 
+import java.io.IOException;
 import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.List;
@@ -113,6 +115,12 @@ public class AdminArticleController extends BaseController {
     @Deprecated
     public AdminApiPageDataStandardResponse<LoadEditArticleResponse> detail() throws SQLException {
         return new AdminApiPageDataStandardResponse<>(articleService.loadDetail(getParamWithEmptyCheck("id"), request));
+    }
+
+    @ResponseBody
+    public AdminApiPageDataStandardResponse<List<AIResponseEntry.AIContentEntry>> ai() throws IOException, InterruptedException {
+        List<AIResponseEntry.AIContentEntry> aiInfo = new AIService().getResponse(getParamWithEmptyCheck("input"), Long.parseLong(getParamWithEmptyCheck("id")));
+        return new AdminApiPageDataStandardResponse<>(aiInfo, "", request.getUri());
     }
 
 }

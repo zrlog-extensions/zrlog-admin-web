@@ -293,6 +293,12 @@ const AdminDashboardRouter: FunctionComponent<AdminDashboardRouterProps> = ({ of
             props: { activeKey: "blog" } as WebSiteProps,
         },
         {
+            paths: buildUriPaths("website/ai"),
+            lazy: AsyncWebSite,
+            fallback: WebSite,
+            props: { activeKey: "ai" } as WebSiteProps,
+        },
+        {
             paths: buildUriPaths("website/upgrade"),
             lazy: AsyncWebSite,
             fallback: WebSite,
