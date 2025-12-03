@@ -8,7 +8,6 @@ import { useEffect, useState } from "react";
 
 import { AI } from "./index";
 import Select from "antd/es/select";
-import { Option } from "rc-select";
 import { Input } from "antd";
 
 const layout = {
@@ -60,7 +59,11 @@ const AIForm = ({
             <Form.Item name="ai_provider" label={getRes()["website.ai_provider"]} required={true}>
                 <Select>
                     {data.allProviders.map((provider) => {
-                        return <Option value={provider.name}>{provider.name.toLowerCase().replace("_", "")}</Option>;
+                        return (
+                            <Select.Option value={provider.name}>
+                                {provider.name.toLowerCase().replace("_", "")}
+                            </Select.Option>
+                        );
                     })}
                 </Select>
             </Form.Item>
@@ -71,7 +74,7 @@ const AIForm = ({
                             return (
                                 <>
                                     {e.models.map((e) => {
-                                        return <Option value={e}>{e}</Option>;
+                                        return <Select.Option value={e}>{e}</Select.Option>;
                                     })}
                                 </>
                             );

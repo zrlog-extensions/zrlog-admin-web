@@ -1,7 +1,6 @@
 import FormItem from "antd/es/form/FormItem";
 import BaseTextArea from "../../BaseTextArea";
 import Select from "antd/es/select";
-import { Option } from "rc-select";
 import { FunctionComponent, useEffect, useState } from "react";
 import { getCodeLanguages } from "../highlight/hljs-helpers";
 
@@ -46,9 +45,9 @@ const CodeBody: FunctionComponent<CodeBodyProps> = ({ onChange, getContainer }) 
                     getPopupContainer={getContainer}
                 >
                     {Object.keys(languages).map((key) => (
-                        <Option key={key} value={key}>
+                        <Select.Option key={key} value={key}>
                             {languages[key][0]}
-                        </Option>
+                        </Select.Option>
                     ))}
                 </Select>
             </FormItem>

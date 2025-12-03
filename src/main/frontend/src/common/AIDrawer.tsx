@@ -43,6 +43,8 @@ const AIDrawer: FunctionComponent<AIDrawerProps> = ({ sessionId, input, onClose,
 
     const enterBtnRef = useRef<HTMLAnchorElement | HTMLButtonElement>(null);
 
+    const [size, setSize] = useState<string | number>("large");
+
     const [state, setState] = useState<AIDrawerState>({
         open: !hide,
         input: input,
@@ -221,8 +223,17 @@ const AIDrawer: FunctionComponent<AIDrawerProps> = ({ sessionId, input, onClose,
                     <OpenAIFilled /> {getRes()["admin.ai"]}
                 </>
             }
+            resizable={{
+                onResize: (n) => {
+                    if (n <= 378) {
+                        setSize("default");
+                    } else {
+                        setSize(n);
+                    }
+                },
+            }}
             placement="right"
-            size={"large"}
+            size={size as number}
             closable={false}
             autoFocus={false}
             onClose={() => {

@@ -110,11 +110,6 @@ const EditorDialog: FunctionComponent<EditorDialogProps> = ({ title, type, onOk,
                     }
                 }
             }}
-            onClose={() => {
-                if (onClose) {
-                    onClose();
-                }
-            }}
             onCancel={() => {
                 if (onClose) {
                     onClose();

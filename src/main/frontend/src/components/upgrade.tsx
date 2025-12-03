@@ -12,7 +12,6 @@ import UpgradeContent from "./upgrade-content";
 import HtmlPreviewPanel from "../common/editor/html-preview-panel";
 import { markdownToHtml } from "../common/editor/utils/marked-utils";
 
-const { Step } = Steps;
 export const API_VERSION_PATH = "/api/public/version";
 export const API_DO_UPGRADE_PATH = "/api/admin/upgrade/doUpgrade";
 
@@ -35,20 +34,34 @@ export type UpgradeProps = {
 
 const Upgrade: FunctionComponent<UpgradeProps> = ({ data, offline, offlineData }) => {
     const preUpgradeKey = data.preUpgradeKey;
-    const steps: StepInfo[] = [
-        {
-            title: getRes()["changeLog"],
-            alias: "changeLog",
-        },
-        {
-            title: "下载更新",
-            alias: "downloadProcess",
-        },
-        {
-            title: "执行更新",
-            alias: "doUpgrade",
-        },
-    ];
+    const isDisabledDownload = () => {
+        return !data.onlineUpgradable;
+    };
+    const steps: StepInfo[] = isDisabledDownload()
+        ? [
+              {
+                  title: getRes()["changeLog"],
+                  alias: "changeLog",
+              },
+              {
+                  title: "执行更新",
+                  alias: "doUpgrade",
+              },
+          ]
+        : [
+              {
+                  title: getRes()["changeLog"],
+                  alias: "changeLog",
+              },
+              {
+                  title: "下载更新",
+                  alias: "downloadProcess",
+              },
+              {
+                  title: "执行更新",
+                  alias: "doUpgrade",
+              },
+          ];
 
     const upgradeTimer = useRef<NodeJS.Timeout | null>(null);
 
@@ -185,10 +198,6 @@ const Upgrade: FunctionComponent<UpgradeProps> = ({ data, offline, offlineData }
         return false;
     };
 
-    const isDisabledDownload = () => {
-        return !data.onlineUpgradable;
-    };
-
     useEffect(() => {
         return () => {
             if (upgradeTimer && upgradeTimer.current) {
@@ -202,16 +211,7 @@ const Upgrade: FunctionComponent<UpgradeProps> = ({ data, offline, offlineData }
             {contextHolder}
             <Col style={{ maxWidth: 600 }} xs={24}>
                 <BaseTitle title={getRes()["upgradeWizard"]} />
-                <Steps current={state.current} style={{ paddingTop: 16 }}>
-                    {steps.map((item) => {
-                        if (item.alias === "downloadProcess") {
-                            if (isDisabledDownload()) {
-                                return <></>;
-                            }
-                        }
-                        return <Step key={item.alias} title={item.title} />;
-                    })}
-                </Steps>
+                <Steps current={state.current} style={{ paddingTop: 16 }} items={steps} />
                 <div className="steps-content" style={{ marginTop: 20 }}>
                     {state.current === 0 && (
                         <>
