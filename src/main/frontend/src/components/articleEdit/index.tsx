@@ -526,6 +526,7 @@ const Index: FunctionComponent<ArticleEditProps> = ({
                         {fullScreen && (
                             <Col xxl={9} md={12} sm={18} xs={16} style={{ padding: 0 }}>
                                 <ArticleEditActionBar
+                                    getContainer={() => editCardRef.current as HTMLElement}
                                     offline={offline}
                                     fullScreen={fullScreen}
                                     data={state}

@@ -1,15 +1,17 @@
 import { Button, Grid } from "antd";
-import { EyeOutlined, SaveOutlined, SendOutlined } from "@ant-design/icons";
+import { EyeOutlined, OpenAIFilled, SaveOutlined, SendOutlined } from "@ant-design/icons";
 import { getRes } from "../../utils/constants";
 import { ArticleEditState, ArticleEntry } from "./index.types";
-import { FunctionComponent, useEffect, useRef } from "react";
+import { FunctionComponent, useEffect, useRef, useState } from "react";
 import styled from "styled-components";
+import AIDrawer from "../../common/AIDrawer";
 
 type ArticleEditActionBarProps = {
     data: ArticleEditState;
     fullScreen: boolean;
     offline: boolean;
     onSubmit: (article: ArticleEntry, release: boolean, preview: boolean, autoSave: boolean) => Promise<void>;
+    getContainer?: () => HTMLElement;
 };
 
 const StyledActionBar = styled(`div`)`
@@ -34,11 +36,15 @@ const ArticleEditActionBar: FunctionComponent<ArticleEditActionBarProps> = ({
     offline,
     fullScreen,
     onSubmit,
+    getContainer,
 }) => {
     const enterBtnRef = useRef<HTMLAnchorElement | HTMLButtonElement>(null);
 
     const { useBreakpoint } = Grid;
     const screens = useBreakpoint();
+
+    const [aiOpen, setAiOpen] = useState<boolean>(false);
+    const realOpen = useRef<boolean>(aiOpen);
 
     useEffect(() => {
         const handleKeyPress = (event: KeyboardEvent) => {
@@ -52,7 +58,7 @@ const ArticleEditActionBar: FunctionComponent<ArticleEditActionBarProps> = ({
             ) {
                 // 处理 Ctrl + Enter 或 Cmd + Enter 的逻辑
                 //console.log('Ctrl + Enter 或 Cmd + Enter 按下');
-                if (enterBtnRef.current) {
+                if (enterBtnRef.current && !realOpen.current) {
                     enterBtnRef.current.click();
                 }
                 //onSubmit(data.article, true, false, false);
@@ -70,6 +76,27 @@ const ArticleEditActionBar: FunctionComponent<ArticleEditActionBarProps> = ({
 
     return (
         <StyledActionBar style={{ display: "flex", justifyContent: "end", gap: 8 }}>
+            <AIDrawer
+                hide={!aiOpen}
+                apiUri={"/api/admin/article/ai"}
+                input={""}
+                sessionId={data.article.logId ? data.article.logId : 0}
+                onClose={() => {
+                    setAiOpen(false);
+                }}
+                getContainer={getContainer}
+            />
+            <Button
+                className={"btn"}
+                type={fullScreen ? "default" : "dashed"}
+                onClick={() => {
+                    realOpen.current = true;
+                    setAiOpen(true);
+                }}
+            >
+                <OpenAIFilled />
+                {screens.sm && <span>{getRes()["admin.ai"]}</span>}
+            </Button>
             <Button
                 className={"btn"}
                 type={fullScreen ? "default" : "dashed"}
