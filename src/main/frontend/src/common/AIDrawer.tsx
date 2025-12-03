@@ -324,6 +324,7 @@ const AIDrawer: FunctionComponent<AIDrawerProps> = ({
                         <TextArea
                             size={"large"}
                             disabled={state.sending}
+                            style={{ minHeight: 48, maxHeight: 72 }}
                             placeholder={getRes()["admin.ai.inputTips"]}
                         />
                     </Form.Item>
@@ -333,7 +334,14 @@ const AIDrawer: FunctionComponent<AIDrawerProps> = ({
                         size={"large"}
                         type={"dashed"}
                         disabled={state.input.length === 0}
-                        style={{ position: "absolute", right: 2, bottom: 2, border: "none" }}
+                        style={{
+                            position: "absolute",
+                            right: 1,
+                            bottom: 1,
+                            border: "none",
+                            boxShadow: "none",
+                            background: "inherit",
+                        }}
                         loading={state.sending}
                         onClick={async () => {
                             await onSubmit();
