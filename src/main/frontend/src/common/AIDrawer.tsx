@@ -2,7 +2,7 @@ import { getRes } from "../utils/constants";
 import { Avatar, Button, Drawer } from "antd";
 import { FunctionComponent, useEffect, useRef, useState } from "react";
 import Form from "antd/es/form";
-import { InfoCircleOutlined, UpCircleOutlined } from "@ant-design/icons";
+import { InfoCircleOutlined, UpCircleOutlined, UserOutlined } from "@ant-design/icons";
 import { useAxiosBaseInstance } from "../base/AppBase";
 import useMessage from "antd/es/message/useMessage";
 import HtmlPreviewPanel from "./editor/html-preview-panel";
@@ -130,7 +130,7 @@ const AIDrawer: FunctionComponent<AIDrawerProps> = ({
             return user;
         }
         return {
-            userName: "",
+            userName: "admin",
             header: "",
             key: "",
         };
@@ -149,8 +149,13 @@ const AIDrawer: FunctionComponent<AIDrawerProps> = ({
                     }}
                 >
                     <div style={{ paddingBottom: 12, float: "right" }}>
-                        <Avatar src={getUserInfo().header} />
-                        <span style={{ paddingLeft: 8 }}>{getUserInfo().userName}</span>
+                        <Avatar
+                            src={getUserInfo().header}
+                            icon={getUserInfo().header.length === 0 ? <UserOutlined /> : <></>}
+                        />
+                        <span style={{ paddingLeft: getUserInfo().userName.length > 0 ? 8 : 0 }}>
+                            {getUserInfo().userName}
+                        </span>
                     </div>
                     <div style={{ maxWidth: "90%" }}>
                         <span>{content.content}</span>
