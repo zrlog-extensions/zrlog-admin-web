@@ -10,7 +10,7 @@ import UpgradeSettingForm from "./UpgradeSettingForm";
 import { Link, useLocation } from "react-router-dom";
 import AdminForm from "./AdminForm";
 import { FunctionComponent, useState } from "react";
-import { AdminCommonProps } from "../../type";
+import { AdminCommonProps, AIProviderType } from "../../type";
 import BaseTitle from "../../base/BaseTitle";
 import { getPageDataCacheKeyByPath } from "../../utils/cache";
 import { useAxiosBaseInstance } from "../../base/AppBase";
@@ -61,7 +61,7 @@ export interface AI {
 }
 
 export interface AIProvider {
-    name: string;
+    name: AIProviderType;
     models: string[];
 }
 

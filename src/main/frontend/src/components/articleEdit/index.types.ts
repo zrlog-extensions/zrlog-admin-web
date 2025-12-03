@@ -1,4 +1,4 @@
-import { AdminCommonProps} from "../../type";
+import { AdminCommonProps, AIProviderType } from "../../type";
 
 export type ArticleEntry = ChangedContent &
     ThumbnailChanged &
@@ -9,11 +9,11 @@ export type ArticleEntry = ChangedContent &
     PrivacyChanged &
     CanCommentChanged &
     TypeChanged & {
-    rubbish: boolean;
-    logId?: number;
-    lastUpdateDate?: number;
-    version: number;
-};
+        rubbish: boolean;
+        logId?: number;
+        lastUpdateDate?: number;
+        version: number;
+    };
 
 export type ChangedContent = {
     content?: string;
@@ -63,26 +63,25 @@ export type ArticleChangeableValue =
     | ThumbnailChanged
     | DigestChanged;
 
-
 export type ArticleEditInfo = {
     tags: any[];
     types: any[];
     article: ArticleEntry;
+    aiProvider: AIProviderType;
 };
-
 
 export type FullScreenProps = {
     onExitFullScreen: () => void;
     onFullScreen: () => void;
     fullScreen: boolean;
-}
-
-export type ArticleEditProps = FullScreenProps & AdminCommonProps<ArticleEditInfo> & {
 };
+
+export type ArticleEditProps = FullScreenProps & AdminCommonProps<ArticleEditInfo> & {};
 
 export type ArticleEditState = {
     typeOptions: any[];
     tags: any[];
+    aiProvider: AIProviderType;
     rubbish: boolean;
     editorVersion: number;
     article: ArticleEntry;

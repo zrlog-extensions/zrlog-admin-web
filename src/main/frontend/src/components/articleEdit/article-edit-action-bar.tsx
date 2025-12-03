@@ -1,10 +1,12 @@
 import { Button, Grid } from "antd";
-import { EyeOutlined, OpenAIFilled, SaveOutlined, SendOutlined } from "@ant-design/icons";
+import { EyeOutlined, SaveOutlined, SendOutlined } from "@ant-design/icons";
 import { getRes } from "../../utils/constants";
 import { ArticleEditState, ArticleEntry } from "./index.types";
 import { FunctionComponent, useEffect, useRef, useState } from "react";
 import styled from "styled-components";
 import AIDrawer from "../../common/AIDrawer";
+import { AIProviderType } from "../../type";
+import AIIcon from "../../common/editor/AIIcon";
 
 type ArticleEditActionBarProps = {
     data: ArticleEditState;
@@ -77,6 +79,7 @@ const ArticleEditActionBar: FunctionComponent<ArticleEditActionBarProps> = ({
     return (
         <StyledActionBar style={{ display: "flex", justifyContent: "end", gap: 8 }}>
             <AIDrawer
+                aiProvider={data.aiProvider}
                 hide={!aiOpen}
                 apiUri={"/api/admin/article/ai"}
                 input={""}
@@ -94,7 +97,7 @@ const ArticleEditActionBar: FunctionComponent<ArticleEditActionBarProps> = ({
                     setAiOpen(true);
                 }}
             >
-                <OpenAIFilled />
+                <AIIcon name={AIProviderType.DEEP_SEEK} />
                 {screens.sm && <span>{getRes()["admin.ai"]}</span>}
             </Button>
             <Button

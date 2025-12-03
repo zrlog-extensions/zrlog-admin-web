@@ -1,5 +1,6 @@
 package com.zrlog.admin.business.rest.response;
 
+import com.zrlog.admin.business.type.AIProviderType;
 import com.zrlog.common.cache.dto.TagDTO;
 import com.zrlog.common.cache.dto.TypeDTO;
 
@@ -10,6 +11,7 @@ public class ArticleGlobalResponse {
     private List<TagDTO> tags;
     private List<TypeDTO> types;
     private LoadEditArticleResponse article;
+    private AIProviderType aiProvider;
 
     public LoadEditArticleResponse getArticle() {
         return article;
@@ -33,5 +35,13 @@ public class ArticleGlobalResponse {
 
     public void setTypes(List<TypeDTO> types) {
         this.types = types;
+    }
+
+    public AIProviderType getAiProvider() {
+        return aiProvider;
+    }
+
+    public void setAiProvider(AIProviderType aiProvider) {
+        this.aiProvider = aiProvider;
     }
 }

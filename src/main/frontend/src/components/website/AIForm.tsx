@@ -9,6 +9,7 @@ import { useEffect, useState } from "react";
 import { AI } from "./index";
 import Select from "antd/es/select";
 import { Input } from "antd";
+import AIIcon from "../../common/editor/AIIcon";
 
 const layout = {
     labelCol: { span: 8 },
@@ -61,7 +62,9 @@ const AIForm = ({
                     {data.allProviders.map((provider) => {
                         return (
                             <Select.Option value={provider.name}>
-                                {provider.name.toLowerCase().replace("_", "")}
+                                <div style={{ display: "flex", alignItems: "center", gap: 4 }}>
+                                    <AIIcon name={provider.name} /> {provider.name.toLowerCase().replace("_", "")}
+                                </div>
                             </Select.Option>
                         );
                     })}

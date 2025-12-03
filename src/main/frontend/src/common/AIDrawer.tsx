@@ -2,15 +2,17 @@ import { getRes } from "../utils/constants";
 import { Avatar, Button, Drawer } from "antd";
 import { FunctionComponent, useEffect, useRef, useState } from "react";
 import Form from "antd/es/form";
-import { InfoCircleOutlined, OpenAIFilled, UpCircleOutlined } from "@ant-design/icons";
+import { InfoCircleOutlined, UpCircleOutlined } from "@ant-design/icons";
 import { useAxiosBaseInstance } from "../base/AppBase";
 import useMessage from "antd/es/message/useMessage";
 import HtmlPreviewPanel from "./editor/html-preview-panel";
 import { markdownToHtmlSyncWithCallback } from "./editor/utils/marked-utils";
 import { getAppState } from "../base/ConfigProviderApp";
 import { addToCache, getCacheByKey } from "../utils/cache";
-import { BasicUserInfo } from "../type";
+import { AIProviderType, BasicUserInfo } from "../type";
 import TextArea from "antd/es/input/TextArea";
+import Title from "antd/es/typography/Title";
+import AIIcon from "./editor/AIIcon";
 
 type AIDrawerProps = {
     input: string;
@@ -18,6 +20,7 @@ type AIDrawerProps = {
     apiUri: string;
     onClose?: () => void;
     hide: boolean;
+    aiProvider: AIProviderType;
     getContainer?: () => HTMLElement;
 };
 
@@ -34,7 +37,15 @@ type AIDrawerState = {
     contents: Content[];
 };
 
-const AIDrawer: FunctionComponent<AIDrawerProps> = ({ sessionId, input, onClose, getContainer, apiUri, hide }) => {
+const AIDrawer: FunctionComponent<AIDrawerProps> = ({
+    sessionId,
+    input,
+    onClose,
+    getContainer,
+    apiUri,
+    hide,
+    aiProvider,
+}) => {
     const getAICacheKey = () => {
         return "ai/chat/" + sessionId;
     };
@@ -114,7 +125,15 @@ const AIDrawer: FunctionComponent<AIDrawerProps> = ({ sessionId, input, onClose,
     };
 
     const getUserInfo = (): BasicUserInfo => {
-        return getCacheByKey("/user") as BasicUserInfo;
+        const user = getCacheByKey("/user") as BasicUserInfo;
+        if (user) {
+            return user;
+        }
+        return {
+            userName: "",
+            header: "",
+            key: "",
+        };
     };
 
     const getItem = (content: Content) => {
@@ -142,7 +161,7 @@ const AIDrawer: FunctionComponent<AIDrawerProps> = ({ sessionId, input, onClose,
         return (
             <>
                 <div style={{ paddingBottom: 12 }}>
-                    <Avatar icon={<OpenAIFilled />} />
+                    <Avatar icon={<AIIcon name={aiProvider} />} />
                     <span style={{ paddingLeft: 8 }}>{getRes()["admin.ai"]}</span>
                 </div>
                 <div style={{ maxWidth: "90%" }}>
@@ -167,8 +186,12 @@ const AIDrawer: FunctionComponent<AIDrawerProps> = ({ sessionId, input, onClose,
                     overflow: "scroll",
                 }}
             >
-                {state.contents.map((e) => {
-                    return <div style={{ paddingBottom: 12 }}>{getItem(e)}</div>;
+                {state.contents.map((e, idx) => {
+                    return (
+                        <div key={idx} style={{ paddingBottom: 12 }}>
+                            {getItem(e)}
+                        </div>
+                    );
                 })}
             </div>
         );
@@ -219,9 +242,9 @@ const AIDrawer: FunctionComponent<AIDrawerProps> = ({ sessionId, input, onClose,
     return (
         <Drawer
             title={
-                <>
-                    <OpenAIFilled /> {getRes()["admin.ai"]}
-                </>
+                <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
+                    <AIIcon name={aiProvider} /> {getRes()["admin.ai"]}
+                </div>
             }
             resizable={{
                 onResize: (n) => {
@@ -275,8 +298,7 @@ const AIDrawer: FunctionComponent<AIDrawerProps> = ({ sessionId, input, onClose,
                     style={{
                         position: "absolute",
                         width: "80%",
-                        display: "flex",
-                        bottom: 32,
+                        bottom: state.contents.length == 0 ? "45%" : 32,
                         justifyContent: "center",
                     }}
                     onValuesChange={(r) => {
@@ -288,6 +310,11 @@ const AIDrawer: FunctionComponent<AIDrawerProps> = ({ sessionId, input, onClose,
                         });
                     }}
                 >
+                    {state.contents.length === 0 && (
+                        <Title level={3} style={{ textAlign: "center", lineHeight: 2 }}>
+                            {getRes()["admin.ai.title"]}
+                        </Title>
+                    )}
                     <Form.Item name={"input"} style={{ flex: 1, marginBottom: 0 }}>
                         <TextArea
                             size={"large"}
@@ -310,9 +337,11 @@ const AIDrawer: FunctionComponent<AIDrawerProps> = ({ sessionId, input, onClose,
                         {!state.sending && <UpCircleOutlined />}
                     </Button>
                 </Form>
-                <span style={{ position: "absolute", bottom: 6, fontSize: 12 }}>
-                    <InfoCircleOutlined style={{ paddingRight: 4 }} /> {getRes()["admin.ai.contentTips"]}
-                </span>
+                {state.contents.length > 0 && (
+                    <span style={{ position: "absolute", bottom: 6, fontSize: 12 }}>
+                        <InfoCircleOutlined style={{ paddingRight: 4 }} /> {getRes()["admin.ai.contentTips"]}
+                    </span>
+                )}
             </div>
         </Drawer>
     );

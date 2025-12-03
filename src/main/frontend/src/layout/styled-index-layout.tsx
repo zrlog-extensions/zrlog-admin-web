@@ -67,10 +67,6 @@ const StyledIndexLayout = styled.div<StyledIndexLayoutProps>`
         height: ${(props) => (props.compactMode ? 58 : 72)}px;
     }
 
-    .ant-menu-title-content > a > span {
-        line-height: 1;
-    }
-
     .ant-menu-item > a > span,
     .ant-menu-submenu-title > span {
         display: block;
@@ -94,6 +90,10 @@ const StyledIndexLayout = styled.div<StyledIndexLayoutProps>`
     .ant-menu-sub > .ant-menu-item {
         font-size: 14px;
         height: 40px;
+    }
+
+    .ant-menu .ant-menu-item {
+        border-radius: 0 !important;
     }
 
     .ant-menu-submenu {
@@ -196,6 +196,7 @@ const StyledIndexLayout = styled.div<StyledIndexLayoutProps>`
     .ant-menu .menu-title {
         margin-left: 0 !important;
         font-size: 12px;
+        line-height: 1 !important;
     }
 
     .ant-form-item-explain-error {

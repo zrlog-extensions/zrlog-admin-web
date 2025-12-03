@@ -94,13 +94,14 @@ const SliderMenu = () => {
         return 24;
     };
 
-    function getItem(entry: MenuEntry, key: React.Key | null, children: MenuItem[]): MenuItem {
+    function getItem(entry: MenuEntry, key: React.Key | null, children: MenuItem[], sub: boolean): MenuItem {
         const info = getInfo(entry);
         const label = (
             <Link
                 to={getRealRouteUrl(entry.link)}
                 style={{
                     color: info.selected && getAppState().dark ? getAppState().colorPrimary : "#FFF",
+                    background: info.selected && !sub ? colorToRgba(getAppState().colorPrimary, 0.3) : "inherit",
                 }}
                 onClick={(e) => {
                     tryBlock(e, modal);
@@ -143,7 +144,8 @@ const SliderMenu = () => {
                 icon: <DashboardOutlined style={{ fontSize: getIconSize() }} />,
             },
             "/index",
-            []
+            [],
+            false
         ),
         getItem(
             {
@@ -153,7 +155,9 @@ const SliderMenu = () => {
                 icon: <EditOutlined style={{ fontSize: getIconSize() }} />,
             },
             "/article-edit",
-            []
+            [],
+
+            false
         ),
         getItem(
             {
@@ -163,7 +167,8 @@ const SliderMenu = () => {
                 icon: <ContainerOutlined style={{ fontSize: getIconSize() }} />,
             },
             "/article",
-            []
+            [],
+            false
         ),
         getItem(
             {
@@ -173,7 +178,8 @@ const SliderMenu = () => {
                 icon: <CommentOutlined style={{ fontSize: getIconSize() }} />,
             },
             "/comment",
-            []
+            [],
+            false
         ),
         getItem(
             {
@@ -183,7 +189,8 @@ const SliderMenu = () => {
                 icon: <ApiOutlined style={{ fontSize: getIconSize() }} />,
             },
             "/plugin",
-            []
+            [],
+            false
         ),
         getItem(
             {
@@ -193,7 +200,8 @@ const SliderMenu = () => {
                 icon: <SettingOutlined style={{ fontSize: getIconSize() }} />,
             },
             "/website",
-            []
+            [],
+            false
         ),
         getItem(
             {
@@ -212,7 +220,8 @@ const SliderMenu = () => {
                         icon: <span />,
                     },
                     "/article-type",
-                    []
+                    [],
+                    true
                 ),
                 getItem(
                     {
@@ -222,7 +231,8 @@ const SliderMenu = () => {
                         icon: <span />,
                     },
                     "/link",
-                    []
+                    [],
+                    true
                 ),
                 getItem(
                     {
@@ -232,9 +242,11 @@ const SliderMenu = () => {
                         icon: <span />,
                     },
                     "/nav",
-                    []
+                    [],
+                    true
                 ),
-            ]
+            ],
+            false
         ),
     ];
 
@@ -270,9 +282,9 @@ const SliderMenu = () => {
                 items={items}
                 theme={getAppState().dark ? "light" : "dark"}
                 style={{
+                    borderInlineEnd: "none",
                     minHeight: "100%",
                     backgroundColor: getAppState().dark ? "#1f1f1f" : "#001529",
-                    borderInlineEnd: "unset",
                 }}
             />
         </>

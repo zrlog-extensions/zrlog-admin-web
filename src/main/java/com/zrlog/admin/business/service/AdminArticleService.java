@@ -307,7 +307,9 @@ public class AdminArticleService {
                 response.setTags(Constants.zrLogConfig.getCacheService().getTags());
             }, executorService), CompletableFuture.runAsync(() -> {
                 response.setTypes(Constants.zrLogConfig.getCacheService().getArticleTypes());
-            }, executorService)).join();
+            }, executorService), CompletableFuture.runAsync(() -> {
+                response.setAiProvider(new WebSiteService().ai().getAi_provider());
+            })).join();
         } finally {
             executorService.shutdown();
         }

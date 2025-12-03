@@ -72,6 +72,12 @@ export type BasicUserInfo = {
     lastVersion?: LastVersion;
 };
 
+export enum AIProviderType {
+    DEEP_SEEK = "DEEP_SEEK",
+    OPEN_AI = "OPEN_AI",
+    QWEN = "QWEN",
+}
+
 export type LoginUserResponseInfo = BasicUserInfo & {
     key: string;
     cacheableApiUris?: string[];
