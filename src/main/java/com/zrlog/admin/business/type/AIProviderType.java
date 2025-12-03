@@ -5,7 +5,7 @@ import java.util.List;
 
 public enum AIProviderType {
 
-    DEEK_SEEK("https://api.deepseek.com/chat/completions", Arrays.asList("deepseek-chat", "deepseek-reasoner")),
+    DEEP_SEEK("https://api.deepseek.com/chat/completions", Arrays.asList("deepseek-chat", "deepseek-reasoner")),
     OPEN_AI("https://api.openai.com/v1/completions", Arrays.asList("gpt-5.1", "gpt-5", "gpt-5-mini", "gpt-4.1"));
 
     private final String baseUrl;
