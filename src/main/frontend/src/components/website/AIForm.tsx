@@ -37,6 +37,15 @@ const AIForm = ({
         form.setFieldsValue(data);
     }, [data]);
 
+    useEffect(() => {
+        setState((prevState) => {
+            return {
+                ...prevState,
+                ai_model: "",
+            };
+        });
+    }, [state.ai_provider]);
+
     return (
         <Form
             form={form}
