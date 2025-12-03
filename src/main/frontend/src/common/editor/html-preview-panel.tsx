@@ -1,9 +1,9 @@
 import { StyledHighlightDark } from "./highlight/styled-highlight-dark";
 import { StyledHighlightDefault } from "./highlight/styled-highlight-default";
 import { CSSProperties, FunctionComponent, MutableRefObject, useEffect, useRef } from "react";
-import { StyledPreview } from "./styles/styled-preview";
 import { getAppState } from "../../base/ConfigProviderApp";
 import "katex/dist/katex.min.css";
+import StyledPreview from "./styles/styled-preview";
 
 export type EditorPreviewProps = {
     htmlContent: string;
@@ -47,7 +47,7 @@ const HtmlPreviewPanel: FunctionComponent<EditorPreviewProps> = ({
     };
 
     return (
-        <StyledPreview ref={previewRef} style={style}>
+        <StyledPreview dark={getAppState().dark} ref={previewRef} style={style}>
             {getAppState().dark ? (
                 <StyledHighlightDark {...commonProps} />
             ) : (

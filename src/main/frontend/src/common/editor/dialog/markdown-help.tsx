@@ -1,6 +1,7 @@
-import { StyledPreview } from "../styles/styled-preview";
 import { marked } from "marked";
 import HtmlPreviewPanel from "../html-preview-panel";
+import StyledPreview from "../styles/styled-preview";
+import { getAppState } from "../../../base/ConfigProviderApp";
 
 const helpMd = `
 ### Markdown语法教程 (Markdown syntax tutorial)
@@ -28,7 +29,7 @@ const helpMd = `
 const MarkdownHelp = () => {
     const helpHtml = marked(helpMd);
     return (
-        <StyledPreview style={{ borderRadius: 8 }}>
+        <StyledPreview dark={getAppState().dark} style={{ borderRadius: 8 }}>
             <HtmlPreviewPanel htmlContent={helpHtml as string} />
         </StyledPreview>
     );

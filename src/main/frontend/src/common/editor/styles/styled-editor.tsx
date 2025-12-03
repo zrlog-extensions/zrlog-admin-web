@@ -63,19 +63,6 @@ export const StyledEditor = styled("div")<{ mainColor: string }>(({ mainColor })
         },
         ".editor-dark .cm-scroller": { backgroundColor: "#141414" },
         ".editor-dark .cm-gutters": { backgroundColor: "#1f1f1f" },
-        ".editor-dark .markdown-body table th": {
-            border: "1px solid rgba(198, 198, 198, 0.5)",
-        },
-        ".editor-dark .markdown-body table td": {
-            border: "1px solid rgba(198, 198, 198, 0.5)",
-        },
-        ".editor-dark .markdown-body table tr": {
-            backgroundColor: "#212529 !important",
-            borderTop: "1px solid rgba(198, 198, 198, 0.5)",
-        },
-        ".editor-dark .markdown-body table tr:nth-child(2n)": {
-            backgroundColor: "#212529 !important",
-        },
         ".editor-dark .cm-panel": {
             backgroundColor: "#1f1f1f",
         },

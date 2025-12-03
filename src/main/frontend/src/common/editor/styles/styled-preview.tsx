@@ -1,6 +1,7 @@
 import styled from "styled-components";
+import { CSSProperties, FunctionComponent, MutableRefObject, PropsWithChildren } from "react";
 
-export const StyledPreview = styled("div")`
+const lightCss = `
     .markdown-body strong {
         font-weight: 700;
     }
@@ -265,7 +266,52 @@ export const StyledPreview = styled("div")`
         font-size: 85%;
         border-radius: 8px;
     }
+
     .markdown-body .katex-display {
         display: inline-block;
     }
 `;
+
+const DarkStylePreview = styled(`div`)`
+    ${lightCss}
+    .markdown-body table th {
+        border: 1px solid rgba(198, 198, 198, 0.5);
+    }
+
+    .markdown-body table td {
+        border: 1px solid rgba(198, 198, 198, 0.5);
+    }
+
+    .markdown-body table tr {
+        background-color: #212529 !important;
+        border-top: 1px solid rgba(198, 198, 198, 0.5);
+    }
+
+    .markdown-body table tr:nth-child(2n) {
+        background-color: #212529 !important;
+    }
+`;
+
+const LightStyledPreview = styled(`div`)`
+    ${lightCss}
+`;
+
+type StyledPreviewProps = PropsWithChildren & {
+    dark: boolean;
+    style?: CSSProperties;
+    ref?: MutableRefObject<HTMLDivElement | null>;
+};
+
+const StyledPreview: FunctionComponent<StyledPreviewProps> = ({ dark, ref, style, children }) => {
+    return dark ? (
+        <DarkStylePreview ref={ref} style={style}>
+            {children}
+        </DarkStylePreview>
+    ) : (
+        <LightStyledPreview ref={ref} style={style}>
+            {children}
+        </LightStyledPreview>
+    );
+};
+
+export default StyledPreview;

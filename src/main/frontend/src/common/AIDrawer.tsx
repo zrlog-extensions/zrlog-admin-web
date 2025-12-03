@@ -141,7 +141,7 @@ const AIDrawer: FunctionComponent<AIDrawerProps> = ({ sessionId, input, onClose,
             <>
                 <div style={{ paddingBottom: 12 }}>
                     <Avatar icon={<OpenAIFilled />} />
-                    <span style={{ paddingLeft: 8 }}>{content.role}</span>
+                    <span style={{ paddingLeft: 8 }}>{getRes()["admin.ai"]}</span>
                 </div>
                 <div style={{ maxWidth: "90%" }}>
                     <HtmlPreviewPanel htmlContent={content.htmlContent} />
