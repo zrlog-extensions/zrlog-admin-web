@@ -331,9 +331,9 @@ const AIDrawer: FunctionComponent<AIDrawerProps> = ({
                         ref={enterBtnRef}
                         htmlType={"submit"}
                         size={"large"}
-                        type={"link"}
+                        type={"dashed"}
                         disabled={state.input.length === 0}
-                        style={{ position: "absolute", right: 2, bottom: 2 }}
+                        style={{ position: "absolute", right: 2, bottom: 2, border: "none" }}
                         loading={state.sending}
                         onClick={async () => {
                             await onSubmit();
