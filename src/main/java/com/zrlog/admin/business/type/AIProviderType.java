@@ -6,7 +6,8 @@ import java.util.List;
 public enum AIProviderType {
 
     DEEP_SEEK("https://api.deepseek.com/chat/completions", Arrays.asList("deepseek-chat", "deepseek-reasoner")),
-    OPEN_AI("https://api.openai.com/v1/completions", Arrays.asList("gpt-5.1", "gpt-5", "gpt-5-mini", "gpt-4.1"));
+    OPEN_AI("https://api.openai.com/v1/completions", Arrays.asList("gpt-5.1", "gpt-5", "gpt-5-mini", "gpt-4.1")),
+    QWEN("https://dashscope.aliyuncs.com/compatible-mode/v1", Arrays.asList("qwen3-max", "qwen3-max-2025-09-23", "qwen3-max-preview"));
 
     private final String baseUrl;
     private final List<String> models;

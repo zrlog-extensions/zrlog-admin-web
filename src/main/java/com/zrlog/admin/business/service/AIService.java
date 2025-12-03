@@ -7,8 +7,6 @@ import com.hibegin.common.util.http.handle.HttpHandle;
 import com.hibegin.common.util.http.handle.HttpResponseJsonHandle;
 import com.zrlog.admin.business.rest.base.AIWebSiteInfo;
 import com.zrlog.admin.business.rest.response.AIResponseEntry;
-import com.zrlog.admin.business.type.AIProviderType;
-import com.zrlog.common.exception.NotImplementException;
 
 import java.io.IOException;
 import java.rmi.RemoteException;
@@ -33,11 +31,8 @@ public class AIService {
         if (Objects.isNull(responseBody)) {
             throw new RemoteException("response body is null");
         }
-        if (aiWebSiteInfo.getAi_provider() == AIProviderType.DEEK_SEEK) {
-            List<Map<String, Object>> choices = (List<Map<String, Object>>) responseBody.get("choices");
-            AIResponseEntry.AIContentEntry outputs = BeanUtil.convert(choices.get(0).get("message"), AIResponseEntry.AIContentEntry.class);
-            return Collections.singletonList(outputs);
-        }
-        throw new NotImplementException();
+        List<Map<String, Object>> choices = (List<Map<String, Object>>) responseBody.get("choices");
+        AIResponseEntry.AIContentEntry outputs = BeanUtil.convert(choices.get(0).get("message"), AIResponseEntry.AIContentEntry.class);
+        return Collections.singletonList(outputs);
     }
 }
