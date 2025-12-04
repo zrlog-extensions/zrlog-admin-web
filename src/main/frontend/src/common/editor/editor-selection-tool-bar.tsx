@@ -17,6 +17,7 @@ export interface SelectionToolbarProps {
     selectedText: string;
     sessionId: number;
     aiApiUri: string;
+    subject: string;
 }
 
 export const SelectionToolbar: React.FC<SelectionToolbarProps> = ({
@@ -30,6 +31,7 @@ export const SelectionToolbar: React.FC<SelectionToolbarProps> = ({
     aiApiUri,
     sessionId,
     onItalic,
+    subject,
 }) => {
     if (!visible) return null;
 
@@ -54,7 +56,14 @@ export const SelectionToolbar: React.FC<SelectionToolbarProps> = ({
             <EditorIcon name={"strikethrough"} onClick={onStrikethrough} />
             <EditorIcon name={"italic"} onClick={onItalic} />
             <EditorToolBarDivider />
-            <AIButton input={selectedText} sessionId={sessionId} apiUri={aiApiUri} hide={true} aiProvider={aiProvider}>
+            <AIButton
+                input={selectedText}
+                subject={subject}
+                sessionId={sessionId}
+                apiUri={aiApiUri}
+                hide={true}
+                aiProvider={aiProvider}
+            >
                 <div
                     className={"editor-icon"}
                     style={{

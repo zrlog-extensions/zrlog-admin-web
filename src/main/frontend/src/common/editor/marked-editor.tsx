@@ -41,6 +41,7 @@ const MarkedEditor: FunctionComponent<MarkdownEditorProps> = ({
     aiProvider,
     aiApiUri,
     sessionId,
+    subject,
 }) => {
     const getEditorConfigKey = () => {
         return "editor_config";
@@ -292,6 +293,7 @@ const MarkedEditor: FunctionComponent<MarkdownEditorProps> = ({
                 />
                 <div style={{ height: height, display: "flex", width: "100%" }}>
                     <SelectionToolbar
+                        subject={subject}
                         aiProvider={aiProvider}
                         visible={toolbar.visible}
                         top={toolbar.top}

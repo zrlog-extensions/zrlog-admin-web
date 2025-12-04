@@ -554,6 +554,7 @@ const Index: FunctionComponent<ArticleEditProps> = ({
                 <MarkedEditor
                     aiApiUri={"/api/admin/article/ai"}
                     sessionId={data.article.logId ? data.article.logId : 0}
+                    subject={data.article.title}
                     aiProvider={data.aiProvider}
                     fullscreen={fullScreen}
                     height={getEditorHeight()}

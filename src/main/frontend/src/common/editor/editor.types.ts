@@ -12,6 +12,7 @@ export type MarkdownEditorProps = {
     aiProvider: AIProviderType;
     sessionId: number;
     aiApiUri: string;
+    subject: string;
 };
 
 export type EditorDialogState = {
