@@ -21,7 +21,7 @@ public class AdminConstants {
     public static final String ADMIN_REFRESH_CACHE_API_URI_PATH = "/api" + ADMIN_URI_BASE_PATH + "/refreshCache";
     public static final String ADMIN_TITLE_CHAR = " - ";
     public static final String AUTO_UPGRADE_VERSION_KEY = "autoUpgradeVersion";
-    public static final Map<String, String> TITLE_MAP = new HashMap<>();
+    public static final Map<String, String> TITLE_MAP = new TreeMap<>();
     public static final String INDEX_URI_PATH = "/index";
     public static final String ADMIN_PWA_MANIFEST_JSON = ADMIN_URI_BASE_PATH + "/manifest.json";
     public static final String ADMIN_SERVICE_WORKER_JS = ADMIN_URI_BASE_PATH + "/service-worker.js";
@@ -56,6 +56,8 @@ public class AdminConstants {
         TITLE_MAP.put(ADMIN_URI_BASE_PATH + "/template-config", "templateConfig");
         TITLE_MAP.put(ADMIN_URI_BASE_PATH + "/template-center", "templateCenter");
         TITLE_MAP.put(ADMIN_URI_BASE_PATH + "/system", "systemInfo");
+        TITLE_MAP.put(ADMIN_URI_BASE_PATH + "/dev", "dev");
+        TITLE_MAP.put(ADMIN_URI_BASE_PATH + "/ai", "admin.ai.manage");
     }
 
     public static AdminResource adminResource;
