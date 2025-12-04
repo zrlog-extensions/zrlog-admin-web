@@ -236,6 +236,22 @@ const MarkedEditor: FunctionComponent<MarkdownEditorProps> = ({
         return extArr;
     }, [lang]);
 
+    const clearSelection = () => {
+        const view = editorRef.current;
+        if (!view) return;
+
+        /*// 你想让光标停在 from 还是 to 都行
+        const cursorPos = sel.to; // 或 sel.from
+
+        view.dispatch({
+            selection: EditorSelection.cursor(cursorPos),
+        });*/
+        view.state.replaceSelection("");
+
+        // 顺便关掉浮动 toolbar
+        //setToolbar((prev) => ({ ...prev, visible: false }));
+    };
+
     return (
         <StyledEditor mainColor={getAppState().colorPrimary} style={{ paddingBottom: 30 }}>
             {editorRef.current && (
@@ -305,6 +321,9 @@ const MarkedEditor: FunctionComponent<MarkdownEditorProps> = ({
                         sessionId={sessionId}
                         selectedText={toolbar.text}
                         getContainer={getContainer}
+                        onAi={() => {
+                            clearSelection();
+                        }}
                     />
                     <CodeMirror
                         basicSetup={{ searchKeymap: true }}
