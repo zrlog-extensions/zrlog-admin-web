@@ -1,7 +1,7 @@
 {
   "files": {
-    "main.js": "/admin/static/js/main.8348a108.js",
-    "static/js/4868.52137cee.chunk.js": "/admin/static/js/4868.52137cee.chunk.js",
+    "main.js": "/admin/static/js/main.c5fa06b5.js",
+    "static/js/4868.1d8dd052.chunk.js": "/admin/static/js/4868.1d8dd052.chunk.js",
     "static/js/6930.a4dccf4b.chunk.js": "/admin/static/js/6930.a4dccf4b.chunk.js",
     "static/js/5997.64ba4ab3.chunk.js": "/admin/static/js/5997.64ba4ab3.chunk.js",
     "static/js/3219.906653ae.chunk.js": "/admin/static/js/3219.906653ae.chunk.js",
@@ -116,7 +116,7 @@
     "static/js/1799.86f77618.chunk.js": "/admin/static/js/1799.86f77618.chunk.js",
     "static/js/3605.207dabb2.chunk.js": "/admin/static/js/3605.207dabb2.chunk.js",
     "vendor.js": "/admin/static/js/vendor.e017edca.js",
-    "static/js/4841.172c6d46.chunk.js": "/admin/static/js/4841.172c6d46.chunk.js",
+    "static/js/9512.9d1f7b68.chunk.js": "/admin/static/js/9512.9d1f7b68.chunk.js",
     "static/css/2938.304b9168.css": "/admin/static/css/2938.304b9168.css",
     "static/js/2938.8cd233ef.js": "/admin/static/js/2938.8cd233ef.js",
     "static/media/KaTeX_AMS-Regular.ttf": "/admin/static/media/KaTeX_AMS-Regular.853be92419a6c3766b9a.ttf",
@@ -185,6 +185,6 @@
     "static/js/vendor.e017edca.js",
     "static/css/2938.304b9168.css",
     "static/js/2938.8cd233ef.js",
-    "static/js/main.8348a108.js"
+    "static/js/main.c5fa06b5.js"
   ]
 }

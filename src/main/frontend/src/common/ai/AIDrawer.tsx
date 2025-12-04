@@ -2,17 +2,17 @@ import { getRes } from "../../utils/constants";
 import { Button, Drawer } from "antd";
 import { FunctionComponent, useEffect, useRef, useState } from "react";
 import Form from "antd/es/form";
-import { InfoCircleOutlined, UpCircleOutlined } from "@ant-design/icons";
+import { ArrowUpOutlined, InfoCircleOutlined } from "@ant-design/icons";
 import { useAxiosBaseInstance } from "../../base/AppBase";
 import useMessage from "antd/es/message/useMessage";
 import { markdownToHtmlSyncWithCallback } from "../editor/utils/marked-utils";
-import { getAppState } from "../../base/ConfigProviderApp";
 import { addToCache, getCacheByKey } from "../../utils/cache";
 import { AIProviderType } from "../../type";
 import TextArea from "antd/es/input/TextArea";
 import Title from "antd/es/typography/Title";
 import AIIcon from "./AIIcon";
-import AIContentItem, { Content } from "./AIContentItem";
+import AIContentItem, { AIContent } from "./AIContentItem";
+import { Content } from "antd/es/layout/layout";
 
 type AIDrawerProps = {
     input: string;
@@ -29,7 +29,7 @@ type AIDrawerState = {
     open: boolean;
     input: string;
     sending: boolean;
-    contents: Content[];
+    contents: AIContent[];
 };
 
 const aiDrawerOpenKey = "aiDrawerOpen";
@@ -109,7 +109,7 @@ const AIDrawer: FunctionComponent<AIDrawerProps> = ({
 
             form.setFieldsValue({ input: "" });
 
-            const contents: Content[] = [...state.contents, ...data.data];
+            const contents: AIContent[] = [...state.contents, ...data.data];
             contents.map((e) => {
                 markdownToHtmlSyncWithCallback(e.content, (x) => {
                     e.htmlContent = x;
@@ -138,7 +138,7 @@ const AIDrawer: FunctionComponent<AIDrawerProps> = ({
                     paddingLeft: 16,
                     paddingTop: 12,
                     maxHeight: "calc(100vh - 168px)",
-                    overflow: "auto",
+                    maxWidth: 768,
                 }}
             >
                 {state.contents.map((e, idx) => {
@@ -253,75 +253,77 @@ const AIDrawer: FunctionComponent<AIDrawerProps> = ({
             getContainer={getContainer}
         >
             {contextHolder}
-            {getContent()}
-            <div
-                style={{
-                    display: "flex",
-                    justifyContent: "center",
-                    overflow: "hidden",
-                    background: getAppState().dark ? "#141414" : "white",
-                }}
-            >
-                <Form
-                    form={form}
-                    initialValues={state}
+            <Content>
+                <div
                     style={{
-                        position: "absolute",
-                        width: "80%",
-                        bottom: state.contents.length == 0 ? "45%" : 32,
+                        display: "flex",
                         justifyContent: "center",
-                    }}
-                    onValuesChange={(r) => {
-                        setState((prevState) => {
-                            return {
-                                ...prevState,
-                                ...r,
-                            };
-                        });
+                        overflow: "auto",
                     }}
                 >
-                    {state.contents.length === 0 && (
-                        <Title level={3} style={{ textAlign: "center", lineHeight: 2 }}>
-                            {getRes()["admin.ai.title"]}
-                        </Title>
-                    )}
-                    <Form.Item name={"input"} style={{ flex: 1, marginBottom: 0 }}>
-                        <TextArea
-                            autoFocus={true}
-                            size={"large"}
-                            disabled={state.sending}
-                            style={{ minHeight: 48, maxHeight: 72 }}
-                            placeholder={getRes()["admin.ai.inputTips"]}
-                        />
-                    </Form.Item>
-                    <Button
-                        ref={enterBtnRef}
-                        htmlType={"submit"}
-                        size={"large"}
-                        type={"dashed"}
-                        disabled={state.input.length === 0}
+                    {getContent()}
+                    <Form
+                        form={form}
+                        initialValues={state}
                         style={{
                             position: "absolute",
-                            right: 1,
-                            bottom: 1,
-                            border: "none",
-                            boxShadow: "none",
-                            background: "inherit",
+                            width: "80%",
+                            maxWidth: 768,
+                            bottom: state.contents.length == 0 ? "45%" : 32,
+                            justifyContent: "center",
                         }}
-                        loading={state.sending}
-                        onClick={async () => {
-                            await onSubmit();
+                        onValuesChange={(r) => {
+                            setState((prevState) => {
+                                return {
+                                    ...prevState,
+                                    ...r,
+                                };
+                            });
                         }}
                     >
-                        {!state.sending && <UpCircleOutlined />}
-                    </Button>
-                </Form>
-                {state.contents.length > 0 && (
-                    <span style={{ position: "absolute", bottom: 6, fontSize: 12 }}>
-                        <InfoCircleOutlined style={{ paddingRight: 4 }} /> {getRes()["admin.ai.contentTips"]}
-                    </span>
-                )}
-            </div>
+                        {state.contents.length === 0 && (
+                            <Title level={3} style={{ textAlign: "center", lineHeight: 2 }}>
+                                {getRes()["admin.ai.title"]}
+                            </Title>
+                        )}
+                        <Form.Item name={"input"} style={{ flex: 1, marginBottom: 0 }}>
+                            <TextArea
+                                autoFocus={true}
+                                size={"large"}
+                                disabled={state.sending}
+                                style={{ minHeight: 48, maxHeight: 72, resize: "none" }}
+                                placeholder={getRes()["admin.ai.inputTips"]}
+                            />
+                        </Form.Item>
+                        <Button
+                            ref={enterBtnRef}
+                            htmlType={"submit"}
+                            size={"large"}
+                            type={"dashed"}
+                            disabled={state.input.length === 0}
+                            style={{
+                                position: "absolute",
+                                right: 1,
+                                bottom: 1,
+                                border: "none",
+                                boxShadow: "none",
+                                background: "inherit",
+                            }}
+                            loading={state.sending}
+                            onClick={async () => {
+                                await onSubmit();
+                            }}
+                        >
+                            {!state.sending && <ArrowUpOutlined />}
+                        </Button>
+                    </Form>
+                    {state.contents.length > 0 && (
+                        <span style={{ position: "absolute", bottom: 6, fontSize: 12 }}>
+                            <InfoCircleOutlined style={{ paddingRight: 4 }} /> {getRes()["admin.ai.contentTips"]}
+                        </span>
+                    )}
+                </div>
+            </Content>
         </Drawer>
     );
 };

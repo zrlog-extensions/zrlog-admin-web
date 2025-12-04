@@ -9,5 +9,5 @@ export const getBorderColor = () => {
 };
 
 export const getBgColor = () => {
-    return getAppState().dark ? `black` : "#DDD";
+    return getAppState().dark ? `black` : "#f3f3f3";
 };

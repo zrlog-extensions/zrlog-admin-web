@@ -7,14 +7,14 @@ import { CSSProperties, FunctionComponent } from "react";
 import { AIProviderType, BasicUserInfo } from "../../type";
 import { getCacheByKey } from "../../utils/cache";
 
-export type Content = {
+export type AIContent = {
     role: string;
     content: string;
     htmlContent: string;
 };
 
 type AIContentItemProps = {
-    content: Content;
+    content: AIContent;
     aiProvider: AIProviderType;
     style?: CSSProperties;
 };

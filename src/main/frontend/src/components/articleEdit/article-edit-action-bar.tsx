@@ -27,17 +27,6 @@ const StyledActionBar = styled(`div`)`
         min-width: 120px;
     }
 
-    .linearGradient {
-        opacity: 1;
-        transition: all 0.3s;
-        min-width: 120px;
-        border: none;
-    }
-
-    .linearGradient:hover {
-        border: none !important;
-    }
-
     @media screen and (max-width: 576px) {
         .btn {
             min-width: 40px;
@@ -95,10 +84,11 @@ const ArticleEditActionBar: FunctionComponent<ArticleEditActionBarProps> = ({
                 getContainer={getContainer}
             >
                 <Button
-                    className={"linearGradient"}
+                    className={"btn"}
                     type={"primary"}
                     style={{
                         background: `linear-gradient(135deg, #6253e1, ${getAppState().colorPrimary})`,
+                        border: "none",
                     }}
                 >
                     <AIIcon name={data.aiProvider} />

@@ -26,7 +26,6 @@ import { deepEqualWithSpecialJSON, disableExitTips, enableExitTips } from "../..
 import MarkedEditor from "../../common/editor/marked-editor";
 import { useLocation } from "react-router";
 import { getPageDataCacheKeyByPath } from "../../utils/cache";
-import RubbishText from "./RubbishText";
 import { LockOutlined } from "@ant-design/icons";
 import { getAppState } from "../../base/ConfigProviderApp";
 import BaseTitle from "../../base/BaseTitle";
@@ -471,20 +470,19 @@ const Index: FunctionComponent<ArticleEditProps> = ({
                                 variant={"borderless"}
                                 style={{
                                     minWidth: 156,
-                                    paddingLeft: 0,
                                     display: "flex",
                                     zIndex: 20,
                                 }}
                                 size={"large"}
                                 value={state.article.typeId}
-                                showSearch={true}
-                                optionFilterProp="children"
-                                filterOption={(input, option) => (option?.label ?? "").includes(input)}
-                                filterSort={(optionA, optionB) =>
-                                    (optionA?.label ?? "")
-                                        .toLowerCase()
-                                        .localeCompare((optionB?.label ?? "").toLowerCase())
-                                }
+                                showSearch={{
+                                    optionFilterProp: "children",
+                                    filterOption: (input, option) => (option?.label ?? "").includes(input),
+                                    filterSort: (optionA, optionB) =>
+                                        (optionA?.label ?? "")
+                                            .toLowerCase()
+                                            .localeCompare((optionB?.label ?? "").toLowerCase()),
+                                }}
                                 onChange={(value) => {
                                     handleValuesChange({ typeId: value });
                                 }}
@@ -503,12 +501,6 @@ const Index: FunctionComponent<ArticleEditProps> = ({
                                 variant={"borderless"}
                                 placeholder={getRes().inputArticleAlias}
                                 style={{ fontSize: 16, minWidth: 48, paddingLeft: 0, textOverflow: "ellipsis" }}
-                            />
-                            <RubbishText
-                                offline={offline}
-                                rubbish={state.rubbish}
-                                lastUpdateDate={state.article.lastUpdateDate}
-                                fullScreen={fullScreen}
                             />
                         </Space.Compact>
                     </Col>
@@ -582,7 +574,13 @@ const Index: FunctionComponent<ArticleEditProps> = ({
                         handleValuesChange(v);
                     }}
                 />
-                <EditorStatistics data={toStatisticsByMarkdown(state.article.markdown)} fullScreen={fullScreen} />
+                <EditorStatistics
+                    rubbish={state.article.rubbish}
+                    offline={offline}
+                    lastUpdateDate={state.article.lastUpdateDate ? state.article.lastUpdateDate : 0}
+                    data={toStatisticsByMarkdown(state.article.markdown)}
+                    fullScreen={fullScreen}
+                />
             </Card>
         </>
     );

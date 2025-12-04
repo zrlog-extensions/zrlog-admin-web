@@ -45,7 +45,7 @@ export const SelectionToolbar: React.FC<SelectionToolbarProps> = ({
                 position: "fixed",
                 top,
                 left,
-                padding: "4px 8px",
+                padding: 4,
                 borderRadius: 4,
                 display: "flex",
                 gap: 8,
