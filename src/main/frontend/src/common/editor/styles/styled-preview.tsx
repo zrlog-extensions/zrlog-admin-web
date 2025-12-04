@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { CSSProperties, FunctionComponent, MutableRefObject, PropsWithChildren } from "react";
+import { CSSProperties, forwardRef, PropsWithChildren } from "react";
 
 const lightCss = `
     .markdown-body strong {
@@ -299,19 +299,16 @@ const LightStyledPreview = styled(`div`)`
 type StyledPreviewProps = PropsWithChildren & {
     dark: boolean;
     style?: CSSProperties;
-    ref?: MutableRefObject<HTMLDivElement | null>;
 };
 
-const StyledPreview: FunctionComponent<StyledPreviewProps> = ({ dark, ref, style, children }) => {
-    return dark ? (
-        <DarkStylePreview ref={ref} style={style}>
+const StyledPreview = forwardRef<HTMLDivElement, StyledPreviewProps>(({ dark, style, children, ...rest }, ref) => {
+    const Comp = dark ? DarkStylePreview : LightStyledPreview;
+
+    return (
+        <Comp ref={ref} style={style} {...rest}>
             {children}
-        </DarkStylePreview>
-    ) : (
-        <LightStyledPreview ref={ref} style={style}>
-            {children}
-        </LightStyledPreview>
+        </Comp>
     );
-};
+});
 
 export default StyledPreview;

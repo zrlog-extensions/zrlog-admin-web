@@ -1,9 +1,6 @@
 import { getRes } from "../../utils/constants";
-import Col from "antd/es/grid/col";
-import TimeAgo from "../../common/TimeAgo";
+import TimeAgo from "../TimeAgo";
 import { FunctionComponent } from "react";
-import { Button } from "antd";
-import { getAppState } from "../../base/ConfigProviderApp";
 
 type RubbishTextProps = {
     offline: boolean;
@@ -12,13 +9,13 @@ type RubbishTextProps = {
     fullScreen: boolean;
 };
 
-const RubbishText: FunctionComponent<RubbishTextProps> = ({ offline, rubbish, lastUpdateDate, fullScreen }) => {
+const RubbishText: FunctionComponent<RubbishTextProps> = ({ offline, rubbish, lastUpdateDate }) => {
     let tips;
     if (offline) {
         tips = getRes()["admin.offline.article-editing"];
     } else {
         if (!rubbish) {
-            return <Col xxl={3} md={3} sm={4} style={{ padding: 0 }} />;
+            return <></>;
         }
 
         if (lastUpdateDate && lastUpdateDate > 0) {
@@ -33,8 +30,7 @@ const RubbishText: FunctionComponent<RubbishTextProps> = ({ offline, rubbish, la
         }
     }
     return (
-        <Button
-            disabled={true}
+        <span
             style={{
                 border: 0,
                 display: "flex",
@@ -46,11 +42,11 @@ const RubbishText: FunctionComponent<RubbishTextProps> = ({ offline, rubbish, la
                 paddingRight: 8,
                 height: "auto",
                 cursor: "auto",
-                backgroundColor: fullScreen ? (getAppState().dark ? "rgb(20 20 20)" : "white") : "inherit",
+                backgroundColor: "inherit",
             }}
         >
             {tips}
-        </Button>
+        </span>
     );
 };
 

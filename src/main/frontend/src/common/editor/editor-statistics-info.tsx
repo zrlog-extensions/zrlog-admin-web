@@ -2,6 +2,7 @@ import { getRes } from "../../utils/constants";
 import { FunctionComponent } from "react";
 import { getBorder } from "./editor-helpers";
 import { getAppState } from "../../base/ConfigProviderApp";
+import RubbishText from "./RubbishText";
 
 export type EditorStatisticsInfo = {
     contentWordsLength: number;
@@ -11,6 +12,9 @@ export type EditorStatisticsInfo = {
 export type EditorStatisticsInfoProps = {
     data: EditorStatisticsInfo;
     fullScreen?: boolean;
+    offline: boolean;
+    rubbish: boolean;
+    lastUpdateDate: number;
 };
 
 export const toStatisticsByMarkdown = (markdownStr?: string): EditorStatisticsInfo => {
@@ -20,7 +24,13 @@ export const toStatisticsByMarkdown = (markdownStr?: string): EditorStatisticsIn
     };
 };
 
-const EditorStatistics: FunctionComponent<EditorStatisticsInfoProps> = ({ data, fullScreen }) => {
+const EditorStatistics: FunctionComponent<EditorStatisticsInfoProps> = ({
+    data,
+    fullScreen,
+    offline,
+    rubbish,
+    lastUpdateDate,
+}) => {
     return (
         <div
             style={{
@@ -36,18 +46,29 @@ const EditorStatistics: FunctionComponent<EditorStatisticsInfoProps> = ({ data, 
                 bottom: 0,
                 userSelect: "none",
                 background: getAppState().dark ? "#141414" : "white",
+                justifyContent: "space-around",
             }}
         >
-            <span style={{ padding: 16, paddingLeft: 40, whiteSpace: "nowrap" }}>
-                {getRes()["editor.wordsCount"]}
-                <span style={{ paddingRight: 4, paddingLeft: 4 }}>:</span>
-                <b style={{ marginLeft: 18, width: 60 }}>{data.contentWordsLength}</b>
-            </span>
-            <span style={{ padding: 16, whiteSpace: "nowrap" }}>
-                {getRes()["editor.linesCount"]}
-                <span style={{ paddingRight: 4, paddingLeft: 4 }}>:</span>
-                <b style={{ marginLeft: 18, width: 60 }}>{data.contentLinesLength}</b>
-            </span>
+            <div style={{ display: "flex", flex: 1 }}>
+                <span style={{ padding: 16, paddingLeft: 40, whiteSpace: "nowrap" }}>
+                    {getRes()["editor.wordsCount"]}
+                    <span style={{ paddingRight: 4, paddingLeft: 4 }}>:</span>
+                    <b style={{ marginLeft: 18, width: 60 }}>{data.contentWordsLength}</b>
+                </span>
+                <span style={{ padding: 16, whiteSpace: "nowrap" }}>
+                    {getRes()["editor.linesCount"]}
+                    <span style={{ paddingRight: 4, paddingLeft: 4 }}>:</span>
+                    <b style={{ marginLeft: 18, width: 60 }}>{data.contentLinesLength}</b>
+                </span>
+            </div>
+            <div style={{ paddingRight: 8 }}>
+                <RubbishText
+                    offline={offline}
+                    rubbish={rubbish}
+                    lastUpdateDate={lastUpdateDate}
+                    fullScreen={fullScreen ? fullScreen : false}
+                />
+            </div>
         </div>
     );
 };

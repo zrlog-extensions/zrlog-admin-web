@@ -2,11 +2,12 @@ import { Button, Grid } from "antd";
 import { EyeOutlined, SaveOutlined, SendOutlined } from "@ant-design/icons";
 import { getRes } from "../../utils/constants";
 import { ArticleEditState, ArticleEntry } from "./index.types";
-import { FunctionComponent, useEffect, useRef, useState } from "react";
+import { FunctionComponent, useEffect, useRef } from "react";
 import styled from "styled-components";
-import AIDrawer from "../../common/AIDrawer";
-import { AIProviderType } from "../../type";
-import AIIcon from "../../common/editor/AIIcon";
+import AIIcon from "../../common/ai/AIIcon";
+import { getAppState } from "../../base/ConfigProviderApp";
+import AIButton from "../../common/ai/AIButton";
+import { getAiDrawerOpen } from "../../common/ai/AIDrawer";
 
 type ArticleEditActionBarProps = {
     data: ArticleEditState;
@@ -45,9 +46,6 @@ const ArticleEditActionBar: FunctionComponent<ArticleEditActionBarProps> = ({
     const { useBreakpoint } = Grid;
     const screens = useBreakpoint();
 
-    const [aiOpen, setAiOpen] = useState<boolean>(false);
-    const realOpen = useRef<boolean>(aiOpen);
-
     useEffect(() => {
         const handleKeyPress = (event: KeyboardEvent) => {
             // 检查是否是 macOS 系统
@@ -60,10 +58,9 @@ const ArticleEditActionBar: FunctionComponent<ArticleEditActionBarProps> = ({
             ) {
                 // 处理 Ctrl + Enter 或 Cmd + Enter 的逻辑
                 //console.log('Ctrl + Enter 或 Cmd + Enter 按下');
-                if (enterBtnRef.current && !realOpen.current) {
+                if (enterBtnRef.current && !getAiDrawerOpen()) {
                     enterBtnRef.current.click();
                 }
-                //onSubmit(data.article, true, false, false);
             }
         };
 
@@ -78,28 +75,27 @@ const ArticleEditActionBar: FunctionComponent<ArticleEditActionBarProps> = ({
 
     return (
         <StyledActionBar style={{ display: "flex", justifyContent: "end", gap: 8 }}>
-            <AIDrawer
+            <AIButton
                 aiProvider={data.aiProvider}
-                hide={!aiOpen}
                 apiUri={"/api/admin/article/ai"}
                 input={""}
+                subject={data.article.title}
                 sessionId={data.article.logId ? data.article.logId : 0}
-                onClose={() => {
-                    setAiOpen(false);
-                }}
                 getContainer={getContainer}
-            />
-            <Button
-                className={"btn"}
-                type={fullScreen ? "default" : "dashed"}
-                onClick={() => {
-                    realOpen.current = true;
-                    setAiOpen(true);
-                }}
             >
-                <AIIcon name={AIProviderType.DEEP_SEEK} />
-                {screens.sm && <span>{getRes()["admin.ai"]}</span>}
-            </Button>
+                <Button
+                    className={"btn"}
+                    type={"primary"}
+                    style={{
+                        background: `linear-gradient(135deg, #6253e1, ${getAppState().colorPrimary})`,
+                        border: "none",
+                    }}
+                >
+                    <AIIcon name={data.aiProvider} />
+                    {screens.sm && <span>{getRes()["admin.ai"]}</span>}
+                </Button>
+            </AIButton>
+
             <Button
                 className={"btn"}
                 type={fullScreen ? "default" : "dashed"}

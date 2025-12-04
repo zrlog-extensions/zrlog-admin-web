@@ -1,5 +1,5 @@
-import CodeMirror, { EditorSelection, EditorState, EditorView } from "@uiw/react-codemirror";
-import { FunctionComponent, useEffect, useMemo, useRef, useState } from "react";
+import CodeMirror, { EditorSelection, EditorState, EditorView, ViewUpdate } from "@uiw/react-codemirror";
+import { FunctionComponent, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { EditorConfig, MarkdownEditorProps } from "./editor.types";
 import { StyledEditor } from "./styles/styled-editor";
 import EditorToolBar from "./editor-tool-bar";
@@ -15,12 +15,21 @@ import HtmlPreviewPanel from "./html-preview-panel";
 import { markdownToHtml } from "./utils/marked-utils";
 import { addToCache, getCacheByKey } from "../../utils/cache";
 import { getAppState } from "../../base/ConfigProviderApp";
+import SelectionToolbar from "./editor-selection-tool-bar";
+import { copyToClipboard } from "./utils/editor-utils";
 
 type MarkdownEditorState = {
     initValue: string;
     content: string;
     preview: boolean;
     imageUploading: boolean;
+};
+
+type SelectionToolbarState = {
+    visible: boolean;
+    top: number;
+    left: number;
+    text: string;
 };
 
 const MarkedEditor: FunctionComponent<MarkdownEditorProps> = ({
@@ -30,6 +39,10 @@ const MarkedEditor: FunctionComponent<MarkdownEditorProps> = ({
     content,
     loadSuccess,
     getContainer,
+    aiProvider,
+    aiApiUri,
+    sessionId,
+    subject,
 }) => {
     const getEditorConfigKey = () => {
         return "editor_config";
@@ -51,6 +64,47 @@ const MarkedEditor: FunctionComponent<MarkdownEditorProps> = ({
         imageUploading: false,
     });
 
+    const [toolbar, setToolbar] = useState<SelectionToolbarState>({
+        visible: false,
+        top: 0,
+        left: 0,
+        text: "",
+    });
+
+    const getSelectedText = (view: EditorView) => {
+        const { from, to } = view.state.selection.main;
+        if (from === to) return "";
+        return view.state.doc.sliceString(from, to);
+    };
+
+    const updateToolbarPosition = useCallback((view: EditorView) => {
+        const state = view.state;
+        const { from, to } = state.selection.main;
+
+        if (from === to) {
+            setToolbar((prev) => ({ ...prev, visible: false }));
+            return;
+        }
+
+        const start = view.coordsAtPos(from);
+        const end = view.coordsAtPos(to);
+
+        if (!start || !end) {
+            setToolbar((prev) => ({ ...prev, visible: false }));
+            return;
+        }
+
+        const middleX = (start.left + end.right) / 2;
+        const top = Math.min(start.top, end.top) - 48; // 上方 40px
+
+        setToolbar({
+            visible: true,
+            top,
+            left: middleX,
+            text: getSelectedText(view),
+        });
+    }, []);
+
     const [guttersWidth, setGuttersWidth] = useState<number>(27);
 
     const editorRef = useRef<EditorView | null>(null);
@@ -71,15 +125,6 @@ const MarkedEditor: FunctionComponent<MarkdownEditorProps> = ({
         });
         view.focus(); // 确保光标可见
     };
-
-    function copyToClipboard(html: string) {
-        const temp = document.createElement("input") as HTMLInputElement;
-        document.body.append(temp);
-        temp.value = html;
-        temp.select();
-        document.execCommand("copy", false);
-        temp.remove();
-    }
 
     const doCopy = async () => {
         copyToClipboard('<div class="markdown-body" style="padding:0">' + state.content + "</div>");
@@ -108,6 +153,54 @@ const MarkedEditor: FunctionComponent<MarkdownEditorProps> = ({
         }
     };
 
+    const handleUpdate = useCallback(
+        (vu: ViewUpdate) => {
+            // 选区变化 或 文本变化时重新计算
+            if (vu.selectionSet || vu.docChanged) {
+                updateToolbarPosition(vu.view);
+            }
+        },
+        [updateToolbarPosition]
+    );
+
+    // 通用封装：用 wrap 函数处理选中内容
+    const wrapSelection = useCallback(
+        (wrap: (text: string) => string) => {
+            const view = editorRef.current;
+            if (!view) return;
+
+            const state = view.state;
+            const { from, to } = state.selection.main;
+            if (from === to) return;
+
+            const selectedText = getSelectedText(view);
+
+            view.dispatch({
+                changes: {
+                    from,
+                    to,
+                    insert: wrap(selectedText),
+                },
+            });
+
+            // 改完之后再更新一次位置（选区仍然存在）
+            updateToolbarPosition(view);
+        },
+        [updateToolbarPosition]
+    );
+
+    const handleBold = () => {
+        wrapSelection((text: string) => `**${text}**`);
+    };
+
+    const handleStrikethrough = () => {
+        wrapSelection((text: string) => `~${text}~`);
+    };
+
+    const handleItalic = () => {
+        wrapSelection((text: string) => `*${text}*`);
+    };
+
     // 中文翻译对象
     const phrases = {
         Find: "查找",
@@ -134,6 +227,22 @@ const MarkedEditor: FunctionComponent<MarkdownEditorProps> = ({
         extArr.push(EditorState.phrases.of(lang === "zh_CN" ? phrases : {}));
         return extArr;
     }, [lang]);
+
+    const clearSelection = () => {
+        const view = editorRef.current;
+        if (!view) return;
+
+        /*// 你想让光标停在 from 还是 to 都行
+        const cursorPos = sel.to; // 或 sel.from
+
+        view.dispatch({
+            selection: EditorSelection.cursor(cursorPos),
+        });*/
+        view.state.replaceSelection("");
+
+        // 顺便关掉浮动 toolbar
+        //setToolbar((prev) => ({ ...prev, visible: false }));
+    };
 
     return (
         <StyledEditor mainColor={getAppState().colorPrimary} style={{ paddingBottom: 30 }}>
@@ -191,6 +300,23 @@ const MarkedEditor: FunctionComponent<MarkdownEditorProps> = ({
                     preview={state.preview}
                 />
                 <div style={{ height: height, display: "flex", width: "100%" }}>
+                    <SelectionToolbar
+                        subject={subject}
+                        aiProvider={aiProvider}
+                        visible={toolbar.visible}
+                        top={toolbar.top}
+                        left={toolbar.left}
+                        onBold={handleBold}
+                        onStrikethrough={handleStrikethrough}
+                        onItalic={handleItalic}
+                        aiApiUri={aiApiUri}
+                        sessionId={sessionId}
+                        selectedText={toolbar.text}
+                        getContainer={getContainer}
+                        onAi={() => {
+                            clearSelection();
+                        }}
+                    />
                     <CodeMirror
                         basicSetup={{ searchKeymap: true }}
                         placeholder={getRes()["editorPlaceholder"]}
@@ -201,6 +327,7 @@ const MarkedEditor: FunctionComponent<MarkdownEditorProps> = ({
                             if (viewUpdate.viewportChanged) {
                                 onViewChange();
                             }
+                            handleUpdate(viewUpdate);
                         }}
                         theme={getAppState().dark ? "dark" : "light"}
                         extensions={extensions}
@@ -241,10 +368,6 @@ const MarkedEditor: FunctionComponent<MarkdownEditorProps> = ({
                             paddingRight: 2,
                             paddingLeft: 5,
                             borderLeft: getBorder(),
-                            overflowY: "auto",
-                            lineHeight: 1.4,
-                            wordBreak: "break-word",
-                            boxSizing: "border-box",
                         }}
                         htmlContent={state.content}
                     />

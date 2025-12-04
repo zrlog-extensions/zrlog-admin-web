@@ -1,18 +1,18 @@
-import { getRes } from "../utils/constants";
-import { Avatar, Button, Drawer } from "antd";
+import { getRes } from "../../utils/constants";
+import { Button, Drawer } from "antd";
 import { FunctionComponent, useEffect, useRef, useState } from "react";
 import Form from "antd/es/form";
-import { InfoCircleOutlined, UpCircleOutlined, UserOutlined } from "@ant-design/icons";
-import { useAxiosBaseInstance } from "../base/AppBase";
+import { ArrowUpOutlined, InfoCircleOutlined } from "@ant-design/icons";
+import { useAxiosBaseInstance } from "../../base/AppBase";
 import useMessage from "antd/es/message/useMessage";
-import HtmlPreviewPanel from "./editor/html-preview-panel";
-import { markdownToHtmlSyncWithCallback } from "./editor/utils/marked-utils";
-import { getAppState } from "../base/ConfigProviderApp";
-import { addToCache, getCacheByKey } from "../utils/cache";
-import { AIProviderType, BasicUserInfo } from "../type";
+import { markdownToHtmlSyncWithCallback } from "../editor/utils/marked-utils";
+import { addToCache, getCacheByKey } from "../../utils/cache";
+import { AIProviderType } from "../../type";
 import TextArea from "antd/es/input/TextArea";
 import Title from "antd/es/typography/Title";
-import AIIcon from "./editor/AIIcon";
+import AIIcon from "./AIIcon";
+import AIContentItem, { AIContent } from "./AIContentItem";
+import { Content } from "antd/es/layout/layout";
 
 type AIDrawerProps = {
     input: string;
@@ -22,19 +22,20 @@ type AIDrawerProps = {
     hide: boolean;
     aiProvider: AIProviderType;
     getContainer?: () => HTMLElement;
-};
-
-type Content = {
-    role: string;
-    content: string;
-    htmlContent: string;
+    subject?: string;
 };
 
 type AIDrawerState = {
     open: boolean;
     input: string;
     sending: boolean;
-    contents: Content[];
+    contents: AIContent[];
+};
+
+const aiDrawerOpenKey = "aiDrawerOpen";
+
+export const getAiDrawerOpen = () => {
+    return getCacheByKey(aiDrawerOpenKey);
 };
 
 const AIDrawer: FunctionComponent<AIDrawerProps> = ({
@@ -45,16 +46,23 @@ const AIDrawer: FunctionComponent<AIDrawerProps> = ({
     apiUri,
     hide,
     aiProvider,
+    subject,
 }) => {
     const getAICacheKey = () => {
         return "ai/chat/" + sessionId;
+    };
+
+    const getDrawerWidthKey = () => {
+        return "ai/chat/width";
     };
 
     const defaultContents = getCacheByKey(getAICacheKey());
 
     const enterBtnRef = useRef<HTMLAnchorElement | HTMLButtonElement>(null);
 
-    const [size, setSize] = useState<string | number>("large");
+    const defaultWidth = getCacheByKey(getDrawerWidthKey());
+
+    const [size, setSize] = useState<string | number>(defaultWidth ? defaultWidth : "large");
 
     const [state, setState] = useState<AIDrawerState>({
         open: !hide,
@@ -68,9 +76,18 @@ const AIDrawer: FunctionComponent<AIDrawerProps> = ({
     const [form] = Form.useForm();
     const realHide = useRef<boolean>(hide);
 
+    const itemRefs = useRef<Record<string, HTMLDivElement | null>>({});
+
+    const scrollToItem = (id: string) => {
+        const el = itemRefs.current[id];
+        if (el) {
+            el.scrollIntoView({ behavior: "smooth", block: "start" });
+        }
+    };
+
     const onSubmit = async () => {
-        const nowContents = state.contents;
-        nowContents.push({
+        const newContents = state.contents;
+        newContents.push({
             role: "user",
             content: state.input,
             htmlContent: "",
@@ -78,9 +95,13 @@ const AIDrawer: FunctionComponent<AIDrawerProps> = ({
         setState((prevState) => {
             return {
                 ...prevState,
+                contents: newContents,
                 sending: true,
             };
         });
+        setTimeout(() => {
+            scrollToItem(newContents.length - 1 + "");
+        }, 200);
         try {
             const { data } = await axiosBaseInstance.get(
                 apiUri + "?id=" + (sessionId ? sessionId : 0) + `&input=${encodeURIComponent(state.input)}`
@@ -107,7 +128,7 @@ const AIDrawer: FunctionComponent<AIDrawerProps> = ({
 
             form.setFieldsValue({ input: "" });
 
-            const contents: Content[] = [...state.contents, ...data.data];
+            const contents: AIContent[] = [...state.contents, ...data.data];
             contents.map((e) => {
                 markdownToHtmlSyncWithCallback(e.content, (x) => {
                     e.htmlContent = x;
@@ -124,58 +145,6 @@ const AIDrawer: FunctionComponent<AIDrawerProps> = ({
         }
     };
 
-    const getUserInfo = (): BasicUserInfo => {
-        const user = getCacheByKey("/user") as BasicUserInfo;
-        if (user) {
-            return user;
-        }
-        return {
-            userName: "admin",
-            header: "",
-            key: "",
-        };
-    };
-
-    const getItem = (content: Content) => {
-        if (content.role === "user") {
-            return (
-                <div
-                    style={{
-                        width: "100%",
-                        display: "flex",
-                        justifyContent: "end",
-                        flexFlow: "column",
-                        alignItems: "end",
-                    }}
-                >
-                    <div style={{ paddingBottom: 12, float: "right" }}>
-                        <Avatar
-                            src={getUserInfo().header}
-                            icon={getUserInfo().header.length === 0 ? <UserOutlined /> : <></>}
-                        />
-                        <span style={{ paddingLeft: getUserInfo().userName.length > 0 ? 8 : 0 }}>
-                            {getUserInfo().userName}
-                        </span>
-                    </div>
-                    <div style={{ maxWidth: "90%" }}>
-                        <span>{content.content}</span>
-                    </div>
-                </div>
-            );
-        }
-        return (
-            <>
-                <div style={{ paddingBottom: 12 }}>
-                    <Avatar icon={<AIIcon name={aiProvider} />} />
-                    <span style={{ paddingLeft: 8 }}>{getRes()["admin.ai"]}</span>
-                </div>
-                <div style={{ maxWidth: "90%" }}>
-                    <HtmlPreviewPanel htmlContent={content.htmlContent} />
-                </div>
-            </>
-        );
-    };
-
     const getContent = () => {
         if (state.contents.length === 0) {
             return <></>;
@@ -186,16 +155,21 @@ const AIDrawer: FunctionComponent<AIDrawerProps> = ({
                 style={{
                     paddingRight: 16,
                     paddingLeft: 16,
-                    paddingTop: 8,
+                    paddingTop: 12,
                     maxHeight: "calc(100vh - 168px)",
-                    overflow: "scroll",
+                    maxWidth: 768,
+                    width: "100%",
                 }}
             >
                 {state.contents.map((e, idx) => {
                     return (
-                        <div key={idx} style={{ paddingBottom: 12 }}>
-                            {getItem(e)}
-                        </div>
+                        <AIContentItem
+                            key={idx}
+                            ref={(el) => (itemRefs.current[idx + ""] = el)}
+                            content={e}
+                            aiProvider={aiProvider}
+                            style={{ paddingBottom: 12 }}
+                        />
                     );
                 })}
             </div>
@@ -213,8 +187,27 @@ const AIDrawer: FunctionComponent<AIDrawerProps> = ({
     }, [hide]);
 
     useEffect(() => {
+        addToCache(aiDrawerOpenKey, state.open);
+    }, [state.open]);
+
+    useEffect(() => {
+        addToCache(getDrawerWidthKey(), size);
+    }, [size]);
+
+    useEffect(() => {
         addToCache(getAICacheKey(), state.contents);
+        scrollToItem(state.contents.length - 1 + "");
     }, [state.contents]);
+
+    useEffect(() => {
+        setState((prevState) => {
+            return {
+                ...prevState,
+                input: input,
+            };
+        });
+        form.setFieldValue("input", input);
+    }, [input]);
 
     useEffect(() => {
         const handleKeyPress = (event: KeyboardEvent) => {
@@ -228,7 +221,7 @@ const AIDrawer: FunctionComponent<AIDrawerProps> = ({
             ) {
                 // 处理 Ctrl + Enter 或 Cmd + Enter 的逻辑
                 //console.log('Ctrl + Enter 或 Cmd + Enter 按下');
-                if (enterBtnRef.current && !realHide.current) {
+                if (enterBtnRef.current && getAiDrawerOpen()) {
                     enterBtnRef.current.click();
                 }
                 //onSubmit(data.article, true, false, false);
@@ -248,7 +241,9 @@ const AIDrawer: FunctionComponent<AIDrawerProps> = ({
         <Drawer
             title={
                 <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
-                    <AIIcon name={aiProvider} /> {getRes()["admin.ai"]}
+                    <AIIcon name={aiProvider} />
+                    <span>{getRes()["admin.ai"]} </span>
+                    <span>{subject && subject.length > 0 ? "[ " + subject + " ]" : ""}</span>
                 </div>
             }
             resizable={{
@@ -262,7 +257,8 @@ const AIDrawer: FunctionComponent<AIDrawerProps> = ({
             }}
             placement="right"
             size={size as number}
-            closable={false}
+            closable={{ placement: "end" }}
+            keyboard={true}
             autoFocus={false}
             onClose={() => {
                 setState((prevState) => {
@@ -280,7 +276,7 @@ const AIDrawer: FunctionComponent<AIDrawerProps> = ({
                     padding: 12,
                 },
                 body: {
-                    padding: 12,
+                    padding: 0,
                     overflowX: "hidden",
                 },
             }}
@@ -288,74 +284,77 @@ const AIDrawer: FunctionComponent<AIDrawerProps> = ({
             getContainer={getContainer}
         >
             {contextHolder}
-            {getContent()}
-            <div
-                style={{
-                    display: "flex",
-                    justifyContent: "center",
-                    overflow: "hidden",
-                    background: getAppState().dark ? "#141414" : "white",
-                }}
-            >
-                <Form
-                    form={form}
-                    initialValues={state}
+            <Content>
+                <div
                     style={{
-                        position: "absolute",
-                        width: "80%",
-                        bottom: state.contents.length == 0 ? "45%" : 32,
+                        display: "flex",
                         justifyContent: "center",
-                    }}
-                    onValuesChange={(r) => {
-                        setState((prevState) => {
-                            return {
-                                ...prevState,
-                                ...r,
-                            };
-                        });
+                        overflow: "auto",
                     }}
                 >
-                    {state.contents.length === 0 && (
-                        <Title level={3} style={{ textAlign: "center", lineHeight: 2 }}>
-                            {getRes()["admin.ai.title"]}
-                        </Title>
-                    )}
-                    <Form.Item name={"input"} style={{ flex: 1, marginBottom: 0 }}>
-                        <TextArea
-                            size={"large"}
-                            disabled={state.sending}
-                            style={{ minHeight: 48, maxHeight: 72 }}
-                            placeholder={getRes()["admin.ai.inputTips"]}
-                        />
-                    </Form.Item>
-                    <Button
-                        ref={enterBtnRef}
-                        htmlType={"submit"}
-                        size={"large"}
-                        type={"dashed"}
-                        disabled={state.input.length === 0}
+                    {getContent()}
+                    <Form
+                        form={form}
+                        initialValues={state}
                         style={{
                             position: "absolute",
-                            right: 1,
-                            bottom: 1,
-                            border: "none",
-                            boxShadow: "none",
-                            background: "inherit",
+                            width: "80%",
+                            maxWidth: 768,
+                            bottom: state.contents.length == 0 ? "45%" : 32,
+                            justifyContent: "center",
                         }}
-                        loading={state.sending}
-                        onClick={async () => {
-                            await onSubmit();
+                        onValuesChange={(r) => {
+                            setState((prevState) => {
+                                return {
+                                    ...prevState,
+                                    ...r,
+                                };
+                            });
                         }}
                     >
-                        {!state.sending && <UpCircleOutlined />}
-                    </Button>
-                </Form>
-                {state.contents.length > 0 && (
-                    <span style={{ position: "absolute", bottom: 6, fontSize: 12 }}>
-                        <InfoCircleOutlined style={{ paddingRight: 4 }} /> {getRes()["admin.ai.contentTips"]}
-                    </span>
-                )}
-            </div>
+                        {state.contents.length === 0 && (
+                            <Title level={3} style={{ textAlign: "center", lineHeight: 2 }}>
+                                {getRes()["admin.ai.title"]}
+                            </Title>
+                        )}
+                        <Form.Item name={"input"} style={{ flex: 1, marginBottom: 0 }}>
+                            <TextArea
+                                autoFocus={true}
+                                size={"large"}
+                                disabled={state.sending}
+                                style={{ minHeight: 48, maxHeight: 72, resize: "none" }}
+                                placeholder={getRes()["admin.ai.inputTips"]}
+                            />
+                        </Form.Item>
+                        <Button
+                            ref={enterBtnRef}
+                            htmlType={"submit"}
+                            size={"large"}
+                            type={"dashed"}
+                            disabled={state.input.length === 0}
+                            style={{
+                                position: "absolute",
+                                right: 1,
+                                bottom: 1,
+                                border: "none",
+                                boxShadow: "none",
+                                background: "inherit",
+                            }}
+                            loading={state.sending}
+                            onClick={async () => {
+                                await onSubmit();
+                            }}
+                        >
+                            {!state.sending && <ArrowUpOutlined />}
+                        </Button>
+                    </Form>
+                    {state.contents.length > 0 && (
+                        <span style={{ position: "absolute", bottom: 6, fontSize: 12 }}>
+                            <InfoCircleOutlined style={{ paddingRight: 4 }} /> {getRes()["admin.ai.contentTips"]}
+                        </span>
+                    )}
+                </div>
+            </Content>
         </Drawer>
     );
 };

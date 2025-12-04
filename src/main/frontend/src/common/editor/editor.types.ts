@@ -1,4 +1,5 @@
 import { ChangedContent } from "../../components/articleEdit/index.types";
+import { AIProviderType } from "../../type";
 
 export type MarkdownEditorProps = {
     height: any;
@@ -8,6 +9,10 @@ export type MarkdownEditorProps = {
     getContainer?: () => HTMLElement;
     fullscreen: boolean;
     content: string;
+    aiProvider: AIProviderType;
+    sessionId: number;
+    aiApiUri: string;
+    subject: string;
 };
 
 export type EditorDialogState = {

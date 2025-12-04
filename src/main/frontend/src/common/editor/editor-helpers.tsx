@@ -7,3 +7,7 @@ export const getBorder = () => {
 export const getBorderColor = () => {
     return getAppState().dark ? `rgba(253, 253, 253, 0.12)` : "#DDD";
 };
+
+export const getBgColor = () => {
+    return getAppState().dark ? `black` : "#f3f3f3";
+};
