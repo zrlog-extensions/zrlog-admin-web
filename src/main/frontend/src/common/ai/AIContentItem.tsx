@@ -3,7 +3,7 @@ import { UserOutlined } from "@ant-design/icons";
 import AIIcon from "./AIIcon";
 import { getRes } from "../../utils/constants";
 import HtmlPreviewPanel from "../editor/html-preview-panel";
-import { CSSProperties, FunctionComponent } from "react";
+import { CSSProperties, forwardRef } from "react";
 import { AIProviderType, BasicUserInfo } from "../../type";
 import { getCacheByKey } from "../../utils/cache";
 
@@ -21,7 +21,7 @@ type AIContentItemProps = {
     style?: CSSProperties;
 };
 
-const AIContentItem: FunctionComponent<AIContentItemProps> = ({ content, aiProvider, style }) => {
+const AIContentItem = forwardRef<HTMLDivElement, AIContentItemProps>(({ content, aiProvider, style }, ref) => {
     const getUserInfo = (): BasicUserInfo => {
         const user = getCacheByKey("/user") as BasicUserInfo;
         if (user) {
@@ -37,6 +37,7 @@ const AIContentItem: FunctionComponent<AIContentItemProps> = ({ content, aiProvi
     if (content.role === "user") {
         return (
             <div
+                ref={ref}
                 style={{
                     width: "100%",
                     display: "flex",
@@ -62,7 +63,7 @@ const AIContentItem: FunctionComponent<AIContentItemProps> = ({ content, aiProvi
         );
     }
     return (
-        <div style={{ ...style }}>
+        <div style={{ ...style }} ref={ref}>
             <div style={{ paddingBottom: 12 }}>
                 <Avatar icon={<AIIcon name={aiProvider} />} />
                 <span style={{ paddingLeft: 8 }}>{getRes()["admin.ai"]}</span>
@@ -71,6 +72,6 @@ const AIContentItem: FunctionComponent<AIContentItemProps> = ({ content, aiProvi
             <Paragraph copyable={{ text: content.content }} style={{ paddingTop: 8 }} />
         </div>
     );
-};
+});
 
 export default AIContentItem;

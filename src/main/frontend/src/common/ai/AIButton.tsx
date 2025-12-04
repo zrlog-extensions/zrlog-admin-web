@@ -26,7 +26,7 @@ const AIButton: FunctionComponent<AIButtonProps> = ({
     onClose,
     onOpen,
 }) => {
-    const needConfig = (aiProvider as string) === "" || aiProvider === null;
+    const needConfig = (aiProvider as string) === "" || aiProvider === null || aiProvider === undefined;
     const [aiOpen, setAiOpen] = useState<boolean>(false);
 
     return (
@@ -53,6 +53,9 @@ const AIButton: FunctionComponent<AIButtonProps> = ({
             >
                 <div
                     onClick={() => {
+                        if (needConfig) {
+                            return;
+                        }
                         setAiOpen(true);
                         if (onOpen) {
                             onOpen();

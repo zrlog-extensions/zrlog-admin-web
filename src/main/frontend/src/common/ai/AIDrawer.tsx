@@ -158,13 +158,18 @@ const AIDrawer: FunctionComponent<AIDrawerProps> = ({
                     paddingTop: 12,
                     maxHeight: "calc(100vh - 168px)",
                     maxWidth: 768,
+                    width: "100%",
                 }}
             >
                 {state.contents.map((e, idx) => {
                     return (
-                        <div key={idx} ref={(el) => (itemRefs.current[idx + ""] = el)}>
-                            <AIContentItem content={e} aiProvider={aiProvider} style={{ paddingBottom: 12 }} />
-                        </div>
+                        <AIContentItem
+                            key={idx}
+                            ref={(el) => (itemRefs.current[idx + ""] = el)}
+                            content={e}
+                            aiProvider={aiProvider}
+                            style={{ paddingBottom: 12 }}
+                        />
                     );
                 })}
             </div>
