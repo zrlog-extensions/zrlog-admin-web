@@ -16,6 +16,7 @@ import { markdownToHtml } from "./utils/marked-utils";
 import { addToCache, getCacheByKey } from "../../utils/cache";
 import { getAppState } from "../../base/ConfigProviderApp";
 import SelectionToolbar from "./editor-selection-tool-bar";
+import { copyToClipboard } from "./utils/editor-utils";
 
 type MarkdownEditorState = {
     initValue: string;
@@ -124,15 +125,6 @@ const MarkedEditor: FunctionComponent<MarkdownEditorProps> = ({
         });
         view.focus(); // 确保光标可见
     };
-
-    function copyToClipboard(html: string) {
-        const temp = document.createElement("input") as HTMLInputElement;
-        document.body.append(temp);
-        temp.value = html;
-        temp.select();
-        document.execCommand("copy", false);
-        temp.remove();
-    }
 
     const doCopy = async () => {
         copyToClipboard('<div class="markdown-body" style="padding:0">' + state.content + "</div>");

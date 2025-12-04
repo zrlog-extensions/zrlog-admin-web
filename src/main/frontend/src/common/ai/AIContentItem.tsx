@@ -1,4 +1,4 @@
-import { Avatar } from "antd";
+import { Avatar, Typography } from "antd";
 import { UserOutlined } from "@ant-design/icons";
 import AIIcon from "./AIIcon";
 import { getRes } from "../../utils/constants";
@@ -6,6 +6,8 @@ import HtmlPreviewPanel from "../editor/html-preview-panel";
 import { CSSProperties, FunctionComponent } from "react";
 import { AIProviderType, BasicUserInfo } from "../../type";
 import { getCacheByKey } from "../../utils/cache";
+
+const { Paragraph } = Typography;
 
 export type AIContent = {
     role: string;
@@ -66,6 +68,7 @@ const AIContentItem: FunctionComponent<AIContentItemProps> = ({ content, aiProvi
                 <span style={{ paddingLeft: 8 }}>{getRes()["admin.ai"]}</span>
             </div>
             <HtmlPreviewPanel htmlContent={content.htmlContent} style={{ maxWidth: "90%" }} />
+            <Paragraph copyable={{ text: content.content }} style={{ paddingTop: 8 }} />
         </div>
     );
 };
