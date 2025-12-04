@@ -76,9 +76,18 @@ const AIDrawer: FunctionComponent<AIDrawerProps> = ({
     const [form] = Form.useForm();
     const realHide = useRef<boolean>(hide);
 
+    const itemRefs = useRef<Record<string, HTMLDivElement | null>>({});
+
+    const scrollToItem = (id: string) => {
+        const el = itemRefs.current[id];
+        if (el) {
+            el.scrollIntoView({ behavior: "smooth", block: "start" });
+        }
+    };
+
     const onSubmit = async () => {
-        const nowContents = state.contents;
-        nowContents.push({
+        const newContents = state.contents;
+        newContents.push({
             role: "user",
             content: state.input,
             htmlContent: "",
@@ -86,9 +95,13 @@ const AIDrawer: FunctionComponent<AIDrawerProps> = ({
         setState((prevState) => {
             return {
                 ...prevState,
+                contents: newContents,
                 sending: true,
             };
         });
+        setTimeout(() => {
+            scrollToItem(newContents.length - 1 + "");
+        }, 200);
         try {
             const { data } = await axiosBaseInstance.get(
                 apiUri + "?id=" + (sessionId ? sessionId : 0) + `&input=${encodeURIComponent(state.input)}`
@@ -149,7 +162,9 @@ const AIDrawer: FunctionComponent<AIDrawerProps> = ({
             >
                 {state.contents.map((e, idx) => {
                     return (
-                        <AIContentItem key={idx} content={e} aiProvider={aiProvider} style={{ paddingBottom: 12 }} />
+                        <div key={idx} ref={(el) => (itemRefs.current[idx + ""] = el)}>
+                            <AIContentItem content={e} aiProvider={aiProvider} style={{ paddingBottom: 12 }} />
+                        </div>
                     );
                 })}
             </div>
@@ -176,6 +191,7 @@ const AIDrawer: FunctionComponent<AIDrawerProps> = ({
 
     useEffect(() => {
         addToCache(getAICacheKey(), state.contents);
+        scrollToItem(state.contents.length - 1 + "");
     }, [state.contents]);
 
     useEffect(() => {
