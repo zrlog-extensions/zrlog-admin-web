@@ -7,6 +7,7 @@ import styled from "styled-components";
 import AIIcon from "../../common/ai/AIIcon";
 import { getAppState } from "../../base/ConfigProviderApp";
 import AIButton from "../../common/ai/AIButton";
+import { getAiDrawerOpen } from "../../common/ai/AIDrawer";
 
 type ArticleEditActionBarProps = {
     data: ArticleEditState;
@@ -56,8 +57,6 @@ const ArticleEditActionBar: FunctionComponent<ArticleEditActionBarProps> = ({
     const { useBreakpoint } = Grid;
     const screens = useBreakpoint();
 
-    const realOpen = useRef<boolean>(false);
-
     useEffect(() => {
         const handleKeyPress = (event: KeyboardEvent) => {
             // 检查是否是 macOS 系统
@@ -70,10 +69,9 @@ const ArticleEditActionBar: FunctionComponent<ArticleEditActionBarProps> = ({
             ) {
                 // 处理 Ctrl + Enter 或 Cmd + Enter 的逻辑
                 //console.log('Ctrl + Enter 或 Cmd + Enter 按下');
-                if (enterBtnRef.current && !realOpen.current) {
+                if (enterBtnRef.current && !getAiDrawerOpen()) {
                     enterBtnRef.current.click();
                 }
-                //onSubmit(data.article, true, false, false);
             }
         };
 
@@ -90,17 +88,10 @@ const ArticleEditActionBar: FunctionComponent<ArticleEditActionBarProps> = ({
         <StyledActionBar style={{ display: "flex", justifyContent: "end", gap: 8 }}>
             <AIButton
                 aiProvider={data.aiProvider}
-                hide={!realOpen.current}
                 apiUri={"/api/admin/article/ai"}
                 input={""}
                 subject={data.article.title}
                 sessionId={data.article.logId ? data.article.logId : 0}
-                onClose={() => {
-                    realOpen.current = false;
-                }}
-                onOpen={() => {
-                    realOpen.current = true;
-                }}
                 getContainer={getContainer}
             >
                 <Button

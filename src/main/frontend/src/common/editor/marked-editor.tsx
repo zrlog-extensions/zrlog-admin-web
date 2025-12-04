@@ -304,6 +304,7 @@ const MarkedEditor: FunctionComponent<MarkdownEditorProps> = ({
                         aiApiUri={aiApiUri}
                         sessionId={sessionId}
                         selectedText={toolbar.text}
+                        getContainer={getContainer}
                     />
                     <CodeMirror
                         basicSetup={{ searchKeymap: true }}

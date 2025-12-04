@@ -32,6 +32,12 @@ type AIDrawerState = {
     contents: Content[];
 };
 
+const aiDrawerOpenKey = "aiDrawerOpen";
+
+export const getAiDrawerOpen = () => {
+    return getCacheByKey(aiDrawerOpenKey);
+};
+
 const AIDrawer: FunctionComponent<AIDrawerProps> = ({
     sessionId,
     input,
@@ -155,6 +161,10 @@ const AIDrawer: FunctionComponent<AIDrawerProps> = ({
     }, [hide]);
 
     useEffect(() => {
+        addToCache(aiDrawerOpenKey, state.open);
+    }, [state.open]);
+
+    useEffect(() => {
         addToCache(getAICacheKey(), state.contents);
     }, [state.contents]);
 
@@ -165,7 +175,7 @@ const AIDrawer: FunctionComponent<AIDrawerProps> = ({
                 input: input,
             };
         });
-        form.setFieldsValue({ input: input });
+        form.setFieldValue("input", input);
     }, [input]);
 
     useEffect(() => {
@@ -180,7 +190,7 @@ const AIDrawer: FunctionComponent<AIDrawerProps> = ({
             ) {
                 // 处理 Ctrl + Enter 或 Cmd + Enter 的逻辑
                 //console.log('Ctrl + Enter 或 Cmd + Enter 按下');
-                if (enterBtnRef.current && !realHide.current) {
+                if (enterBtnRef.current && getAiDrawerOpen()) {
                     enterBtnRef.current.click();
                 }
                 //onSubmit(data.article, true, false, false);

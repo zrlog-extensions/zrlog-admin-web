@@ -11,7 +11,6 @@ type AIButtonProps = PropsWithChildren & {
     apiUri: string;
     onClose?: () => void;
     onOpen?: () => void;
-    hide: boolean;
     aiProvider: AIProviderType;
     getContainer?: () => HTMLElement;
     subject?: string;
@@ -26,10 +25,9 @@ const AIButton: FunctionComponent<AIButtonProps> = ({
     children,
     onClose,
     onOpen,
-    hide,
 }) => {
     const needConfig = (aiProvider as string) === "" || aiProvider === null;
-    const [aiOpen, setAiOpen] = useState<boolean>(!hide);
+    const [aiOpen, setAiOpen] = useState<boolean>(false);
 
     return (
         <>

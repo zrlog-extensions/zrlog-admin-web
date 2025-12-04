@@ -18,6 +18,7 @@ export interface SelectionToolbarProps {
     sessionId: number;
     aiApiUri: string;
     subject: string;
+    getContainer?: () => HTMLElement;
 }
 
 export const SelectionToolbar: React.FC<SelectionToolbarProps> = ({
@@ -32,6 +33,7 @@ export const SelectionToolbar: React.FC<SelectionToolbarProps> = ({
     sessionId,
     onItalic,
     subject,
+    getContainer,
 }) => {
     if (!visible) return null;
 
@@ -61,8 +63,8 @@ export const SelectionToolbar: React.FC<SelectionToolbarProps> = ({
                 subject={subject}
                 sessionId={sessionId}
                 apiUri={aiApiUri}
-                hide={true}
                 aiProvider={aiProvider}
+                getContainer={getContainer}
             >
                 <div
                     className={"editor-icon"}
