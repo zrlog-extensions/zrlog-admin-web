@@ -52,11 +52,17 @@ const AIDrawer: FunctionComponent<AIDrawerProps> = ({
         return "ai/chat/" + sessionId;
     };
 
+    const getDrawerWidthKey = () => {
+        return "ai/chat/width";
+    };
+
     const defaultContents = getCacheByKey(getAICacheKey());
 
     const enterBtnRef = useRef<HTMLAnchorElement | HTMLButtonElement>(null);
 
-    const [size, setSize] = useState<string | number>("large");
+    const defaultWidth = getCacheByKey(getDrawerWidthKey());
+
+    const [size, setSize] = useState<string | number>(defaultWidth ? defaultWidth : "large");
 
     const [state, setState] = useState<AIDrawerState>({
         open: !hide,
@@ -163,6 +169,10 @@ const AIDrawer: FunctionComponent<AIDrawerProps> = ({
     useEffect(() => {
         addToCache(aiDrawerOpenKey, state.open);
     }, [state.open]);
+
+    useEffect(() => {
+        addToCache(getDrawerWidthKey(), size);
+    }, [size]);
 
     useEffect(() => {
         addToCache(getAICacheKey(), state.contents);
