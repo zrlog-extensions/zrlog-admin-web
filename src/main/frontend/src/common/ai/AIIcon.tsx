@@ -8,7 +8,7 @@ type AIIconProps = {
 };
 
 const AIIcon: FunctionComponent<AIIconProps> = ({ name, style }) => {
-    if (name === "OPEN_AI") {
+    if (name === AIProviderType.OPEN_AI) {
         return <OpenAIFilled style={style} />;
     }
     if (name === AIProviderType.DEEP_SEEK) {

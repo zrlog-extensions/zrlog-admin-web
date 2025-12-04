@@ -9,7 +9,7 @@ import { useEffect, useState } from "react";
 import { AI } from "./index";
 import Select from "antd/es/select";
 import { Input } from "antd";
-import AIIcon from "../../common/editor/AIIcon";
+import AIIcon from "../../common/ai/AIIcon";
 
 const layout = {
     labelCol: { span: 8 },

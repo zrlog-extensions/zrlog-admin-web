@@ -1,0 +1,71 @@
+import AIDrawer from "./AIDrawer";
+import { getRealRouteUrl, getRes } from "../../utils/constants";
+import { Link } from "react-router-dom";
+import { AIProviderType } from "../../type";
+import { FunctionComponent, PropsWithChildren, useState } from "react";
+import Popconfirm from "antd/es/popconfirm";
+
+type AIButtonProps = PropsWithChildren & {
+    input: string;
+    sessionId: number;
+    apiUri: string;
+    onClose?: () => void;
+    onOpen?: () => void;
+    hide: boolean;
+    aiProvider: AIProviderType;
+    getContainer?: () => HTMLElement;
+    subject?: string;
+};
+
+const AIButton: FunctionComponent<AIButtonProps> = ({
+    input,
+    subject,
+    aiProvider,
+    sessionId,
+    getContainer,
+    children,
+    onClose,
+    onOpen,
+    hide,
+}) => {
+    const needConfig = (aiProvider as string) === "" || aiProvider === null;
+    const [aiOpen, setAiOpen] = useState<boolean>(!hide);
+
+    return (
+        <>
+            <AIDrawer
+                aiProvider={aiProvider}
+                hide={!aiOpen}
+                apiUri={"/api/admin/article/ai"}
+                input={input}
+                subject={subject}
+                sessionId={sessionId}
+                onClose={() => {
+                    setAiOpen(false);
+                    if (onClose) {
+                        onClose();
+                    }
+                }}
+                getContainer={getContainer}
+            />
+            <Popconfirm
+                disabled={!needConfig}
+                title={getRes()["admin.ai.askConfig"]}
+                okText={<Link to={getRealRouteUrl("/website/ai")}>{getRes()["admin.setting"]}</Link>}
+            >
+                <div
+                    onClick={() => {
+                        setAiOpen(true);
+                        if (onOpen) {
+                            onOpen();
+                        }
+                    }}
+                >
+                    {children}
+                </div>
+            </Popconfirm>
+        </>
+    );
+};
+
+export default AIButton;

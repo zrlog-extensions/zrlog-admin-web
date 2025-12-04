@@ -47,7 +47,11 @@ const HtmlPreviewPanel: FunctionComponent<EditorPreviewProps> = ({
     };
 
     return (
-        <StyledPreview dark={getAppState().dark} ref={previewRef} style={style}>
+        <StyledPreview
+            dark={getAppState().dark}
+            ref={previewRef}
+            style={{ lineHeight: 1.4, overflowY: "auto", wordBreak: "break-word", boxSizing: "border-box", ...style }}
+        >
             {getAppState().dark ? (
                 <StyledHighlightDark {...commonProps} />
             ) : (

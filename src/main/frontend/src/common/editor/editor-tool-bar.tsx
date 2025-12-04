@@ -15,7 +15,7 @@ type EditorToolBarProps = {
     imageUploading?: boolean;
 };
 
-const EditorToolBarDivider = () => {
+export const EditorToolBarDivider = () => {
     return (
         <span
             style={{

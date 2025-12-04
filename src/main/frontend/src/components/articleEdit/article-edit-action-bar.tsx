@@ -2,11 +2,11 @@ import { Button, Grid } from "antd";
 import { EyeOutlined, SaveOutlined, SendOutlined } from "@ant-design/icons";
 import { getRes } from "../../utils/constants";
 import { ArticleEditState, ArticleEntry } from "./index.types";
-import { FunctionComponent, useEffect, useRef, useState } from "react";
+import { FunctionComponent, useEffect, useRef } from "react";
 import styled from "styled-components";
-import AIDrawer from "../../common/AIDrawer";
-import { AIProviderType } from "../../type";
-import AIIcon from "../../common/editor/AIIcon";
+import AIIcon from "../../common/ai/AIIcon";
+import { getAppState } from "../../base/ConfigProviderApp";
+import AIButton from "../../common/ai/AIButton";
 
 type ArticleEditActionBarProps = {
     data: ArticleEditState;
@@ -24,6 +24,17 @@ const StyledActionBar = styled(`div`)`
 
     .btn {
         min-width: 120px;
+    }
+
+    .linearGradient {
+        opacity: 1;
+        transition: all 0.3s;
+        min-width: 120px;
+        border: none;
+    }
+
+    .linearGradient:hover {
+        border: none !important;
     }
 
     @media screen and (max-width: 576px) {
@@ -45,8 +56,7 @@ const ArticleEditActionBar: FunctionComponent<ArticleEditActionBarProps> = ({
     const { useBreakpoint } = Grid;
     const screens = useBreakpoint();
 
-    const [aiOpen, setAiOpen] = useState<boolean>(false);
-    const realOpen = useRef<boolean>(aiOpen);
+    const realOpen = useRef<boolean>(false);
 
     useEffect(() => {
         const handleKeyPress = (event: KeyboardEvent) => {
@@ -78,28 +88,33 @@ const ArticleEditActionBar: FunctionComponent<ArticleEditActionBarProps> = ({
 
     return (
         <StyledActionBar style={{ display: "flex", justifyContent: "end", gap: 8 }}>
-            <AIDrawer
+            <AIButton
                 aiProvider={data.aiProvider}
-                hide={!aiOpen}
+                hide={!realOpen.current}
                 apiUri={"/api/admin/article/ai"}
                 input={""}
+                subject={data.article.title}
                 sessionId={data.article.logId ? data.article.logId : 0}
                 onClose={() => {
-                    setAiOpen(false);
+                    realOpen.current = false;
+                }}
+                onOpen={() => {
+                    realOpen.current = true;
                 }}
                 getContainer={getContainer}
-            />
-            <Button
-                className={"btn"}
-                type={fullScreen ? "default" : "dashed"}
-                onClick={() => {
-                    realOpen.current = true;
-                    setAiOpen(true);
-                }}
             >
-                <AIIcon name={AIProviderType.DEEP_SEEK} />
-                {screens.sm && <span>{getRes()["admin.ai"]}</span>}
-            </Button>
+                <Button
+                    className={"linearGradient"}
+                    type={"primary"}
+                    style={{
+                        background: `linear-gradient(135deg, #6253e1, ${getAppState().colorPrimary})`,
+                    }}
+                >
+                    <AIIcon name={data.aiProvider} />
+                    {screens.sm && <span>{getRes()["admin.ai"]}</span>}
+                </Button>
+            </AIButton>
+
             <Button
                 className={"btn"}
                 type={fullScreen ? "default" : "dashed"}

@@ -71,8 +71,9 @@ const ArticleEditSettingButton = ({
             <Drawer
                 title={getRes()["admin.setting"] + (saving ? "[" + getRes().saving + "]" : "")}
                 placement="right"
-                closable={true}
+                closable={{ placement: "end" }}
                 autoFocus={false}
+                keyboard={true}
                 onClose={() => {
                     setSettingsOpen(false);
                 }}
