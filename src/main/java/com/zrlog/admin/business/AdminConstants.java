@@ -46,6 +46,7 @@ public class AdminConstants {
         TITLE_MAP.put(ADMIN_URI_BASE_PATH + "/website/template", "admin.template.manage");
         TITLE_MAP.put(ADMIN_URI_BASE_PATH + "/website/other", "admin.other.manage");
         TITLE_MAP.put(ADMIN_URI_BASE_PATH + "/website/upgrade", "admin.upgrade.manage");
+        TITLE_MAP.put(ADMIN_URI_BASE_PATH + "/website/ai", "admin.ai.manage");
         TITLE_MAP.put(ADMIN_URI_BASE_PATH + "/nav", "admin.nav.manage");
         TITLE_MAP.put(ADMIN_URI_BASE_PATH + "/article-type", "admin.type.manage");
         TITLE_MAP.put(ADMIN_URI_BASE_PATH + "/link", "admin.link.manage");
@@ -57,7 +58,6 @@ public class AdminConstants {
         TITLE_MAP.put(ADMIN_URI_BASE_PATH + "/template-center", "templateCenter");
         TITLE_MAP.put(ADMIN_URI_BASE_PATH + "/system", "systemInfo");
         TITLE_MAP.put(ADMIN_URI_BASE_PATH + "/dev", "dev");
-        TITLE_MAP.put(ADMIN_URI_BASE_PATH + "/ai", "admin.ai.manage");
     }
 
     public static AdminResource adminResource;
