@@ -107,7 +107,7 @@ const AIDrawer: FunctionComponent<AIDrawerProps> = ({
             };
         });
         try {
-            const { data } = await axiosBaseInstance.get(
+            const { data } = await axiosBaseInstance.post(
                 apiUri + "?id=" + (sessionId ? sessionId : 0) + `&input=${encodeURIComponent(state.input)}`
             );
             if (data.error) {
@@ -169,7 +169,7 @@ const AIDrawer: FunctionComponent<AIDrawerProps> = ({
                             ref={(el) => (itemRefs.current[idx + ""] = el)}
                             content={e}
                             aiProvider={aiProvider}
-                            style={{ paddingBottom: 12 }}
+                            style={{ paddingTop: 8, paddingBottom: 8 }}
                         />
                     );
                 })}
