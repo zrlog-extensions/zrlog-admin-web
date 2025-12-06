@@ -43,6 +43,8 @@ const MarkedEditor: FunctionComponent<MarkdownEditorProps> = ({
     aiApiUri,
     sessionId,
     subject,
+    aiMessage,
+    onAiMessagesChange,
 }) => {
     const getEditorConfigKey = () => {
         return "editor_config";
@@ -316,6 +318,8 @@ const MarkedEditor: FunctionComponent<MarkdownEditorProps> = ({
                         onAi={() => {
                             clearSelection();
                         }}
+                        onAiMessagesChange={onAiMessagesChange}
+                        aiMessage={aiMessage}
                     />
                     <CodeMirror
                         basicSetup={{ searchKeymap: true }}
@@ -337,7 +341,7 @@ const MarkedEditor: FunctionComponent<MarkdownEditorProps> = ({
                         }}
                         onChange={async (md) => {
                             const html = await markdownToHtml(md);
-                            console.info(html + "=..");
+                            //console.info(html + "=..");
 
                             const changeValues = {
                                 content: html,

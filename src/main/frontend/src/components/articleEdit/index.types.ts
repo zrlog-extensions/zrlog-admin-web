@@ -1,4 +1,5 @@
 import { AdminCommonProps, AIProviderType } from "../../type";
+import { AIContent } from "../../common/ai/AIContentItem";
 
 export type ArticleEntry = ChangedContent &
     ThumbnailChanged &
@@ -68,6 +69,7 @@ export type ArticleEditInfo = {
     types: any[];
     article: ArticleEntry;
     aiProvider: AIProviderType;
+    aiMessages: AIContent[];
 };
 
 export type FullScreenProps = {
@@ -82,6 +84,7 @@ export type ArticleEditState = {
     typeOptions: any[];
     tags: any[];
     aiProvider: AIProviderType;
+    aiMessages: AIContent[];
     rubbish: boolean;
     editorVersion: number;
     article: ArticleEntry;

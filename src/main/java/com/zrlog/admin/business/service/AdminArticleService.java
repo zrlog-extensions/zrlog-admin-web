@@ -12,6 +12,7 @@ import com.zrlog.admin.business.AdminConstants;
 import com.zrlog.admin.business.exception.ArticleMissingTitleException;
 import com.zrlog.admin.business.exception.ArticleMissingTypeException;
 import com.zrlog.admin.business.exception.UpdateArticleExpireException;
+import com.zrlog.admin.business.rest.base.AIWebSiteInfoWithAIMessages;
 import com.zrlog.admin.business.rest.request.CreateArticleRequest;
 import com.zrlog.admin.business.rest.request.UpdateArticleRequest;
 import com.zrlog.admin.business.rest.response.*;
@@ -302,21 +303,27 @@ public class AdminArticleService {
     public AdminApiPageDataStandardResponse<ArticleGlobalResponse> loadDetailById(String id, HttpRequest request) throws SQLException {
         ArticleGlobalResponse response = new ArticleGlobalResponse();
         ExecutorService executorService = ThreadUtils.newFixedThreadPool(2);
+        if (StringUtils.isNotEmpty(id)) {
+            response.setArticle(loadDetail(id, request));
+        } else {
+            response.setArticle(new LoadEditArticleResponse());
+        }
         try {
             CompletableFuture.allOf(CompletableFuture.runAsync(() -> {
                 response.setTags(Constants.zrLogConfig.getCacheService().getTags());
             }, executorService), CompletableFuture.runAsync(() -> {
                 response.setTypes(Constants.zrLogConfig.getCacheService().getArticleTypes());
             }, executorService), CompletableFuture.runAsync(() -> {
-                response.setAiProvider(new WebSiteService().ai().getAi_provider());
+                Integer articleId = response.getArticle().getId();
+                if (articleId == null) {
+                    articleId = 0;
+                }
+                AIWebSiteInfoWithAIMessages ai = new WebSiteService().getAiMessageInfoByArticleId(Long.valueOf(articleId));
+                response.setAiProvider(ai.getAi_provider());
+                response.setAiMessages(ai.getAiMessages().stream().filter(e -> !Objects.equals(e.getRole(), "system")).collect(Collectors.toList()));
             })).join();
         } finally {
             executorService.shutdown();
-        }
-        if (StringUtils.isNotEmpty(id)) {
-            response.setArticle(loadDetail(id, request));
-        } else {
-            response.setArticle(new LoadEditArticleResponse());
         }
         AdminApiPageDataStandardResponse<ArticleGlobalResponse> standardResponse = new AdminApiPageDataStandardResponse<>(response);
         StringJoiner sj = new StringJoiner(AdminConstants.ADMIN_TITLE_CHAR);

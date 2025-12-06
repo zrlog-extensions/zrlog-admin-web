@@ -35,6 +35,14 @@ public class AIResponseEntry {
 
     public static class AIContentEntry {
 
+        public AIContentEntry() {
+        }
+
+        public AIContentEntry(String role, String content) {
+            this.role = role;
+            this.content = content;
+        }
+
         private String role;
         private String content;
 

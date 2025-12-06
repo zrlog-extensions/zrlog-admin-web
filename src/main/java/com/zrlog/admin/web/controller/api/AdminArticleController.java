@@ -118,7 +118,7 @@ public class AdminArticleController extends BaseController {
     }
 
     @ResponseBody
-    public AdminApiPageDataStandardResponse<List<AIResponseEntry.AIContentEntry>> ai() throws IOException, InterruptedException {
+    public AdminApiPageDataStandardResponse<List<AIResponseEntry.AIContentEntry>> ai() throws IOException, InterruptedException, SQLException {
         List<AIResponseEntry.AIContentEntry> aiInfo = new AIService().getResponse(getParamWithEmptyCheck("input"), Long.parseLong(getParamWithEmptyCheck("id")));
         return new AdminApiPageDataStandardResponse<>(aiInfo, "", request.getUri());
     }

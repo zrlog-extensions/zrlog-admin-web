@@ -12,7 +12,7 @@ export const renderTex = (text: string) => {
     // 1. 先替换块级公式为占位符
     text = text.replace(texBlock, (_, expr) => {
         try {
-            console.info(expr);
+            //console.info(expr);
             const html = katex.renderToString(expr.trim(), { displayMode: true, throwOnError: false, output: "html" });
             blocks.push(html);
             return `__BLOCK_FORMULA_${blocks.length - 1}__`;

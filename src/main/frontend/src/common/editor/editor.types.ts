@@ -1,5 +1,6 @@
 import { ChangedContent } from "../../components/articleEdit/index.types";
 import { AIProviderType } from "../../type";
+import { AIContent } from "../ai/AIContentItem";
 
 export type MarkdownEditorProps = {
     height: any;
@@ -13,6 +14,8 @@ export type MarkdownEditorProps = {
     sessionId: number;
     aiApiUri: string;
     subject: string;
+    aiMessage?: AIContent[];
+    onAiMessagesChange?: (aiMessages: AIContent[]) => void;
 };
 
 export type EditorDialogState = {

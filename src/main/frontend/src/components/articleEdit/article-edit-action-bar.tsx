@@ -8,6 +8,7 @@ import AIIcon from "../../common/ai/AIIcon";
 import { getAppState } from "../../base/ConfigProviderApp";
 import AIButton from "../../common/ai/AIButton";
 import { getAiDrawerOpen } from "../../common/ai/AIDrawer";
+import { AIContent } from "../../common/ai/AIContentItem";
 
 type ArticleEditActionBarProps = {
     data: ArticleEditState;
@@ -15,6 +16,7 @@ type ArticleEditActionBarProps = {
     offline: boolean;
     onSubmit: (article: ArticleEntry, release: boolean, preview: boolean, autoSave: boolean) => Promise<void>;
     getContainer?: () => HTMLElement;
+    onAiMessagesChange?: (messages: AIContent[]) => void;
 };
 
 const StyledActionBar = styled(`div`)`
@@ -40,6 +42,7 @@ const ArticleEditActionBar: FunctionComponent<ArticleEditActionBarProps> = ({
     fullScreen,
     onSubmit,
     getContainer,
+    onAiMessagesChange,
 }) => {
     const enterBtnRef = useRef<HTMLAnchorElement | HTMLButtonElement>(null);
 
@@ -79,9 +82,11 @@ const ArticleEditActionBar: FunctionComponent<ArticleEditActionBarProps> = ({
                 aiProvider={data.aiProvider}
                 apiUri={"/api/admin/article/ai"}
                 input={""}
+                aiMessages={data.aiMessages}
                 subject={data.article.title}
                 sessionId={data.article.logId ? data.article.logId : 0}
                 getContainer={getContainer}
+                onAiMessagesChange={onAiMessagesChange}
             >
                 <Button
                     className={"btn"}

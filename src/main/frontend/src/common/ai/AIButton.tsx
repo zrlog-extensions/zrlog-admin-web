@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 import { AIProviderType } from "../../type";
 import { FunctionComponent, PropsWithChildren, useState } from "react";
 import Popconfirm from "antd/es/popconfirm";
+import { AIContent } from "./AIContentItem";
 
 type AIButtonProps = PropsWithChildren & {
     input: string;
@@ -14,6 +15,8 @@ type AIButtonProps = PropsWithChildren & {
     aiProvider: AIProviderType;
     getContainer?: () => HTMLElement;
     subject?: string;
+    aiMessages?: AIContent[];
+    onAiMessagesChange?: (messages: AIContent[]) => void;
 };
 
 const AIButton: FunctionComponent<AIButtonProps> = ({
@@ -25,6 +28,8 @@ const AIButton: FunctionComponent<AIButtonProps> = ({
     children,
     onClose,
     onOpen,
+    aiMessages,
+    onAiMessagesChange,
 }) => {
     const needConfig = (aiProvider as string) === "" || aiProvider === null || aiProvider === undefined;
     const [aiOpen, setAiOpen] = useState<boolean>(false);
@@ -44,6 +49,8 @@ const AIButton: FunctionComponent<AIButtonProps> = ({
                         onClose();
                     }
                 }}
+                onAiMessagesChange={onAiMessagesChange}
+                aiMessages={aiMessages}
                 getContainer={getContainer}
             />
             <Popconfirm

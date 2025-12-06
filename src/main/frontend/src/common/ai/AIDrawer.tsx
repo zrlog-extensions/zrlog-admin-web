@@ -5,14 +5,14 @@ import Form from "antd/es/form";
 import { ArrowUpOutlined, InfoCircleOutlined } from "@ant-design/icons";
 import { useAxiosBaseInstance } from "../../base/AppBase";
 import useMessage from "antd/es/message/useMessage";
-import { markdownToHtmlSyncWithCallback } from "../editor/utils/marked-utils";
 import { addToCache, getCacheByKey } from "../../utils/cache";
 import { AIProviderType } from "../../type";
 import TextArea from "antd/es/input/TextArea";
 import Title from "antd/es/typography/Title";
 import AIIcon from "./AIIcon";
-import AIContentItem, { AIContent } from "./AIContentItem";
+import { AIContent } from "./AIContentItem";
 import { Content } from "antd/es/layout/layout";
+import AIChatContentPanel from "./AIChatContentPanel";
 
 type AIDrawerProps = {
     input: string;
@@ -23,6 +23,8 @@ type AIDrawerProps = {
     aiProvider: AIProviderType;
     getContainer?: () => HTMLElement;
     subject?: string;
+    aiMessages?: AIContent[];
+    onAiMessagesChange?: (messages: AIContent[]) => void;
 };
 
 type AIDrawerState = {
@@ -47,16 +49,12 @@ const AIDrawer: FunctionComponent<AIDrawerProps> = ({
     hide,
     aiProvider,
     subject,
+    aiMessages,
+    onAiMessagesChange,
 }) => {
-    const getAICacheKey = () => {
-        return "ai/chat/" + sessionId;
-    };
-
     const getDrawerWidthKey = () => {
         return "ai/chat/width";
     };
-
-    const defaultContents = getCacheByKey(getAICacheKey());
 
     const enterBtnRef = useRef<HTMLAnchorElement | HTMLButtonElement>(null);
 
@@ -67,7 +65,7 @@ const AIDrawer: FunctionComponent<AIDrawerProps> = ({
     const [state, setState] = useState<AIDrawerState>({
         open: !hide,
         input: input,
-        contents: defaultContents ? defaultContents : [],
+        contents: aiMessages ? aiMessages : [],
         sending: false,
     });
     const axiosBaseInstance = useAxiosBaseInstance(getContainer);
@@ -76,27 +74,16 @@ const AIDrawer: FunctionComponent<AIDrawerProps> = ({
     const [form] = Form.useForm();
     const realHide = useRef<boolean>(hide);
 
-    const itemRefs = useRef<Record<string, HTMLDivElement | null>>({});
-
-    const scrollToItem = (id: string) => {
-        const el = itemRefs.current[id];
-        if (el) {
-            el.scrollIntoView({ behavior: "smooth", block: "start" });
-        }
-    };
-
     const onSubmit = async () => {
         const newContents = state.contents;
         newContents.push({
             role: "user",
             content: state.input,
-            htmlContent: "",
             thinking: false,
         });
         const aiReplyContent: AIContent = {
             role: "assistant",
             content: "",
-            htmlContent: "",
             thinking: true,
         };
         setState((prevState) => {
@@ -127,54 +114,16 @@ const AIDrawer: FunctionComponent<AIDrawerProps> = ({
                     ...prevState,
                     sending: false,
                     input: "",
+                    contents: contents,
                 };
             });
             const contents: AIContent[] = [...newContents, ...data.data];
-            contents.map((e) => {
-                markdownToHtmlSyncWithCallback(e.content, (x) => {
-                    e.htmlContent = x;
-                    setState((prevState) => {
-                        return {
-                            ...prevState,
-                            contents: contents,
-                        };
-                    });
-                });
-            });
+            if (onAiMessagesChange) {
+                onAiMessagesChange(contents);
+            }
         } catch (e) {
             messageApi.error("Unknown error");
         }
-    };
-
-    const getContent = () => {
-        if (state.contents.length === 0) {
-            return <></>;
-        }
-
-        return (
-            <div
-                style={{
-                    paddingRight: 16,
-                    paddingLeft: 16,
-                    paddingTop: 12,
-                    maxHeight: "calc(100vh - 168px)",
-                    maxWidth: 768,
-                    width: "100%",
-                }}
-            >
-                {state.contents.map((e, idx) => {
-                    return (
-                        <AIContentItem
-                            key={idx}
-                            ref={(el) => (itemRefs.current[idx + ""] = el)}
-                            content={e}
-                            aiProvider={aiProvider}
-                            style={{ paddingTop: 8, paddingBottom: 8 }}
-                        />
-                    );
-                })}
-            </div>
-        );
     };
 
     useEffect(() => {
@@ -194,11 +143,6 @@ const AIDrawer: FunctionComponent<AIDrawerProps> = ({
     useEffect(() => {
         addToCache(getDrawerWidthKey(), size);
     }, [size]);
-
-    useEffect(() => {
-        addToCache(getAICacheKey(), state.contents);
-        scrollToItem(state.contents.length - 1 + "");
-    }, [state.contents]);
 
     useEffect(() => {
         setState((prevState) => {
@@ -293,7 +237,7 @@ const AIDrawer: FunctionComponent<AIDrawerProps> = ({
                         overflow: "auto",
                     }}
                 >
-                    {getContent()}
+                    {state.open && <AIChatContentPanel contents={state.contents} aiProvider={aiProvider} />}
                     <Form
                         form={form}
                         initialValues={state}
@@ -304,11 +248,11 @@ const AIDrawer: FunctionComponent<AIDrawerProps> = ({
                             bottom: state.contents.length == 0 ? "45%" : 32,
                             justifyContent: "center",
                         }}
-                        onValuesChange={(r) => {
+                        onValuesChange={(v) => {
                             setState((prevState) => {
                                 return {
                                     ...prevState,
-                                    ...r,
+                                    input: v["input"],
                                 };
                             });
                         }}

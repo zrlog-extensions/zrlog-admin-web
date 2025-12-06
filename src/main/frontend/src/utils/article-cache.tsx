@@ -37,6 +37,7 @@ export const articleDataToState = (data: ArticleEditInfo): ArticleEditState => {
               })
             : [],
         aiProvider: data.aiProvider,
+        aiMessages: data.aiMessages,
         editorVersion: realArticle.version,
         tags: data.tags ? data.tags : [],
         rubbish: data.article && data.article.rubbish ? data.article.rubbish : false,

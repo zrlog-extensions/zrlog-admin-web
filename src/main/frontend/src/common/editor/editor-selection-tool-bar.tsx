@@ -5,6 +5,7 @@ import AIIcon from "../ai/AIIcon";
 import AIButton from "../ai/AIButton";
 import { getBgColor } from "./editor-helpers";
 import { EditorToolBarDivider } from "./editor-tool-bar";
+import { AIContent } from "../ai/AIContentItem";
 
 export interface SelectionToolbarProps {
     visible: boolean;
@@ -20,6 +21,8 @@ export interface SelectionToolbarProps {
     subject: string;
     getContainer?: () => HTMLElement;
     onAi: () => void;
+    aiMessage?: AIContent[];
+    onAiMessagesChange?: (aiMessages: AIContent[]) => void;
 }
 
 export const SelectionToolbar: React.FC<SelectionToolbarProps> = ({
@@ -36,6 +39,8 @@ export const SelectionToolbar: React.FC<SelectionToolbarProps> = ({
     subject,
     getContainer,
     onAi,
+    aiMessage,
+    onAiMessagesChange,
 }) => {
     if (!visible) return null;
 
@@ -67,6 +72,8 @@ export const SelectionToolbar: React.FC<SelectionToolbarProps> = ({
                 apiUri={aiApiUri}
                 aiProvider={aiProvider}
                 getContainer={getContainer}
+                aiMessages={aiMessage}
+                onAiMessagesChange={onAiMessagesChange}
                 onOpen={() => {
                     onAi();
                 }}

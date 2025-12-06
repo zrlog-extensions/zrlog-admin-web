@@ -11,7 +11,13 @@ import { isOffline } from "../../utils/env-utils";
 import EditorStatistics, { toStatisticsByMarkdown } from "../../common/editor/editor-statistics-info";
 import { useAxiosBaseInstance } from "../../base/AppBase";
 import ArticleEditSettingButton from "./article-edit-setting-button";
-import { ArticleChangeableValue, ArticleEditProps, ArticleEditState, ArticleEntry } from "./index.types";
+import {
+    ArticleChangeableValue,
+    ArticleEditInfo,
+    ArticleEditProps,
+    ArticleEditState,
+    ArticleEntry,
+} from "./index.types";
 import ArticleEditActionBar from "./article-edit-action-bar";
 import {
     articleDataToState,
@@ -25,10 +31,11 @@ import { Subscription } from "rxjs/internal/Subscription";
 import { deepEqualWithSpecialJSON, disableExitTips, enableExitTips } from "../../utils/helpers";
 import MarkedEditor from "../../common/editor/marked-editor";
 import { useLocation } from "react-router";
-import { getPageDataCacheKeyByPath } from "../../utils/cache";
+import { getCacheByKey, getPageDataCacheKeyByPath } from "../../utils/cache";
 import { LockOutlined } from "@ant-design/icons";
 import { getAppState } from "../../base/ConfigProviderApp";
 import BaseTitle from "../../base/BaseTitle";
+import { AIContent } from "../../common/ai/AIContentItem";
 
 const Index: FunctionComponent<ArticleEditProps> = ({
     offline,
@@ -108,6 +115,10 @@ const Index: FunctionComponent<ArticleEditProps> = ({
         if (pendingMessages === 0) {
             disableExitTips();
         }
+    };
+
+    const getLocalCacheKey = (url: URL) => {
+        return getPageDataCacheKeyByPath(location.pathname, "?" + url.searchParams.toString());
     };
 
     const onSubmit = async (article: ArticleEntry, release: boolean, preview: boolean, autoSave: boolean) => {
@@ -214,9 +225,8 @@ const Index: FunctionComponent<ArticleEditProps> = ({
                     };
                     removeArticleCache(newArticle);
                 }
-                const cacheKey = getPageDataCacheKeyByPath(location.pathname, "?" + url.searchParams.toString());
                 if (updateCache) {
-                    updateCache(data.data, cacheKey);
+                    updateCache(data.data, getLocalCacheKey(url));
                 }
             }
         } finally {
@@ -391,6 +401,16 @@ const Index: FunctionComponent<ArticleEditProps> = ({
         return `calc(100vh - ${baseHeight}px)`;
     };
 
+    const updateAiMessageCache = (aiMessages: AIContent[]) => {
+        const url = new URL(window.location.href);
+        const cacheKey = getLocalCacheKey(url);
+        const newData = getCacheByKey(cacheKey) as ArticleEditInfo;
+        newData.aiMessages = aiMessages;
+        if (updateCache) {
+            updateCache(newData, cacheKey);
+        }
+    };
+
     return (
         <>
             <div style={{ paddingTop: fullScreen ? 0 : 20, gap: 8, display: "flex", justifyContent: "space-between" }}>
@@ -406,6 +426,7 @@ const Index: FunctionComponent<ArticleEditProps> = ({
                         offline={offline}
                         data={state}
                         onSubmit={onSubmit}
+                        onAiMessagesChange={updateAiMessageCache}
                     />
                 )}
             </div>
@@ -522,6 +543,7 @@ const Index: FunctionComponent<ArticleEditProps> = ({
                                     offline={offline}
                                     fullScreen={fullScreen}
                                     data={state}
+                                    onAiMessagesChange={(messages) => updateAiMessageCache(messages)}
                                     onSubmit={onSubmit}
                                 />
                             </Col>
@@ -573,6 +595,8 @@ const Index: FunctionComponent<ArticleEditProps> = ({
                         }
                         handleValuesChange(v);
                     }}
+                    aiMessage={data.aiMessages}
+                    onAiMessagesChange={updateAiMessageCache}
                 />
                 <EditorStatistics
                     rubbish={state.article.rubbish}

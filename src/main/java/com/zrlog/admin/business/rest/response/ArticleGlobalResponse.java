@@ -12,6 +12,7 @@ public class ArticleGlobalResponse {
     private List<TypeDTO> types;
     private LoadEditArticleResponse article;
     private AIProviderType aiProvider;
+    private List<AIResponseEntry.AIContentEntry> aiMessages;
 
     public LoadEditArticleResponse getArticle() {
         return article;
@@ -43,5 +44,13 @@ public class ArticleGlobalResponse {
 
     public void setAiProvider(AIProviderType aiProvider) {
         this.aiProvider = aiProvider;
+    }
+
+    public List<AIResponseEntry.AIContentEntry> getAiMessages() {
+        return aiMessages;
+    }
+
+    public void setAiMessages(List<AIResponseEntry.AIContentEntry> aiMessages) {
+        this.aiMessages = aiMessages;
     }
 }
