@@ -91,17 +91,21 @@ const AIDrawer: FunctionComponent<AIDrawerProps> = ({
             role: "user",
             content: state.input,
             htmlContent: "",
+            thinking: false,
         });
+        const aiReplyContent: AIContent = {
+            role: "assistant",
+            content: "",
+            htmlContent: "",
+            thinking: true,
+        };
         setState((prevState) => {
             return {
                 ...prevState,
-                contents: newContents,
+                contents: [...newContents, aiReplyContent],
                 sending: true,
             };
         });
-        setTimeout(() => {
-            scrollToItem(newContents.length - 1 + "");
-        }, 200);
         try {
             const { data } = await axiosBaseInstance.get(
                 apiUri + "?id=" + (sessionId ? sessionId : 0) + `&input=${encodeURIComponent(state.input)}`
@@ -116,19 +120,16 @@ const AIDrawer: FunctionComponent<AIDrawerProps> = ({
                 });
                 return;
             }
-
+            form.setFieldsValue({ input: "" });
+            //
             setState((prevState) => {
                 return {
                     ...prevState,
                     sending: false,
                     input: "",
-                    contents: contents,
                 };
             });
-
-            form.setFieldsValue({ input: "" });
-
-            const contents: AIContent[] = [...state.contents, ...data.data];
+            const contents: AIContent[] = [...newContents, ...data.data];
             contents.map((e) => {
                 markdownToHtmlSyncWithCallback(e.content, (x) => {
                     e.htmlContent = x;

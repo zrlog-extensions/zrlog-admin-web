@@ -1,5 +1,5 @@
 import { Avatar, Typography } from "antd";
-import { UserOutlined } from "@ant-design/icons";
+import { LoadingOutlined, UserOutlined } from "@ant-design/icons";
 import AIIcon from "./AIIcon";
 import { getRes } from "../../utils/constants";
 import HtmlPreviewPanel from "../editor/html-preview-panel";
@@ -10,9 +10,10 @@ import { getCacheByKey } from "../../utils/cache";
 const { Paragraph } = Typography;
 
 export type AIContent = {
-    role: string;
+    role: "user" | "assistant" | "";
     content: string;
     htmlContent: string;
+    thinking: boolean;
 };
 
 type AIContentItemProps = {
@@ -62,14 +63,31 @@ const AIContentItem = forwardRef<HTMLDivElement, AIContentItemProps>(({ content,
             </div>
         );
     }
+
+    const getAIReplyContent = () => {
+        if (content.thinking) {
+            return (
+                <>
+                    <span style={{ paddingRight: 8 }}>{getRes()["admin.ai.thinking"]}</span>
+                    <LoadingOutlined />
+                </>
+            );
+        }
+        return (
+            <>
+                <HtmlPreviewPanel htmlContent={content.htmlContent} style={{ maxWidth: "90%" }} />
+                <Paragraph copyable={{ text: content.content }} style={{ paddingTop: 8 }} />
+            </>
+        );
+    };
+
     return (
         <div style={{ ...style }} ref={ref}>
             <div style={{ paddingBottom: 12 }}>
                 <Avatar icon={<AIIcon name={aiProvider} />} />
                 <span style={{ paddingLeft: 8 }}>{getRes()["admin.ai"]}</span>
             </div>
-            <HtmlPreviewPanel htmlContent={content.htmlContent} style={{ maxWidth: "90%" }} />
-            <Paragraph copyable={{ text: content.content }} style={{ paddingTop: 8 }} />
+            {getAIReplyContent()}
         </div>
     );
 });
