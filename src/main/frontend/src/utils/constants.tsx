@@ -48,7 +48,7 @@ export const setRes = (r: Record<string, never>) => {
 
 export const cacheIgnoreReloadTime = "_t";
 
-export const cacheIgnoreReloadKeys = "_t,v";
+export const cacheIgnoreReloadKeys = cacheIgnoreReloadTime + ",v";
 
 export const isDev = () => {
     return process.env.NODE_ENV != "production";
@@ -80,7 +80,7 @@ export const getBackendServerUrl = (): string => {
 };
 
 export const tryAppendBackendServerUrl = (url: string): string => {
-    if (isStaticPage() && url.startsWith("/")) {
+    if (url.startsWith("/")) {
         return getBackendServerUrl() + url.substring(1);
     }
     return url;
@@ -109,11 +109,23 @@ export const getRealRouteUrl = (url: string) => {
 
 export const getPreset = () => {
     if (getRes()["lang"] === "zh_CN") {
-        // @ts-ignore
         return "预设";
     }
-    // @ts-ignore
     return "preset";
+};
+
+export const getEnterFullscreen = () => {
+    if (getRes()["lang"] === "zh_CN") {
+        return "进入全屏";
+    }
+    return "Full screen";
+};
+
+export const getExitFullscreen = () => {
+    if (getRes()["lang"] === "zh_CN") {
+        return "退出全屏";
+    }
+    return "Exit full screen";
 };
 
 export const createUri = "/api/admin/article/create";

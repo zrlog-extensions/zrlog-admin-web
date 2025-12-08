@@ -20,7 +20,7 @@ const PWAHandler: React.FC<PropsWithChildren> = ({ children }) => {
         sessionStorage.setItem("loaded", "true");
         if (lastOpenedPage && lastOpenedPage !== getFullPath(location)) {
             console.log(getFullPath(location) + " redirecting to last opened page:", lastOpenedPage);
-            navigate(lastOpenedPage);
+            navigate(lastOpenedPage, { replace: true });
             return;
         }
     }, []); // Empty dependency array to run only on mount

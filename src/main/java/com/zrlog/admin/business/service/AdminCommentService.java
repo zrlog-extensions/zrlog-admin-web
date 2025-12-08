@@ -3,22 +3,27 @@ package com.zrlog.admin.business.service;
 import com.hibegin.common.dao.dto.PageData;
 import com.hibegin.common.dao.dto.PageRequest;
 import com.zrlog.admin.business.rest.request.ReadCommentRequest;
+import com.zrlog.admin.business.rest.response.DeleteResponse;
 import com.zrlog.admin.business.rest.response.UpdateRecordResponse;
-import com.zrlog.common.rest.response.StandardResponse;
 import com.zrlog.data.dto.CommentDTO;
+import com.zrlog.data.exception.DAOException;
 import com.zrlog.model.Comment;
 
 import java.sql.SQLException;
-import java.util.Map;
+import java.util.Arrays;
 import java.util.Objects;
 
 public class AdminCommentService {
 
-    public StandardResponse delete(String[] ids) throws SQLException {
-        for (String id : ids) {
-            new Comment().deleteById(Integer.parseInt(id));
-        }
-        return new StandardResponse();
+    public DeleteResponse delete(String[] ids) throws SQLException {
+        boolean deleted = Arrays.stream(ids).allMatch(e -> {
+            try {
+                return new Comment().deleteById(Integer.parseInt(e));
+            } catch (SQLException ex) {
+                throw new DAOException(ex);
+            }
+        });
+        return new DeleteResponse(deleted);
     }
 
     public UpdateRecordResponse read(ReadCommentRequest commentRequest) {

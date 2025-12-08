@@ -4,14 +4,19 @@ import Row from "antd/es/grid/row";
 import Col from "antd/es/grid/col";
 import Divider from "antd/es/divider";
 import Card from "antd/es/card";
-import { createUri, getRes, updateUri } from "../../utils/constants";
+import { createUri, getRealRouteUrl, getRes, tryAppendBackendServerUrl, updateUri } from "../../utils/constants";
 import Select from "antd/es/select";
 import BaseInput from "../../common/BaseInput";
 import { isOffline } from "../../utils/env-utils";
-import EditorStatistics, { toStatisticsByMarkdown } from "../../common/editor/editor-statistics-info";
 import { useAxiosBaseInstance } from "../../base/AppBase";
 import ArticleEditSettingButton from "./article-edit-setting-button";
-import { ArticleChangeableValue, ArticleEditProps, ArticleEditState, ArticleEntry } from "./index.types";
+import {
+    ArticleChangeableValue,
+    ArticleEditInfo,
+    ArticleEditProps,
+    ArticleEditState,
+    ArticleEntry,
+} from "./index.types";
 import ArticleEditActionBar from "./article-edit-action-bar";
 import {
     articleDataToState,
@@ -22,14 +27,18 @@ import {
 import ArticleEditFullscreenButton from "./article-edit-fullscreen-button";
 import { auditTime, concatMap, Subject, tap } from "rxjs";
 import { Subscription } from "rxjs/internal/Subscription";
-import { deepEqualWithSpecialJSON, disableExitTips, enableExitTips } from "../../utils/helpers";
-import MarkedEditor from "../../common/editor/marked-editor";
+import { deepEqualWithSpecialJSON, disableExitTips, enableExitTips, getEditorUser } from "../../utils/helpers";
 import { useLocation } from "react-router";
-import { getPageDataCacheKeyByPath } from "../../utils/cache";
-import RubbishText from "./RubbishText";
+import { addToCache, getCacheByKey, getPageDataCacheKeyByPath } from "../../utils/cache";
 import { LockOutlined } from "@ant-design/icons";
 import { getAppState } from "../../base/ConfigProviderApp";
 import BaseTitle from "../../base/BaseTitle";
+import MarkedEditor from "@editor/dist/src/editor/marked-editor";
+import EditorStatistics from "@editor/dist/src/editor/editor-statistics-info";
+import { toStatisticsByMarkdown } from "@editor/dist/src/editor/utils/editor-utils";
+import { Locale } from "@editor/dist/src/editor/lang/editor-lang";
+import { AIContent } from "@editor/dist/src/ai/AIContentItem";
+import { useNavigate } from "react-router-dom";
 
 const Index: FunctionComponent<ArticleEditProps> = ({
     offline,
@@ -59,6 +68,7 @@ const Index: FunctionComponent<ArticleEditProps> = ({
     });
     const { modal } = App.useApp();
     const axiosInstance = useAxiosBaseInstance(() => editCardRef.current as HTMLElement);
+    const navigate = useNavigate();
 
     const updateRubbishState = (newArticle: ArticleEntry, create: boolean) => {
         setState((prevState) => ({
@@ -109,6 +119,10 @@ const Index: FunctionComponent<ArticleEditProps> = ({
         if (pendingMessages === 0) {
             disableExitTips();
         }
+    };
+
+    const getLocalCacheKey = (url: URL) => {
+        return getPageDataCacheKeyByPath(location.pathname, "?" + url.searchParams.toString());
     };
 
     const onSubmit = async (article: ArticleEntry, release: boolean, preview: boolean, autoSave: boolean) => {
@@ -205,7 +219,7 @@ const Index: FunctionComponent<ArticleEditProps> = ({
                     url.searchParams.set("id", responseArticle.logId);
                     newArticle = { ...newArticle, ...responseArticle };
                     removeLocalArticleCache();
-                    window.history.replaceState(null, "", url.toString());
+                    navigate(location.pathname + url.search, { replace: true });
                 } else {
                     newArticle = {
                         ...newArticle,
@@ -215,9 +229,8 @@ const Index: FunctionComponent<ArticleEditProps> = ({
                     };
                     removeArticleCache(newArticle);
                 }
-                const cacheKey = getPageDataCacheKeyByPath(location.pathname, "?" + url.searchParams.toString());
                 if (updateCache) {
-                    updateCache(data.data, cacheKey);
+                    updateCache(data.data, getLocalCacheKey(url));
                 }
             }
         } finally {
@@ -282,7 +295,17 @@ const Index: FunctionComponent<ArticleEditProps> = ({
             logIdRef.current = -1;
         }
         handleValuesChange(newState.article);
-    }, [data]);
+    }, [data.article]);
+
+    useEffect(() => {
+        setState((prevState) => {
+            return {
+                ...prevState,
+                aiProvider: data.aiProvider,
+                aiMessages: data.aiMessages,
+            };
+        });
+    }, [data.aiProvider, data.aiMessages]);
 
     useEffect(() => {
         //如果文章内容没有变更，不更新 state，避免触发更新导致文章状态不对
@@ -392,6 +415,39 @@ const Index: FunctionComponent<ArticleEditProps> = ({
         return `calc(100vh - ${baseHeight}px)`;
     };
 
+    const updateAiMessageCache = (aiMessages: AIContent[]) => {
+        const url = new URL(window.location.href);
+        const cacheKey = getLocalCacheKey(url);
+        const newData = getCacheByKey(cacheKey) as ArticleEditInfo;
+        newData.aiMessages = aiMessages;
+        if (updateCache) {
+            updateCache(newData, cacheKey);
+        }
+    };
+
+    const aiDrawerCacheKey = "ai/chat/drawer/width";
+    const editorPreviewStateKey = "editor/preview";
+
+    const getDefaultAiDrawerWidth = () => {
+        const width = getCacheByKey(aiDrawerCacheKey);
+        if (!width) {
+            return "large";
+        }
+        return width;
+    };
+
+    const getEditorPreviewState = (): boolean => {
+        const open = getCacheByKey(editorPreviewStateKey);
+        if (open === null || open === undefined) {
+            return window.innerWidth > 600;
+        }
+        return open;
+    };
+
+    const updateAiDrawerWidth = (size: number) => {
+        addToCache(aiDrawerCacheKey, size);
+    };
+
     return (
         <>
             <div style={{ paddingTop: fullScreen ? 0 : 20, gap: 8, display: "flex", justifyContent: "space-between" }}>
@@ -407,6 +463,9 @@ const Index: FunctionComponent<ArticleEditProps> = ({
                         offline={offline}
                         data={state}
                         onSubmit={onSubmit}
+                        onAiMessagesChange={updateAiMessageCache}
+                        onAiDrawerSizeChange={updateAiDrawerWidth}
+                        aiDrawerWidth={getDefaultAiDrawerWidth()}
                     />
                 )}
             </div>
@@ -471,20 +530,19 @@ const Index: FunctionComponent<ArticleEditProps> = ({
                                 variant={"borderless"}
                                 style={{
                                     minWidth: 156,
-                                    paddingLeft: 0,
                                     display: "flex",
                                     zIndex: 20,
                                 }}
                                 size={"large"}
                                 value={state.article.typeId}
-                                showSearch={true}
-                                optionFilterProp="children"
-                                filterOption={(input, option) => (option?.label ?? "").includes(input)}
-                                filterSort={(optionA, optionB) =>
-                                    (optionA?.label ?? "")
-                                        .toLowerCase()
-                                        .localeCompare((optionB?.label ?? "").toLowerCase())
-                                }
+                                showSearch={{
+                                    optionFilterProp: "children",
+                                    filterOption: (input, option) => (option?.label ?? "").includes(input),
+                                    filterSort: (optionA, optionB) =>
+                                        (optionA?.label ?? "")
+                                            .toLowerCase()
+                                            .localeCompare((optionB?.label ?? "").toLowerCase()),
+                                }}
                                 onChange={(value) => {
                                     handleValuesChange({ typeId: value });
                                 }}
@@ -504,12 +562,6 @@ const Index: FunctionComponent<ArticleEditProps> = ({
                                 placeholder={getRes().inputArticleAlias}
                                 style={{ fontSize: 16, minWidth: 48, paddingLeft: 0, textOverflow: "ellipsis" }}
                             />
-                            <RubbishText
-                                offline={offline}
-                                rubbish={state.rubbish}
-                                lastUpdateDate={state.article.lastUpdateDate}
-                                fullScreen={fullScreen}
-                            />
                         </Space.Compact>
                     </Col>
                     <Col
@@ -526,9 +578,11 @@ const Index: FunctionComponent<ArticleEditProps> = ({
                         {fullScreen && (
                             <Col xxl={9} md={12} sm={18} xs={16} style={{ padding: 0 }}>
                                 <ArticleEditActionBar
+                                    getContainer={() => editCardRef.current as HTMLElement}
                                     offline={offline}
                                     fullScreen={fullScreen}
                                     data={state}
+                                    onAiMessagesChange={(messages) => updateAiMessageCache(messages)}
                                     onSubmit={onSubmit}
                                 />
                             </Col>
@@ -551,7 +605,37 @@ const Index: FunctionComponent<ArticleEditProps> = ({
                     </Col>
                 </Row>
                 <MarkedEditor
+                    config={{
+                        lang: getAppState().lang as Locale,
+                        dark: getAppState().dark,
+                        onPreviewChange: (preview: boolean) => {
+                            addToCache(editorPreviewStateKey, preview);
+                        },
+                        preview: getEditorPreviewState(),
+                        colorPrimary: getAppState().colorPrimary,
+                        uploadConfig: {
+                            buildUploadUrl: (type: string) => {
+                                return "/api/admin/upload?dir=" + type;
+                            },
+                            axiosInstance: axiosInstance,
+                            formName: "imgFile",
+                            tryAppendBackendServerUrl: tryAppendBackendServerUrl,
+                        },
+                        aiConfig: {
+                            aiApiUri: "/api/admin/article/ai",
+                            configUrl: getRealRouteUrl("/website/ai"),
+                            subject: state.article.title,
+                            aiProvider: state.aiProvider,
+                            aiMessages: state.aiMessages ? state.aiMessages : [],
+                            onAiMessagesChange: updateAiMessageCache,
+                            drawerWidth: getDefaultAiDrawerWidth(),
+                            user: getEditorUser(),
+                            onSizeChange: updateAiDrawerWidth,
+                            sessionId: state.article.logId ? state.article.logId : 0,
+                        },
+                    }}
                     fullscreen={fullScreen}
+                    placeholder={getRes()["editorPlaceholder"]}
                     height={getEditorHeight()}
                     loadSuccess={() => {
                         //ignore
@@ -560,6 +644,7 @@ const Index: FunctionComponent<ArticleEditProps> = ({
                     getContainer={() => {
                         return editCardRef.current as HTMLDivElement;
                     }}
+                    axiosInstance={axiosInstance}
                     value={state.article.markdown}
                     onChange={(v) => {
                         if (
@@ -577,7 +662,14 @@ const Index: FunctionComponent<ArticleEditProps> = ({
                         handleValuesChange(v);
                     }}
                 />
-                <EditorStatistics data={toStatisticsByMarkdown(state.article.markdown)} fullScreen={fullScreen} />
+                <EditorStatistics
+                    rubbish={state.article.rubbish}
+                    offline={offline}
+                    lastUpdateDate={state.article.lastUpdateDate ? state.article.lastUpdateDate : 0}
+                    data={toStatisticsByMarkdown(state.article.markdown)}
+                    fullScreen={fullScreen}
+                    dark={getAppState().dark}
+                />
             </Card>
         </>
     );

@@ -6,6 +6,7 @@ import com.zrlog.admin.business.exception.PermissionErrorException;
 import com.zrlog.admin.business.rest.request.CreateArticleRequest;
 import com.zrlog.admin.business.rest.request.UpdateArticleRequest;
 import com.zrlog.admin.business.rest.response.*;
+import com.zrlog.admin.business.service.AIService;
 import com.zrlog.admin.business.service.AdminArticleService;
 import com.zrlog.admin.web.annotation.RefreshCache;
 import com.zrlog.admin.web.token.AdminTokenThreadLocal;
@@ -14,11 +15,14 @@ import com.zrlog.business.util.CacheUtils;
 import com.zrlog.business.util.ControllerUtil;
 import com.zrlog.common.controller.BaseController;
 import com.zrlog.common.exception.ArgsException;
+import com.zrlog.data.exception.DAOException;
 import com.zrlog.model.WebSite;
 import com.zrlog.util.I18nUtil;
 import com.zrlog.util.ZrLogUtil;
 
+import java.io.IOException;
 import java.sql.SQLException;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.ExecutionException;
@@ -29,7 +33,7 @@ public class AdminArticleController extends BaseController {
 
     @RefreshCache(async = true, updateStaticSites = StaticSiteType.BLOG)
     @ResponseBody
-    public AdminApiPageDataStandardResponse<DeleteLogResponse> delete() throws SQLException {
+    public DeleteResponse delete() throws SQLException {
         if (ZrLogUtil.isPreviewMode()) {
             throw new PermissionErrorException();
         }
@@ -38,10 +42,14 @@ public class AdminArticleController extends BaseController {
             throw new ArgsException("id");
         }
         String[] ids = idStr.split(",");
-        for (String id : ids) {
-            articleService.delete(Long.valueOf(id));
-        }
-        return new AdminApiPageDataStandardResponse<>(new DeleteLogResponse(true));
+        boolean deleted = Arrays.stream(ids).allMatch(id -> {
+            try {
+                return articleService.delete(Long.valueOf(id));
+            } catch (SQLException e) {
+                throw new DAOException(e);
+            }
+        });
+        return new DeleteResponse(deleted);
     }
 
     private String getResponseMsg(CreateOrUpdateArticleResponse response) {
@@ -108,6 +116,12 @@ public class AdminArticleController extends BaseController {
     @Deprecated
     public AdminApiPageDataStandardResponse<LoadEditArticleResponse> detail() throws SQLException {
         return new AdminApiPageDataStandardResponse<>(articleService.loadDetail(getParamWithEmptyCheck("id"), request));
+    }
+
+    @ResponseBody
+    public AdminApiPageDataStandardResponse<List<AIResponseEntry.AIContentEntry>> ai() throws IOException, InterruptedException, SQLException {
+        List<AIResponseEntry.AIContentEntry> aiInfo = new AIService().getResponse(getParamWithEmptyCheck("input"), Long.parseLong(getParamWithEmptyCheck("id")));
+        return new AdminApiPageDataStandardResponse<>(aiInfo, "", request.getUri());
     }
 
 }

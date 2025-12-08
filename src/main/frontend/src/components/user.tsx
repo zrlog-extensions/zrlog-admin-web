@@ -7,8 +7,8 @@ import Col from "antd/es/grid/col";
 import Image from "antd/es/image";
 import Constants, { getRes, tryAppendBackendServerUrl } from "../utils/constants";
 import { useAxiosBaseInstance } from "../base/AppBase";
-import BaseDragger, { DraggerUploadResponse } from "../common/BaseDragger";
 import BaseTitle from "../base/BaseTitle";
+import BaseDragger, { DraggerUploadResponse } from "@editor/dist/src/editor/common/BaseDragger";
 
 const layout = {
     labelCol: { span: 8 },
@@ -66,13 +66,20 @@ const User = ({ data, offline }: { data: BasicUserInfo; offline: boolean }) => {
 
                         <Form.Item label={getRes().headPortrait} rules={[{ required: true }]}>
                             <BaseDragger
+                                uploadConfig={{
+                                    axiosInstance: axiosInstance,
+                                    formName: "imgFile",
+                                    buildUploadUrl: (type) => {
+                                        return `/api/admin/upload?dir=${type}`;
+                                    },
+                                    tryAppendBackendServerUrl: tryAppendBackendServerUrl,
+                                }}
                                 style={{ width: 128, height: 128 }}
                                 onSuccess={(e) => onUploadChange(e)}
                                 onError={(e) => {
                                     messageApi.error(e.message);
                                 }}
-                                name="imgFile"
-                                action={"/api/admin/upload?dir=image"}
+                                type={"image"}
                             >
                                 <Image
                                     fallback={Constants.getFillBackImg()}

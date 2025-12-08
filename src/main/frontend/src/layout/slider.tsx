@@ -18,7 +18,7 @@ import {
 } from "@ant-design/icons";
 import { Menu, MenuProps, Modal } from "antd";
 import { useLocation } from "react-router";
-import { tryBlock } from "../utils/helpers";
+import { parseQueryParamsToMap, tryBlock } from "../utils/helpers";
 import { getAppState } from "../base/ConfigProviderApp";
 
 type MenuItem = Required<MenuProps>["items"][number];
@@ -94,13 +94,18 @@ const SliderMenu = () => {
         return 24;
     };
 
-    function getItem(entry: MenuEntry, key: React.Key | null, children: MenuItem[]): MenuItem {
+    function getItem(entry: MenuEntry, key: React.Key | null, children: MenuItem[], sub: boolean): MenuItem {
         const info = getInfo(entry);
         const label = (
             <Link
                 to={getRealRouteUrl(entry.link)}
                 style={{
-                    color: info.selected && getAppState().dark ? getAppState().colorPrimary : "#FFF",
+                    color: "#FFF",
+                    background: info.selected
+                        ? sub
+                            ? "inherit"
+                            : `${colorToRgba(getAppState().colorPrimary, 0.3)}`
+                        : "inherit",
                 }}
                 onClick={(e) => {
                     tryBlock(e, modal);
@@ -134,6 +139,15 @@ const SliderMenu = () => {
         } as MenuItem;
     }
 
+    const getArticleEditUrl = () => {
+        const paramMap = parseQueryParamsToMap(location.search);
+        const articleEditorId = paramMap.get("id") as string;
+        if (articleEditorId && articleEditorId !== "") {
+            return `/article-edit?id=${articleEditorId}`;
+        }
+        return "/article-edit";
+    };
+
     const items: MenuItem[] = [
         getItem(
             {
@@ -143,17 +157,20 @@ const SliderMenu = () => {
                 icon: <DashboardOutlined style={{ fontSize: getIconSize() }} />,
             },
             "/index",
-            []
+            [],
+            false
         ),
         getItem(
             {
                 text: getRes()["admin.log.edit"],
-                link: "/article-edit",
+                link: getArticleEditUrl(),
                 selectIcon: <EditFilled style={{ fontSize: getIconSize() }} />,
                 icon: <EditOutlined style={{ fontSize: getIconSize() }} />,
             },
             "/article-edit",
-            []
+            [],
+
+            false
         ),
         getItem(
             {
@@ -163,7 +180,8 @@ const SliderMenu = () => {
                 icon: <ContainerOutlined style={{ fontSize: getIconSize() }} />,
             },
             "/article",
-            []
+            [],
+            false
         ),
         getItem(
             {
@@ -173,7 +191,8 @@ const SliderMenu = () => {
                 icon: <CommentOutlined style={{ fontSize: getIconSize() }} />,
             },
             "/comment",
-            []
+            [],
+            false
         ),
         getItem(
             {
@@ -183,7 +202,8 @@ const SliderMenu = () => {
                 icon: <ApiOutlined style={{ fontSize: getIconSize() }} />,
             },
             "/plugin",
-            []
+            [],
+            false
         ),
         getItem(
             {
@@ -193,7 +213,8 @@ const SliderMenu = () => {
                 icon: <SettingOutlined style={{ fontSize: getIconSize() }} />,
             },
             "/website",
-            []
+            [],
+            false
         ),
         getItem(
             {
@@ -212,7 +233,8 @@ const SliderMenu = () => {
                         icon: <span />,
                     },
                     "/article-type",
-                    []
+                    [],
+                    true
                 ),
                 getItem(
                     {
@@ -222,7 +244,8 @@ const SliderMenu = () => {
                         icon: <span />,
                     },
                     "/link",
-                    []
+                    [],
+                    true
                 ),
                 getItem(
                     {
@@ -232,47 +255,50 @@ const SliderMenu = () => {
                         icon: <span />,
                     },
                     "/nav",
-                    []
+                    [],
+                    true
                 ),
-            ]
+            ],
+            false
         ),
     ];
 
-    const getSelectMenu = () => {
-        if (location.pathname === "") {
-            return "/index";
-        } else if (location.pathname.startsWith("/website")) {
-            return "/website";
+    const getSelectMenu = (): string[] => {
+        const selectPath = location.pathname.split(".")[0];
+        if (selectPath === "") {
+            return ["/index"];
+        } else if (selectPath.startsWith("/website")) {
+            return ["/website"];
         } else if (
-            location.pathname === "/link" ||
-            location.pathname === "/nav" ||
-            location.pathname === "/article-type"
+            selectPath.startsWith("/link") ||
+            selectPath.startsWith("/nav") ||
+            selectPath.startsWith("/article-type")
         ) {
-            return "/more";
+            return ["/more", selectPath];
         } else {
-            return location.pathname;
+            return [selectPath];
         }
     };
 
     const defaultSelectMenu = getSelectMenu();
 
-    const [selectMenu, setSelectMenu] = useState<string>(defaultSelectMenu);
+    const [selectMenu, setSelectMenu] = useState<string[]>(defaultSelectMenu);
 
     useEffect(() => {
         setSelectMenu(getSelectMenu());
-    }, [location]);
+    }, [location.pathname]);
 
     return (
         <>
             {contextHolder}
             <Menu
-                selectedKeys={[selectMenu]}
+                selectedKeys={selectMenu}
                 items={items}
                 theme={getAppState().dark ? "light" : "dark"}
                 style={{
+                    borderInlineEnd: "none",
                     minHeight: "100%",
                     backgroundColor: getAppState().dark ? "#1f1f1f" : "#001529",
-                    borderInlineEnd: "unset",
                 }}
             />
         </>

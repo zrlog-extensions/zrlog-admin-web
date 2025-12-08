@@ -5,6 +5,7 @@ import com.hibegin.http.annotation.ResponseBody;
 import com.zrlog.admin.business.rest.request.CreateLinkRequest;
 import com.zrlog.admin.business.rest.request.UpdateLinkRequest;
 import com.zrlog.admin.business.rest.response.AdminApiPageDataStandardResponse;
+import com.zrlog.admin.business.rest.response.DeleteResponse;
 import com.zrlog.admin.business.rest.response.UpdateRecordResponse;
 import com.zrlog.admin.web.annotation.RefreshCache;
 import com.zrlog.admin.web.annotation.RequestLock;
@@ -24,12 +25,12 @@ public class LinkController extends BaseController {
     @RefreshCache(async = true, updateStaticSites = StaticSiteType.BLOG)
     @ResponseBody
     @RequestLock
-    public UpdateRecordResponse delete() throws SQLException {
+    public DeleteResponse delete() throws SQLException {
         Integer id = request.getParaToInt("id");
         if (Objects.isNull(id) || id <= 0) {
             throw new ArgsException("id");
         }
-        return new UpdateRecordResponse(new Link().deleteById(id));
+        return new DeleteResponse(new Link().deleteById(id));
     }
 
     @RefreshCache(async = true, updateStaticSites = StaticSiteType.BLOG)

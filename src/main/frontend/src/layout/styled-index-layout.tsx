@@ -38,18 +38,10 @@ const StyledIndexLayout = styled.div<StyledIndexLayoutProps>`
         padding: 0;
     }
 
-    li.ant-menu-item > a {
-        color: #ffffff;
-    }
-
     .ant-menu-inline,
     .ant-menu-vertical,
     .ant-menu-vertical-left {
         border: 0;
-    }
-
-    li.ant-menu-item-active > a:hover {
-        color: #ffffff;
     }
 
     .ant-menu-item .anticon,
@@ -65,10 +57,6 @@ const StyledIndexLayout = styled.div<StyledIndexLayoutProps>`
         justify-content: space-evenly;
         align-items: center;
         height: ${(props) => (props.compactMode ? 58 : 72)}px;
-    }
-
-    .ant-menu-title-content > a > span {
-        line-height: 1;
     }
 
     .ant-menu-item > a > span,
@@ -94,6 +82,10 @@ const StyledIndexLayout = styled.div<StyledIndexLayoutProps>`
     .ant-menu-sub > .ant-menu-item {
         font-size: 14px;
         height: 40px;
+    }
+
+    .ant-menu .ant-menu-item {
+        border-radius: 0 !important;
     }
 
     .ant-menu-submenu {
@@ -196,6 +188,7 @@ const StyledIndexLayout = styled.div<StyledIndexLayoutProps>`
     .ant-menu .menu-title {
         margin-left: 0 !important;
         font-size: 12px;
+        line-height: 1 !important;
     }
 
     .ant-form-item-explain-error {

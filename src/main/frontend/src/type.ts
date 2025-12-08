@@ -13,7 +13,7 @@ export type AppDarkState = {
 };
 
 export type AppLangState = {
-    lang: string;
+    lang: "en_US" | "zh_CN";
 };
 
 export type AppState = AppCompactModeState &
@@ -70,6 +70,16 @@ export type BasicUserInfo = {
     header: string;
     key: string;
     lastVersion?: LastVersion;
+};
+
+export enum AIProviderType {
+    DEEP_SEEK = "DEEP_SEEK",
+    OPEN_AI = "OPEN_AI",
+    QWEN = "QWEN",
+}
+
+export type LoginUserResponseInfo = BasicUserInfo & {
+    key: string;
     cacheableApiUris?: string[];
 };
 

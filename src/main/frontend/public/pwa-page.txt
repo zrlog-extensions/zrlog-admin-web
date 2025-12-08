@@ -29,3 +29,4 @@ admin/login
 admin/website/version
 admin/static-site
 admin/dev
+admin/website/ai

@@ -1,8 +1,9 @@
 import { FunctionComponent, useState } from "react";
 import Divider from "antd/es/divider";
 import { UpgradeData } from "../type";
-import HtmlPreviewPanel from "../common/editor/html-preview-panel";
-import { markdownToHtmlSyncWithCallback } from "../common/editor/utils/marked-utils";
+import { markdownToHtmlSyncWithCallback } from "@editor/dist/src/editor/utils/marked-utils";
+import HtmlPreviewPanel from "@editor/dist/src/editor/html-preview-panel";
+import { getAppState } from "../base/ConfigProviderApp";
 
 export type UpgradeContentProps = {
     data: UpgradeData;
@@ -25,11 +26,11 @@ const UpgradeContent: FunctionComponent<UpgradeContentProps> = ({ data }) => {
 
     return (
         <>
-            <HtmlPreviewPanel htmlContent={data.version ? (htmlStr as string) : ""} />
+            <HtmlPreviewPanel htmlContent={data.version ? (htmlStr as string) : ""} dark={getAppState().dark} />
             {!data.onlineUpgradable && (
                 <>
                     <Divider />
-                    <HtmlPreviewPanel htmlContent={disableHtmlStr} />
+                    <HtmlPreviewPanel dark={getAppState().dark} htmlContent={disableHtmlStr} />
                 </>
             )}
         </>

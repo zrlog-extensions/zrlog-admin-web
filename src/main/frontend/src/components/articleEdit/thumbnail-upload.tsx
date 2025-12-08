@@ -1,20 +1,24 @@
 import { CameraOutlined, DeleteFilled, LoadingOutlined } from "@ant-design/icons";
 import Image from "antd/es/image";
 import { FunctionComponent, useState } from "react";
-import { getRes } from "../../utils/constants";
-import BaseDragger from "../../common/BaseDragger";
+import { getRes, tryAppendBackendServerUrl } from "../../utils/constants";
 import { message } from "antd";
 import { getAppState } from "../../base/ConfigProviderApp";
+import BaseDragger from "@editor/dist/src/editor/common/BaseDragger";
+import { useAxiosBaseInstance } from "../../base/AppBase";
 
 type ThumbnailUploadProps = {
     onChange?: (e: string) => void;
     thumbnail?: string;
+    getContainer?: () => HTMLElement;
 };
 
-const ThumbnailUpload: FunctionComponent<ThumbnailUploadProps> = ({ onChange, thumbnail }) => {
+const ThumbnailUpload: FunctionComponent<ThumbnailUploadProps> = ({ onChange, thumbnail, getContainer }) => {
     const [uploading, setUploading] = useState<boolean>(false);
 
     const [messageApi, contextHolder] = message.useMessage({ maxCount: 3 });
+
+    const axiosInstance = useAxiosBaseInstance(getContainer);
 
     return (
         <BaseDragger
@@ -34,8 +38,15 @@ const ThumbnailUpload: FunctionComponent<ThumbnailUploadProps> = ({ onChange, th
             }}
             accept={"image/*"}
             style={{ overflow: "hidden", minHeight: 102, maxHeight: 256 }}
-            action={"/api/admin/upload/thumbnail?dir=thumbnail"}
-            name="imgFile"
+            uploadConfig={{
+                buildUploadUrl: function (type): string {
+                    return `/api/admin/upload/thumbnail?dir=${type}`;
+                },
+                formName: "imgFile",
+                axiosInstance: axiosInstance,
+                tryAppendBackendServerUrl: tryAppendBackendServerUrl,
+            }}
+            type={"thumbnail"}
         >
             {contextHolder}
             {(thumbnail === undefined || thumbnail === null || thumbnail === "") && (

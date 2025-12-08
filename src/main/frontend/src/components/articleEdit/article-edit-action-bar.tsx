@@ -1,15 +1,26 @@
 import { Button, Grid } from "antd";
 import { EyeOutlined, SaveOutlined, SendOutlined } from "@ant-design/icons";
-import { getRes } from "../../utils/constants";
+import { getRealRouteUrl, getRes } from "../../utils/constants";
 import { ArticleEditState, ArticleEntry } from "./index.types";
 import { FunctionComponent, useEffect, useRef } from "react";
 import styled from "styled-components";
+import { getAppState } from "../../base/ConfigProviderApp";
+import { AIContent } from "@editor/dist/src/ai/AIContentItem";
+import AIButton from "@editor/dist/src/ai/AIButton";
+import AIIcon from "@editor/dist/src/ai/AIIcon";
+import { useAxiosBaseInstance } from "../../base/AppBase";
+import { getAiDrawerOpen } from "@editor/dist/src/ai/AIDrawer";
+import { getEditorUser } from "../../utils/helpers";
 
 type ArticleEditActionBarProps = {
     data: ArticleEditState;
     fullScreen: boolean;
     offline: boolean;
     onSubmit: (article: ArticleEntry, release: boolean, preview: boolean, autoSave: boolean) => Promise<void>;
+    getContainer?: () => HTMLElement;
+    onAiMessagesChange?: (messages: AIContent[]) => void;
+    onAiDrawerSizeChange?: (newSize: number) => void;
+    aiDrawerWidth?: number | "default" | "large";
 };
 
 const StyledActionBar = styled(`div`)`
@@ -34,11 +45,17 @@ const ArticleEditActionBar: FunctionComponent<ArticleEditActionBarProps> = ({
     offline,
     fullScreen,
     onSubmit,
+    getContainer,
+    onAiMessagesChange,
+    onAiDrawerSizeChange,
+    aiDrawerWidth,
 }) => {
     const enterBtnRef = useRef<HTMLAnchorElement | HTMLButtonElement>(null);
 
     const { useBreakpoint } = Grid;
     const screens = useBreakpoint();
+
+    const axiosInstance = useAxiosBaseInstance(getContainer);
 
     useEffect(() => {
         const handleKeyPress = (event: KeyboardEvent) => {
@@ -52,10 +69,9 @@ const ArticleEditActionBar: FunctionComponent<ArticleEditActionBarProps> = ({
             ) {
                 // 处理 Ctrl + Enter 或 Cmd + Enter 的逻辑
                 //console.log('Ctrl + Enter 或 Cmd + Enter 按下');
-                if (enterBtnRef.current) {
+                if (enterBtnRef.current && !getAiDrawerOpen()) {
                     enterBtnRef.current.click();
                 }
-                //onSubmit(data.article, true, false, false);
             }
         };
 
@@ -70,6 +86,35 @@ const ArticleEditActionBar: FunctionComponent<ArticleEditActionBarProps> = ({
 
     return (
         <StyledActionBar style={{ display: "flex", justifyContent: "end", gap: 8 }}>
+            <AIButton
+                aiProvider={data.aiProvider}
+                apiUri={"/api/admin/article/ai"}
+                input={""}
+                aiMessages={data.aiMessages ? data.aiMessages : []}
+                subject={data.article.title}
+                sessionId={data.article.logId ? data.article.logId : 0}
+                getContainer={getContainer}
+                onAiMessagesChange={onAiMessagesChange}
+                axiosInstance={axiosInstance}
+                user={getEditorUser()}
+                drawerWidth={aiDrawerWidth}
+                dark={getAppState().dark}
+                configUrl={getRealRouteUrl("/website/ai")}
+                onSizeChange={onAiDrawerSizeChange}
+            >
+                <Button
+                    className={"btn"}
+                    type={"primary"}
+                    style={{
+                        background: `linear-gradient(135deg, #6253e1, ${getAppState().colorPrimary})`,
+                        border: "none",
+                    }}
+                >
+                    <AIIcon name={data.aiProvider} />
+                    {screens.sm && <span>{getRes()["admin.ai"]}</span>}
+                </Button>
+            </AIButton>
+
             <Button
                 className={"btn"}
                 type={fullScreen ? "default" : "dashed"}

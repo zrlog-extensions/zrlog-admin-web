@@ -9,7 +9,6 @@ import com.hibegin.http.server.web.Controller;
 import com.zrlog.admin.business.AdminConstants;
 import com.zrlog.admin.business.rest.response.AdminApiPageDataStandardResponse;
 import com.zrlog.admin.business.rest.response.ServerSideDataResponse;
-import com.zrlog.admin.business.rest.response.UserBasicInfoResponse;
 import com.zrlog.admin.business.rest.response.UserInfoResponse;
 import com.zrlog.admin.util.AdminWebTools;
 import com.zrlog.admin.web.token.AdminTokenThreadLocal;
@@ -125,13 +124,7 @@ public class AdminPageService {
             }
             if (result instanceof AdminApiPageDataStandardResponse<?>) {
                 AdminApiPageDataStandardResponse<?> data = (AdminApiPageDataStandardResponse<?>) result;
-                String documentTitle = data.getDocumentTitle();
-                if (StringUtils.isNotEmpty(documentTitle)) {
-                    documentTitle = AdminConstants.getAdminTitle(documentTitle);
-                } else {
-                    documentTitle = AdminConstants.getAdminDocumentTitleByUri(request.getUri());
-                }
-                return new ServerSideDataResponse<>(userInfo, resourceInfo, data.getData(), AdminTokenThreadLocal.getUser().getSessionId(), documentTitle);
+                return new ServerSideDataResponse<>(userInfo, resourceInfo, data.getData(), AdminTokenThreadLocal.getUser().getSessionId(), data.getDocumentTitle());
             }
         } catch (InvocationTargetException e) {
             throw e.getTargetException();

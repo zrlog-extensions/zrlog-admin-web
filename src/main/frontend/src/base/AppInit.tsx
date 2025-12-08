@@ -5,7 +5,7 @@ import Init from "../components/init";
 import Spin from "antd/es/spin";
 import UnknownErrorPage from "../components/unknown-error-page";
 import { AppState } from "../type";
-import { changeAppState } from "./ConfigProviderApp";
+import { changeAppState, getAppState } from "./ConfigProviderApp";
 
 type AppInitProps = {
     offline: boolean;
@@ -50,12 +50,16 @@ export const isCompactModeByRes = (): boolean => {
     return getRes()["admin_compactMode"] === true;
 };
 
-export const getLangByRes = (): string => {
+export const getLangByRes = (): "en_US" | "zh_CN" => {
     const lang = getRes()["lang"];
     if (lang !== undefined) {
         return lang;
     }
-    return "";
+    return "zh_CN";
+};
+
+export const getLangByAppState = (): "en_US" | "zh_CN" => {
+    return getAppState().lang;
 };
 
 const AppInit: FunctionComponent<AppInitProps> = ({ lang, offline }) => {

@@ -29,7 +29,7 @@ public class AdminDevController extends Controller {
     public AdminApiPageDataStandardResponse<DevInfoResponse> index() throws Exception {
         DevInfoResponse devInfoResponse = new DevInfoResponse();
         devInfoResponse.setLocks(DistributedLockManager.getInstance().getLocks());
-        return new AdminApiPageDataStandardResponse<>(devInfoResponse);
+        return new AdminApiPageDataStandardResponse<>(devInfoResponse,"",getRequest().getUri());
     }
 
     @ResponseBody

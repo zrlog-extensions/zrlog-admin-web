@@ -12,6 +12,7 @@ import com.zrlog.admin.util.AdminWebTools;
 import com.zrlog.common.CacheService;
 import com.zrlog.common.Constants;
 import com.zrlog.common.vo.PublicWebSiteInfo;
+import com.zrlog.data.util.WebSiteUtils;
 import com.zrlog.plugin.BaseStaticSitePlugin;
 import com.zrlog.util.BlogBuildInfoUtil;
 import com.zrlog.util.I18nUtil;
@@ -42,7 +43,8 @@ public class AdminResourceImpl implements AdminResource {
         Map<String, Object> resourceMap = new TreeMap<>();
         resourceMap.put("uris", pageUris);
         resourceMap.put("static", staticUris);
-        resourceMap.put("i18n", I18nUtil.getAdmin());
+        resourceMap.put("documentTitleMap", AdminConstants.TITLE_MAP);
+        resourceMap.put("i18n/admin", I18nUtil.getI18nVOCache().getAdmin());
         this.fileBuildId = Math.abs(SecurityUtils.md5(new Gson().toJson(resourceMap)).hashCode());
     }
 
@@ -172,11 +174,15 @@ public class AdminResourceImpl implements AdminResource {
         Map<String, Object> stringObjectMap = I18nUtil.getI18nVOCache().getAdmin().get(lang);
         PublicWebSiteInfo publicWebSiteInfo = AdminConstants.getPublicWebSiteInfo();
         stringObjectMap.put("currentVersion", BlogBuildInfoUtil.getBuildId());
-        stringObjectMap.put("websiteTitle", publicWebSiteInfo.getTitle());
+        if (Objects.nonNull(publicWebSiteInfo)) {
+            stringObjectMap.put("websiteTitle", ObjectUtil.requireNonNullElse(publicWebSiteInfo.getTitle(), ""));
+            stringObjectMap.put("admin_darkMode", Objects.equals(publicWebSiteInfo.getAdmin_darkMode(), true));
+            stringObjectMap.put("admin_compactMode", Objects.equals(publicWebSiteInfo.getAdmin_compactMode(), true));
+            stringObjectMap.put("appId", ObjectUtil.requireNonNullElse(publicWebSiteInfo.getAppId(), ""));
+            stringObjectMap.put("admin_color_primary", ObjectUtil.requireNonNullElse(publicWebSiteInfo.getAdmin_color_primary(), WebSiteUtils.DEFAULT_COLOR_PRIMARY_COLOR));
+        }
         stringObjectMap.put("homeUrl", ZrLogUtil.getHomeUrlWithHost(request));
         stringObjectMap.put("articleRoute", "");
-        stringObjectMap.put("admin_darkMode", Objects.equals(publicWebSiteInfo.getAdmin_darkMode(), true));
-        stringObjectMap.put("admin_compactMode", Objects.equals(publicWebSiteInfo.getAdmin_compactMode(), true));
         if (ZrLogUtil.isPreviewMode()) {
             Map<String, String> defaultLoginInfo = new HashMap<>();
             defaultLoginInfo.put("userName", System.getenv("DEFAULT_USERNAME"));
@@ -185,8 +191,6 @@ public class AdminResourceImpl implements AdminResource {
             stringObjectMap.put("defaultLoginInfo", defaultLoginInfo);
         }
         stringObjectMap.put("buildId", BlogBuildInfoUtil.getBuildId());
-        stringObjectMap.put("appId", publicWebSiteInfo.getAppId());
-        stringObjectMap.put("admin_color_primary", publicWebSiteInfo.getAdmin_color_primary());
         stringObjectMap.put("lang", lang);
         stringObjectMap.put("staticPage", BaseStaticSitePlugin.isStaticPluginRequest(request));
         //remove

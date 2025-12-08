@@ -96,7 +96,7 @@ const BlogForm = ({
             <Form.Item name="language" label={getRes()["language"]}>
                 <Select
                     style={{ maxWidth: 120 }}
-                    onChange={(lang: string) => {
+                    onChange={(lang: "zh_CN" | "en_US") => {
                         changeAppState({
                             lang: lang,
                         });

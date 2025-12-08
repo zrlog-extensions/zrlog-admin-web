@@ -5,6 +5,8 @@ import screenfull from "screenfull";
 import { FunctionComponent, useEffect } from "react";
 import { FullScreenProps } from "./index.types";
 import { getAppState } from "../../base/ConfigProviderApp";
+import { getEnterFullscreen, getExitFullscreen } from "../../utils/constants";
+import { Link } from "react-router-dom";
 
 type ArticleEditFullscreenButton = FullScreenProps & {
     fullScreenElement: HTMLDivElement;
@@ -80,40 +82,37 @@ const ArticleEditFullscreenButton: FunctionComponent<ArticleEditFullscreenButton
     });
 
     return (
-        <Button
-            type={"text"}
-            icon={
-                fullScreen ? (
-                    <FullscreenExitOutlined style={{ fontSize: 24 }} />
-                ) : (
-                    <FullscreenOutlined style={{ fontSize: 24 }} />
-                )
-            }
-            href={
-                fullScreen
-                    ? window.location.pathname + "#exitFullScreen"
-                    : window.location.pathname + "#enterFullScreen"
-            }
-            style={{
-                border: 0,
-                display: "flex",
-                justifyContent: "center",
-                alignItems: "center",
-                width: 47,
-                minWidth: 47,
-                borderRadius: 8,
-                height: 47,
-                fontSize: 24,
-                cursor: "pointer",
-                color: "rgb(102, 102, 102)",
-                background: getAppState().dark ? "#141414" : "white",
-            }}
-            onClick={(e) => {
-                toggleFullScreen();
-                e.stopPropagation();
-                e.preventDefault();
-            }}
-        ></Button>
+        <Link to={fullScreen ? "#exitFullScreen" : "#enterFullScreen"}>
+            <Button
+                type={"text"}
+                icon={
+                    fullScreen ? (
+                        <FullscreenExitOutlined title={getExitFullscreen()} style={{ fontSize: 24 }} />
+                    ) : (
+                        <FullscreenOutlined title={getEnterFullscreen()} style={{ fontSize: 24 }} />
+                    )
+                }
+                style={{
+                    border: 0,
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center",
+                    width: 47,
+                    minWidth: 47,
+                    borderRadius: 8,
+                    height: 47,
+                    fontSize: 24,
+                    cursor: "pointer",
+                    color: "rgb(102, 102, 102)",
+                    background: getAppState().dark ? "#141414" : "white",
+                }}
+                onClick={(e) => {
+                    toggleFullScreen();
+                    e.stopPropagation();
+                    e.preventDefault();
+                }}
+            />
+        </Link>
     );
 };
 

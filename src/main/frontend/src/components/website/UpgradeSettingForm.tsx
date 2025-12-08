@@ -59,7 +59,7 @@ const UpgradeSettingForm = ({
                     closable: true,
                     okText: getRes()["doUpgrade"],
                     onOk: function () {
-                        navigate(getRealRouteUrl("/upgrade"));
+                        navigate(getRealRouteUrl("/upgrade"), { replace: true });
                     },
                 });
             } else {

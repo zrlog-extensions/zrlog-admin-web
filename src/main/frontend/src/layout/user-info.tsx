@@ -4,13 +4,7 @@ import { Link } from "react-router-dom";
 
 import Dropdown from "antd/es/dropdown";
 import Image from "antd/es/image";
-import Constants, {
-    getBackendServerUrl,
-    getRealRouteUrl,
-    getRes,
-    isStaticPage,
-    tryAppendBackendServerUrl,
-} from "../utils/constants";
+import Constants, { getBackendServerUrl, getRealRouteUrl, getRes, isStaticPage } from "../utils/constants";
 import Divider from "antd/es/divider";
 import { BasicUserInfo } from "../type";
 import { tryBlock } from "../utils/helpers";
@@ -120,7 +114,7 @@ const UserInfo = ({ data, offline }: { data: BasicUserInfo; offline: boolean }) 
                         preview={false}
                         fallback={Constants.getFillBackImg()}
                         className={"userAvatarImg"}
-                        src={tryAppendBackendServerUrl(data.header)}
+                        src={data.header}
                         style={{ lineHeight: getImgSize(), width: getImgSize(), height: getImgSize() }}
                     />
                     <Badge dot={data.lastVersion?.upgrade}>

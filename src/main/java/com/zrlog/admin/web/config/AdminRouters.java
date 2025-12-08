@@ -7,6 +7,7 @@ import com.zrlog.admin.web.controller.api.*;
 import com.zrlog.admin.web.controller.page.AdminPageController;
 import com.zrlog.admin.web.controller.page.AdminTemplatePageController;
 import com.zrlog.business.service.TemplateInfoHelper;
+import com.zrlog.common.Constants;
 
 public class AdminRouters {
 
@@ -50,7 +51,7 @@ public class AdminRouters {
         router.addMapper("/api" + AdminConstants.ADMIN_URI_BASE_PATH + "/static-site", AdminStaticSiteController.class);
         router.addMapper("/api" + AdminConstants.ADMIN_DEV_URI_BASE_PATH, AdminDevController.class);
 
-        router.addMapper("/api/public/adminResource", AdminPublicController.class, "adminResource");
-        router.addMapper("/api/public/version", AdminPublicController.class, "version");
+        router.addMapper(Constants.API_PUBLIC_ADMIN_RESOURCE, AdminPublicController.class, "adminResource");
+        router.addMapper(Constants.API_PUBLIC_VERSION, AdminPublicController.class, "version");
     }
 }

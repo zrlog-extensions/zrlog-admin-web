@@ -5,11 +5,11 @@ import Button from "antd/es/button";
 import Image from "antd/es/image";
 import TextArea from "antd/es/input/TextArea";
 import Col from "antd/es/grid/col";
-import { getPreset, getRes } from "../../utils/constants";
+import { getPreset, getRes, tryAppendBackendServerUrl } from "../../utils/constants";
 import Switch from "antd/es/switch";
 import { colorPickerBgColors } from "../../utils/helpers";
 import { useAxiosBaseInstance } from "../../base/AppBase";
-import BaseDragger, { DraggerUploadResponse } from "../../common/BaseDragger";
+import BaseDragger, { DraggerUploadResponse } from "@editor/dist/src/editor/common/BaseDragger";
 import BaseTitle from "../../base/BaseTitle";
 import { CameraOutlined } from "@ant-design/icons";
 import PreviewConfig from "./preview-config";
@@ -85,11 +85,18 @@ const TemplateConfig = ({
                 <BaseDragger
                     style={{ width: 96, height: 96 }}
                     onSuccess={(e) => onUploadChange(e, key)}
-                    name="imgFile"
                     onError={(e) => {
                         messageApi.error(e.message);
                     }}
-                    action="/api/admin/upload?dir=image"
+                    type={"image"}
+                    uploadConfig={{
+                        buildUploadUrl: function (type: string): string {
+                            return `/api/admin/upload?dir=${type}`;
+                        },
+                        formName: "imgFile",
+                        axiosInstance: axiosInstance,
+                        tryAppendBackendServerUrl: tryAppendBackendServerUrl,
+                    }}
                 >
                     {state.dataMap[key] && state.dataMap[key].length > 0 ? (
                         <Image

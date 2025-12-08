@@ -13,6 +13,7 @@ import { ArticleChangeableValue, ArticleEntry } from "./index.types";
 import Button from "antd/es/button";
 import DigestEditorCard from "./digest-editor-card";
 import { getAppState } from "../../base/ConfigProviderApp";
+import { Link } from "react-router-dom";
 
 const ArticleEditSettingButton = ({
     article,
@@ -35,44 +36,46 @@ const ArticleEditSettingButton = ({
 
     return (
         <>
-            <Button
-                href={window.location.pathname + "#setting"}
-                type={"text"}
-                title={getRes()["admin.setting"]}
-                style={{
-                    border: 0,
-                    display: "flex",
-                    justifyContent: "center",
-                    alignItems: "center",
-                    width: 47,
-                    minWidth: 47,
-                    borderRadius: 8,
-                    height: 47,
-                    cursor: "pointer",
-                    background: getAppState().dark ? "#141414" : "white",
-                    color: "rgb(102, 102, 102)",
-                }}
-                icon={
-                    settingsOpen ? (
-                        <SettingFilled style={{ fontSize: 24 }} />
-                    ) : (
-                        <SettingOutlined style={{ fontSize: 24 }} />
-                    )
-                }
-                className={"editor-icon"}
-                onClick={(e) => {
-                    e.stopPropagation();
-                    e.preventDefault();
-                    setSettingsOpen((prevState) => {
-                        return !prevState;
-                    });
-                }}
-            ></Button>
+            <Link to={"#settings"}>
+                <Button
+                    type={"text"}
+                    title={getRes()["admin.setting"]}
+                    style={{
+                        border: 0,
+                        display: "flex",
+                        justifyContent: "center",
+                        alignItems: "center",
+                        width: 47,
+                        minWidth: 47,
+                        borderRadius: 8,
+                        height: 47,
+                        cursor: "pointer",
+                        background: getAppState().dark ? "#141414" : "white",
+                        color: "rgb(102, 102, 102)",
+                    }}
+                    icon={
+                        settingsOpen ? (
+                            <SettingFilled style={{ fontSize: 24 }} />
+                        ) : (
+                            <SettingOutlined style={{ fontSize: 24 }} />
+                        )
+                    }
+                    className={"editor-icon"}
+                    onClick={(e) => {
+                        e.stopPropagation();
+                        e.preventDefault();
+                        setSettingsOpen((prevState) => {
+                            return !prevState;
+                        });
+                    }}
+                />
+            </Link>
             <Drawer
                 title={getRes()["admin.setting"] + (saving ? "[" + getRes().saving + "]" : "")}
                 placement="right"
-                closable={true}
+                closable={{ placement: "end" }}
                 autoFocus={false}
+                keyboard={true}
                 onClose={() => {
                     setSettingsOpen(false);
                 }}
@@ -103,6 +106,10 @@ const ArticleEditSettingButton = ({
                                 style={{ textAlign: "center", marginTop: 6 }}
                             >
                                 <ThumbnailUpload
+                                    //@ts-ignore
+                                    getContainer={() => {
+                                        return containerRef.current;
+                                    }}
                                     thumbnail={article.thumbnail}
                                     onChange={(e) => {
                                         handleValuesChange({ thumbnail: e });

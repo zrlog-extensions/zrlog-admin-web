@@ -128,7 +128,7 @@ const AdminManageLayout: FunctionComponent<AdminManageLayoutProps> = ({
                         showIcon={true}
                         banner={true}
                         type={"info"}
-                        message={systemNotification}
+                        title={systemNotification}
                         style={{
                             position: "fixed",
                             zIndex: 1,

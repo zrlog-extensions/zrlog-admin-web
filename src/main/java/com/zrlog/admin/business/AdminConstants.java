@@ -21,7 +21,7 @@ public class AdminConstants {
     public static final String ADMIN_REFRESH_CACHE_API_URI_PATH = "/api" + ADMIN_URI_BASE_PATH + "/refreshCache";
     public static final String ADMIN_TITLE_CHAR = " - ";
     public static final String AUTO_UPGRADE_VERSION_KEY = "autoUpgradeVersion";
-    public static final Map<String, String> TITLE_MAP = new HashMap<>();
+    public static final Map<String, String> TITLE_MAP = new TreeMap<>();
     public static final String INDEX_URI_PATH = "/index";
     public static final String ADMIN_PWA_MANIFEST_JSON = ADMIN_URI_BASE_PATH + "/manifest.json";
     public static final String ADMIN_SERVICE_WORKER_JS = ADMIN_URI_BASE_PATH + "/service-worker.js";
@@ -46,6 +46,7 @@ public class AdminConstants {
         TITLE_MAP.put(ADMIN_URI_BASE_PATH + "/website/template", "admin.template.manage");
         TITLE_MAP.put(ADMIN_URI_BASE_PATH + "/website/other", "admin.other.manage");
         TITLE_MAP.put(ADMIN_URI_BASE_PATH + "/website/upgrade", "admin.upgrade.manage");
+        TITLE_MAP.put(ADMIN_URI_BASE_PATH + "/website/ai", "admin.ai.manage");
         TITLE_MAP.put(ADMIN_URI_BASE_PATH + "/nav", "admin.nav.manage");
         TITLE_MAP.put(ADMIN_URI_BASE_PATH + "/article-type", "admin.type.manage");
         TITLE_MAP.put(ADMIN_URI_BASE_PATH + "/link", "admin.link.manage");
@@ -56,6 +57,7 @@ public class AdminConstants {
         TITLE_MAP.put(ADMIN_URI_BASE_PATH + "/template-config", "templateConfig");
         TITLE_MAP.put(ADMIN_URI_BASE_PATH + "/template-center", "templateCenter");
         TITLE_MAP.put(ADMIN_URI_BASE_PATH + "/system", "systemInfo");
+        TITLE_MAP.put(ADMIN_URI_BASE_PATH + "/dev", "dev");
     }
 
     public static AdminResource adminResource;
@@ -80,14 +82,15 @@ public class AdminConstants {
     }
 
     public static PublicWebSiteInfo getPublicWebSiteInfo() {
-        CacheService cacheService = Constants.zrLogConfig.getCacheService();
-        PublicWebSiteInfo publicWebSiteInfo;
-        if (Objects.nonNull(cacheService)) {
-            publicWebSiteInfo = cacheService.getPublicWebSiteInfo();
-        } else {
-            publicWebSiteInfo = WebSiteUtils.fillDefaultInfo(new PublicWebSiteInfo());
+        if (Objects.isNull(Constants.zrLogConfig)) {
+            return WebSiteUtils.fillDefaultInfo(new PublicWebSiteInfo());
         }
-        return publicWebSiteInfo;
+
+        CacheService cacheService = Constants.zrLogConfig.getCacheService();
+        if (Objects.isNull(cacheService)) {
+            return WebSiteUtils.fillDefaultInfo(new PublicWebSiteInfo());
+        }
+        return cacheService.getPublicWebSiteInfo();
     }
 
     public static String getAdminTitle(String startTitle) {

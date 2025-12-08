@@ -12,7 +12,7 @@ import com.zrlog.common.rest.response.ApiStandardResponse;
 import com.zrlog.common.vo.AdminFullTokenVO;
 import com.zrlog.common.vo.AdminTokenVO;
 import com.zrlog.common.vo.TemplateVO;
-import com.zrlog.data.dto.*;
+import com.zrlog.data.dto.FaviconBase64DTO;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -40,9 +40,12 @@ public class AdminNativeImageUtils {
                 IndexResponse.class, StatisticsInfoResponse.class, ServerSideDataResponse.class,
                 UserBasicInfoResponse.class, AdminTokenVO.class, AdminFullTokenVO.class,
                 VersionResponse.class, PluginStatusResponse.class, UploadTemplateResponse.class,
-                DeleteLogResponse.class, LoadEditArticleResponse.class, ServerInfo.class,
+                DeleteResponse.class, DeleteResponse.DeleteResponseData.class,
+                LoadEditArticleResponse.class, ServerInfo.class,
                 SystemResponse.class, FaviconBase64DTO.class, AdminStaticSiteSyncResponse.class, UploadServiceResponseEntity.class,
-                TemplateValuePreviewResponse.class));
+                TemplateValuePreviewResponse.class,
+                AIResponseEntry.class, AIResponseEntry.AIContentEntry.class,
+                AIWebSiteInfo.class, AIWebSiteInfoWithAIMessages.class));
     }
 
     private static void adminJson() {

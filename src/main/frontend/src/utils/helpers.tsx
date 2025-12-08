@@ -2,6 +2,9 @@ import * as H from "history";
 import React from "react";
 import { ExclamationCircleOutlined } from "@ant-design/icons";
 import { HookAPI } from "antd/es/modal/useModal";
+import { EditorUser } from "@editor/dist/src/type";
+import { getCacheByKey } from "./cache";
+import { BasicUserInfo } from "../type";
 
 export const mapToQueryString = (map: Record<string, string[] | string | boolean | number | undefined>): string => {
     return Object.keys(map)
@@ -163,4 +166,18 @@ export const colorPickerBgColors = [
 
 export const getContextPath = () => {
     return new URL(document.baseURI).pathname;
+};
+
+export const getEditorUser = (): EditorUser => {
+    const basicUser = getCacheByKey("/user") as BasicUserInfo;
+    if (!basicUser) {
+        return {
+            nickname: "admin",
+            avatarUrl: "",
+        };
+    }
+    return {
+        nickname: basicUser.userName,
+        avatarUrl: basicUser.header,
+    };
 };

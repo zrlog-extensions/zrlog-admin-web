@@ -35,7 +35,7 @@ import UnknownErrorPage, { ErrorPageProps } from "./unknown-error-page";
 import Offline from "../common/Offline";
 import Index from "./index";
 import Comment from "./comment";
-import { useAxiosBaseInstance } from "../base/AppBase";
+import { buildUriPaths, useAxiosBaseInstance } from "../base/AppBase";
 import { AdminCommonProps, BasicUserInfo } from "../type";
 import { getSsDate, getWindowPageBuildId } from "../base/SsData";
 import Version from "./website/version";
@@ -248,83 +248,89 @@ const AdminDashboardRouter: FunctionComponent<AdminDashboardRouterProps> = ({ of
 
     const routes = [
         {
-            paths: ["index", "index.html", ".html", ""],
+            paths: [...buildUriPaths("index"), ...buildUriPaths("")],
             lazy: AsyncIndex,
             fallback: Index,
         },
         {
-            paths: ["comment", "comment.html"],
+            paths: buildUriPaths("comment"),
             lazy: AsyncComment,
             fallback: Comment,
         },
         {
-            paths: ["plugin", "plugin.html"],
+            paths: buildUriPaths("plugin"),
             lazy: AsyncPlugin,
             fallback: Plugin,
         },
         {
-            paths: ["website", "website.html"],
+            paths: buildUriPaths("website"),
             lazy: AsyncWebSite,
             fallback: WebSite,
             props: { activeKey: "basic" } as WebSiteProps,
         },
         {
-            paths: ["website/admin", "website/admin.html"],
+            paths: buildUriPaths("website/admin"),
             lazy: AsyncWebSite,
             fallback: WebSite,
             props: { activeKey: "admin" } as WebSiteProps,
         },
         {
-            paths: ["website/template", "website/template.html"],
+            paths: buildUriPaths("website/template"),
             lazy: AsyncWebSite,
             fallback: WebSite,
             props: { activeKey: "template" } as WebSiteProps,
         },
         {
-            paths: ["website/other", "website/other.html"],
+            paths: buildUriPaths("website/other"),
             lazy: AsyncWebSite,
             fallback: WebSite,
             props: { activeKey: "other" } as WebSiteProps,
         },
         {
-            paths: ["website/blog", "website/blog.html"],
+            paths: buildUriPaths("website/blog"),
             lazy: AsyncWebSite,
             fallback: WebSite,
             props: { activeKey: "blog" } as WebSiteProps,
         },
         {
-            paths: ["website/upgrade", "website/upgrade.html"],
+            paths: buildUriPaths("website/ai"),
+            lazy: AsyncWebSite,
+            fallback: WebSite,
+            props: { activeKey: "ai" } as WebSiteProps,
+        },
+        {
+            paths: buildUriPaths("website/upgrade"),
             lazy: AsyncWebSite,
             fallback: WebSite,
             props: { activeKey: "upgrade" } as WebSiteProps,
         },
         {
-            paths: ["website/version", "website/version.html"],
+            paths: buildUriPaths("website/version"),
             lazy: Version,
             fallback: Version,
         },
         {
-            paths: ["article-type", "article-type.html"],
+            paths: buildUriPaths("article-type"),
             lazy: AsyncType,
             fallback: Type,
         },
         {
-            paths: ["link", "link.html"],
+            paths: buildUriPaths("link"),
             lazy: AsyncLink,
             fallback: Link,
         },
         {
-            paths: ["nav", "nav.html"],
+            paths: buildUriPaths("nav"),
             lazy: AsyncNav,
             fallback: Nav,
         },
         {
-            paths: ["article", "article.html"],
+            paths: buildUriPaths("article"),
             lazy: AsyncArticle,
             fallback: Article,
         },
         {
-            paths: ["article-edit", "article-edit.html"],
+            paths: buildUriPaths("article-edit"),
             lazy: AsyncArticleEdit,
             fallback: ArticleEdit,
             props: {
@@ -345,32 +351,32 @@ const AdminDashboardRouter: FunctionComponent<AdminDashboardRouterProps> = ({ of
             } as ArticleEditProps,
         },
         {
-            paths: ["user", "user.html"],
+            paths: buildUriPaths("user"),
             lazy: AsyncUser,
             fallback: User,
         },
         {
-            paths: ["template-center", "template-center.html"],
+            paths: buildUriPaths("template-center"),
             lazy: AsyncTemplateCenter,
             fallback: TemplateCenter,
         },
         {
-            paths: ["user-update-password", "user-update-password.html"],
+            paths: buildUriPaths("user-update-password"),
             lazy: AsyncUserUpdatePassword,
             fallback: UserUpdatePassword,
         },
         {
-            paths: ["upgrade", "upgrade.html"],
+            paths: buildUriPaths("upgrade"),
             lazy: AsyncUpgrade,
             fallback: Upgrade,
         },
         {
-            paths: ["template-config", "template-config.html"],
+            paths: buildUriPaths("template-config"),
             lazy: AsyncTemplateConfig,
             fallback: TemplateConfig,
         },
         {
-            paths: ["403", "403.html"],
+            paths: buildUriPaths("403"),
             lazy: AsyncError,
             fallback: UnknownErrorPage,
             props: {
@@ -378,7 +384,7 @@ const AdminDashboardRouter: FunctionComponent<AdminDashboardRouterProps> = ({ of
             } as ErrorPageProps,
         },
         {
-            paths: ["500", "500.html"],
+            paths: buildUriPaths("500"),
             lazy: AsyncError,
             fallback: UnknownErrorPage,
             props: {
@@ -386,22 +392,22 @@ const AdminDashboardRouter: FunctionComponent<AdminDashboardRouterProps> = ({ of
             } as ErrorPageProps,
         },
         {
-            paths: ["offline", "offline.html"],
+            paths: buildUriPaths("offline"),
             lazy: AsyncOffline,
             fallback: Offline,
         },
         {
-            paths: ["system", "system.html"],
+            paths: buildUriPaths("system"),
             lazy: AsyncSystem,
             fallback: System,
         },
         {
-            paths: ["static-site", "static-site.html"],
+            paths: buildUriPaths("static-site"),
             lazy: AsyncStaticSite,
             fallback: StaticSite,
         },
         {
-            paths: ["dev", "dev.html"],
+            paths: buildUriPaths("dev"),
             lazy: DevAsync,
             fallback: Dev,
         },
