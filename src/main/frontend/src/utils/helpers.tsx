@@ -5,6 +5,8 @@ import { HookAPI } from "antd/es/modal/useModal";
 import { EditorUser } from "@editor/dist/src/type";
 import { getCacheByKey } from "./cache";
 import { BasicUserInfo } from "../type";
+import { getRes } from "./constants";
+import { isPWA } from "./env-utils";
 
 export const mapToQueryString = (map: Record<string, string[] | string | boolean | number | undefined>): string => {
     return Object.keys(map)
@@ -180,4 +182,17 @@ export const getEditorUser = (): EditorUser => {
         nickname: basicUser.userName,
         avatarUrl: basicUser.header,
     };
+};
+
+export const updateDocumentTitle = (newDocumentTitle: string) => {
+    const baseTitle = getRes()["websiteTitle"] + " - " + getRes()["admin.management"];
+    if (newDocumentTitle) {
+        if (isPWA()) {
+            window.document.title = newDocumentTitle.replace(" - " + baseTitle, "");
+        } else {
+            window.document.title = newDocumentTitle;
+        }
+    } else {
+        window.document.title = baseTitle;
+    }
 };

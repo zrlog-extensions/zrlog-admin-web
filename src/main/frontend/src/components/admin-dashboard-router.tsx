@@ -13,9 +13,8 @@ import {
     getPageFullState,
     savePageFullState,
 } from "../utils/cache";
-import { deepEqualWithSpecialJSON, getFullPath } from "../utils/helpers";
+import { deepEqualWithSpecialJSON, getFullPath, updateDocumentTitle } from "../utils/helpers";
 import Upgrade from "./upgrade";
-import { getRes } from "../utils/constants";
 import { isPWA } from "../utils/env-utils";
 import * as H from "history";
 import Plugin from "./plugin";
@@ -86,19 +85,6 @@ type AdminDashboardRouterState = {
     fullScreen: boolean;
     lastAxiosRequestedCacheKey: string;
     pageBuildId: string;
-};
-
-const updateDocumentTitle = (newDocumentTitle: string) => {
-    const baseTitle = getRes()["websiteTitle"] + " - " + getRes()["admin.management"];
-    if (newDocumentTitle) {
-        if (isPWA()) {
-            window.document.title = newDocumentTitle.replace(" - " + baseTitle, "");
-        } else {
-            window.document.title = newDocumentTitle;
-        }
-    } else {
-        window.document.title = baseTitle;
-    }
 };
 
 type AdminDashboardRouterProps = {
