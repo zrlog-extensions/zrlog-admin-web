@@ -35,7 +35,7 @@ public class AdminStaticSiteController extends BaseController {
     @ResponseBody
     public AdminApiPageDataStandardResponse<AdminStaticSiteSyncResponse> index() {
         if (StaticSitePlugin.isDisabled()) {
-            return new AdminApiPageDataStandardResponse<>(new AdminStaticSiteSyncResponse(true));
+            return new AdminApiPageDataStandardResponse<>(new AdminStaticSiteSyncResponse(true), "", request.getUri());
         }
         AdminStaticResourcePlugin adminStaticResourcePlugin = Constants.zrLogConfig.getPlugin(AdminStaticResourcePlugin.class);
         if (Objects.isNull(adminStaticResourcePlugin)) {
