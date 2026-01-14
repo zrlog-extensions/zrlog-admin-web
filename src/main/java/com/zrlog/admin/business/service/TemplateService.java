@@ -11,6 +11,7 @@ import com.zrlog.admin.business.rest.response.UpdateRecordResponse;
 import com.zrlog.admin.business.rest.response.UploadTemplateResponse;
 import com.zrlog.admin.web.controller.api.TemplateController;
 import com.zrlog.business.service.TemplateInfoHelper;
+import com.zrlog.business.type.TemplateInfoFileType;
 import com.zrlog.business.util.TemplateDownloadUtils;
 import com.zrlog.common.Constants;
 import com.zrlog.common.vo.TemplateVO;
@@ -94,6 +95,12 @@ public class TemplateService {
             defaultTemplateInfo.setConfigAble(true);
             templates.add(defaultTemplateInfo);
         }
+        TemplateVO defaultHexoTemplateInfo = TemplateInfoHelper.getDefaultHexoTemplateVO();
+        if (Objects.nonNull(defaultHexoTemplateInfo)) {
+            defaultHexoTemplateInfo.setDeleteAble(false);
+            defaultHexoTemplateInfo.setConfigAble(true);
+            templates.add(defaultHexoTemplateInfo);
+        }
         File[] templatesFile = PathUtil.getStaticFile(Constants.TEMPLATE_BASE_PATH).listFiles();
         if (templatesFile != null) {
             for (File file : templatesFile) {
@@ -134,11 +141,15 @@ public class TemplateService {
             return null;
         }
         File templateInfo = new File(file + "/template.properties");
-        if (!templateInfo.exists()) {
-            return null;
-        }
         String templatePath = file.toString().substring(PathUtil.getStaticFile("/").toString().length()).replace("\\", "/");
-        return TemplateInfoHelper.getTemplateVOByInputStream(templatePath, new FileInputStream(templateInfo));
+        if (templateInfo.exists()) {
+            return TemplateInfoHelper.getTemplateVOByInputStream(templatePath, TemplateInfoFileType.TEMPLATE_PROPERTIES);
+        }
+        File jsonTemplateInfo = new File(file + "/package.json");
+        if (jsonTemplateInfo.exists()) {
+            return TemplateInfoHelper.getTemplateVOByInputStream(templatePath, TemplateInfoFileType.PACKAGE_JSON);
+        }
+        return null;
     }
 
     private TemplateVO.TemplateConfigMap getConfigMap(String templateName) throws IOException {

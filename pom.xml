@@ -5,7 +5,7 @@
     <parent>
         <groupId>com.hibegin</groupId>
         <artifactId>zrlog-base</artifactId>
-        <version>3.2.125</version>
+        <version>3.2.126-SNAPSHOT</version>
     </parent>
     <artifactId>zrlog-admin-web</artifactId>
     <version>3.2.128-SNAPSHOT</version>
@@ -65,6 +65,10 @@
         <dependency>
             <groupId>com.hibegin</groupId>
             <artifactId>zrlog-service</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.hibegin</groupId>
+            <artifactId>zrlog-template</artifactId>
         </dependency>
         <dependency>
             <groupId>com.hibegin</groupId>
