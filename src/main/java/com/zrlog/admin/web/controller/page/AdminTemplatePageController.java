@@ -6,7 +6,7 @@ import com.hibegin.http.server.util.MimeTypeUtil;
 import com.hibegin.http.server.util.PathUtil;
 import com.zrlog.admin.business.service.TemplateService;
 import com.zrlog.admin.util.AdminTemplateUtils;
-import com.zrlog.business.util.TemplateDownloadUtils;
+import com.zrlog.business.template.util.TemplateDownloadUtils;
 import com.zrlog.common.Constants;
 import com.zrlog.common.controller.BaseController;
 import com.zrlog.common.vo.TemplateVO;

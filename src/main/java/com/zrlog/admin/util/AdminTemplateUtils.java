@@ -2,7 +2,7 @@ package com.zrlog.admin.util;
 
 import com.hibegin.common.util.LoggerUtil;
 import com.hibegin.http.server.util.PathUtil;
-import com.zrlog.business.util.TemplateDownloadUtils;
+import com.zrlog.business.template.util.TemplateDownloadUtils;
 import com.zrlog.common.Constants;
 import com.zrlog.common.controller.BaseController;
 

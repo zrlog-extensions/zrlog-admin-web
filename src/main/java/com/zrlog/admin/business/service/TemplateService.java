@@ -11,7 +11,7 @@ import com.zrlog.admin.business.rest.response.UpdateRecordResponse;
 import com.zrlog.admin.business.rest.response.UploadTemplateResponse;
 import com.zrlog.admin.web.controller.api.TemplateController;
 import com.zrlog.business.service.TemplateInfoHelper;
-import com.zrlog.business.util.TemplateDownloadUtils;
+import com.zrlog.business.template.util.TemplateDownloadUtils;
 import com.zrlog.common.Constants;
 import com.zrlog.common.vo.TemplateVO;
 import com.zrlog.model.WebSite;
@@ -80,7 +80,8 @@ public class TemplateService {
 
     public List<TemplateVO> getAllTemplates(String previewTemplate) throws IOException {
         String currentTemplate = AdminConstants.getPublicWebSiteInfo().getTemplate();
-        if (!Objects.equals(currentTemplate, Constants.DEFAULT_TEMPLATE_PATH)) {
+        if (!Objects.equals(currentTemplate, Constants.DEFAULT_TEMPLATE_PATH)
+                && !Objects.equals(previewTemplate, Constants.DEFAULT_HEXO_TEMPLATE_PATH)) {
             try {
                 TemplateDownloadUtils.installByTemplateName(currentTemplate, false);
             } catch (IOException | URISyntaxException | InterruptedException e) {
