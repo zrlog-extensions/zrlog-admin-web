@@ -11,7 +11,6 @@ import com.zrlog.admin.business.rest.response.UpdateRecordResponse;
 import com.zrlog.admin.business.rest.response.UploadTemplateResponse;
 import com.zrlog.admin.web.controller.api.TemplateController;
 import com.zrlog.business.service.TemplateInfoHelper;
-import com.zrlog.business.type.TemplateInfoFileType;
 import com.zrlog.business.util.TemplateDownloadUtils;
 import com.zrlog.common.Constants;
 import com.zrlog.common.vo.TemplateVO;
@@ -140,14 +139,14 @@ public class TemplateService {
         if (!file.exists() || !file.isDirectory()) {
             return null;
         }
-        File templateInfo = new File(file + "/template.properties");
+        File templateInfoFile = new File(file + "/template.properties");
         String templatePath = file.toString().substring(PathUtil.getStaticFile("/").toString().length()).replace("\\", "/");
-        if (templateInfo.exists()) {
-            return TemplateInfoHelper.getTemplateVOByInputStream(templatePath, TemplateInfoFileType.TEMPLATE_PROPERTIES);
+        if (templateInfoFile.exists()) {
+            return TemplateInfoHelper.getByProperties(templatePath, new FileInputStream(templateInfoFile));
         }
-        File jsonTemplateInfo = new File(file + "/package.json");
-        if (jsonTemplateInfo.exists()) {
-            return TemplateInfoHelper.getTemplateVOByInputStream(templatePath, TemplateInfoFileType.PACKAGE_JSON);
+        templateInfoFile = new File(file + "/package.json");
+        if (templateInfoFile.exists()) {
+            return TemplateInfoHelper.getByPackageJson(templatePath, new FileInputStream(templateInfoFile));
         }
         return null;
     }
