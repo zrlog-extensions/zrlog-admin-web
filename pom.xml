@@ -14,6 +14,7 @@
     <properties>
         <finalName>zrlog-admin-web</finalName>
         <libOutputPath>lib</libOutputPath>
+        <zrlog-xx-template.version>3.2.123-SNAPSHOT</zrlog-xx-template.version>
         <gpg.passphrase/>
     </properties>
 
@@ -73,6 +74,18 @@
         <dependency>
             <groupId>com.hibegin</groupId>
             <artifactId>zrlog-admin-token</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.hibegin</groupId>
+            <artifactId>zrlog-freemarker-template</artifactId>
+            <version>${zrlog-xx-template.version}</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.hibegin</groupId>
+            <artifactId>zrlog-hexo-template</artifactId>
+            <version>${zrlog-xx-template.version}</version>
+            <scope>compile</scope>
         </dependency>
     </dependencies>
 

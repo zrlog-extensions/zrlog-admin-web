@@ -2,6 +2,7 @@ package com.zrlog.admin.util;
 
 import com.hibegin.common.util.LoggerUtil;
 import com.hibegin.http.server.util.PathUtil;
+import com.zrlog.business.service.TemplateInfoHelper;
 import com.zrlog.business.template.util.TemplateDownloadUtils;
 import com.zrlog.common.Constants;
 import com.zrlog.common.controller.BaseController;
@@ -9,7 +10,6 @@ import com.zrlog.common.controller.BaseController;
 import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
-import java.util.Objects;
 import java.util.logging.Logger;
 
 public class AdminTemplateUtils {
@@ -19,8 +19,8 @@ public class AdminTemplateUtils {
 
     public static String loadTemplatePathByRequestInfo(BaseController controller) {
         String template = PathUtil.safeAppendFilePath(Constants.TEMPLATE_BASE_PATH, controller.getParamWithEmptyCheck("shortTemplate")).toString().replace("\\", "/");
-        if (Objects.equals(template, Constants.DEFAULT_TEMPLATE_PATH)) {
-            return Constants.DEFAULT_TEMPLATE_PATH;
+        if (TemplateInfoHelper.isDefaultTemplate(template)) {
+            return template;
         }
         try {
             TemplateDownloadUtils.installByTemplateName(template, false);
