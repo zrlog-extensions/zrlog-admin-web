@@ -109,7 +109,7 @@ const TemplateCard: FunctionComponent<TemplateCardProps> = ({ template, onUpdate
                                     />
                                 </div>
                                 <img
-                                    style={{ width: "100%", minHeight: 250 }}
+                                    style={{ width: "100%", minHeight: 250, objectFit: "cover" }}
                                     alt={template.name}
                                     title={template.name}
                                     src={getBackendServerUrl() + template.adminPreviewImage.substring(1)}
