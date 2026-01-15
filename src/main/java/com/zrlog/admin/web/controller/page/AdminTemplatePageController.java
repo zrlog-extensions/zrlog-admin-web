@@ -28,7 +28,7 @@ public class AdminTemplatePageController extends BaseController {
     }
 
     @RequestMethod
-    public void previewImage() throws IOException {
+    public void previewImage() {
         String templateName = AdminTemplateUtils.loadTemplatePathByRequestInfo(this);
         TemplateVO templateVO = new TemplateService().loadTemplateConfig(templateName);
         if (Objects.isNull(templateVO)) {
