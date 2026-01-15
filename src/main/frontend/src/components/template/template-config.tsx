@@ -182,7 +182,7 @@ const TemplateConfig = ({
         for (const [key, value] of Object.entries(state.config)) {
             if (value.type === "yml") {
                 return (
-                    <Card title={value.label} styles={{ body: { padding: 0 } }}>
+                    <Card title={value.label} styles={{ body: { padding: 0 } }} style={{ overflow: "hidden" }}>
                         <MarkedEditor
                             height={520}
                             onChange={(e) => {
