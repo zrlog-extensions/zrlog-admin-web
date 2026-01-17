@@ -45,7 +45,8 @@ public class AdminNativeImageUtils {
                 SystemResponse.class, FaviconBase64DTO.class, AdminStaticSiteSyncResponse.class, UploadServiceResponseEntity.class,
                 TemplateValuePreviewResponse.class,
                 AIResponseEntry.class, AIResponseEntry.AIContentEntry.class,
-                AIWebSiteInfo.class, AIWebSiteInfoWithAIMessages.class, ArticleActivityData.class, AIWebSiteInfoResponse.class));
+                AIWebSiteInfo.class, AIWebSiteInfoWithAIMessages.class, ArticleActivityData.class,
+                AIWebSiteInfoResponse.class, AIWebSiteInfoResponse.AIProvider.class));
     }
 
     private static void adminJson() {
