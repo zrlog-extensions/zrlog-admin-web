@@ -15,6 +15,7 @@ public class CreateLinkRequest implements Validator {
     private String url;
     private String alt;
     private Long sort;
+    private String icon;
 
     public String getLinkName() {
         return linkName;
@@ -69,5 +70,13 @@ public class CreateLinkRequest implements Validator {
         if (StringUtils.isNotEmpty(this.getUrl())) {
             this.setUrl(URI.create(this.getUrl()).toString());
         }
+    }
+
+    public String getIcon() {
+        return icon;
+    }
+
+    public void setIcon(String icon) {
+        this.icon = icon;
     }
 }

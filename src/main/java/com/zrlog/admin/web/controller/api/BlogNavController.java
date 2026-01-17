@@ -53,8 +53,12 @@ public class BlogNavController extends BaseController {
     @RequestLock
     public UpdateRecordResponse add() throws IOException, SQLException {
         CreateNavRequest createNavRequest = getRequestBodyWithNullCheck(CreateNavRequest.class);
-        return new UpdateRecordResponse(new LogNav().set("navName", createNavRequest.getNavName()).set("url",
-                createNavRequest.getUrl()).set("sort", createNavRequest.getSort()).save());
+        return new UpdateRecordResponse(new LogNav()
+                .set("navName", createNavRequest.getNavName())
+                .set("url", createNavRequest.getUrl())
+                .set("icon", createNavRequest.getIcon())
+                .set("sort", createNavRequest.getSort())
+                .save());
     }
 
     @RefreshCache(async = true, updateStaticSites = StaticSiteType.BLOG)
@@ -65,6 +69,7 @@ public class BlogNavController extends BaseController {
         return new UpdateRecordResponse(new LogNav()
                 .set("navName", createNavRequest.getNavName())
                 .set("url", createNavRequest.getUrl())
+                .set("icon", createNavRequest.getIcon())
                 .set("sort", Objects.requireNonNullElse(createNavRequest.getSort(), 0))
                 .updateById(createNavRequest.getId()));
     }

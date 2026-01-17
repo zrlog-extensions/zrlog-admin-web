@@ -7,7 +7,7 @@ import { useEffect, useState } from "react";
 import { getBackendServerUrl, getRealRouteUrl, getRes, isStaticPage } from "../../utils/constants";
 import { Link, useLocation } from "react-router-dom";
 import { useAxiosBaseInstance } from "../../base/AppBase";
-import { getCsrData } from "../../api";
+import { getCsrData, getTimeInfoBySearchStr } from "../../api";
 import { addToCache } from "../../utils/cache";
 import TemplateCard from "./template-card";
 
@@ -33,7 +33,7 @@ const Template = ({ data }: { data: TemplateEntry[] }) => {
     const location = useLocation();
 
     const load = () => {
-        getCsrData("/template", axiosInstance).then(({ data }) => {
+        getCsrData("/template", getTimeInfoBySearchStr(location.search), axiosInstance).then(({ data }) => {
             setTemplateState(data);
             addToCache(data, location.pathname);
         });

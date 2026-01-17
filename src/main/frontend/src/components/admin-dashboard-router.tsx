@@ -1,7 +1,7 @@
 import { Route, Routes } from "react-router-dom";
 import { ComponentType, FunctionComponent, lazy, ReactElement, Suspense, useEffect, useRef, useState } from "react";
 import { useLocation } from "react-router";
-import { getCsrData } from "../api";
+import { getCsrData, getTimeInfoBySearchStr } from "../api";
 import MyLoadingComponent from "./my-loading-component";
 import {
     addToCache,
@@ -40,8 +40,8 @@ import { getSsDate, getWindowPageBuildId } from "../base/SsData";
 import Version from "./website/version";
 import StaticSite from "./StaticSite";
 import { JSX } from "react/jsx-runtime";
-import IntrinsicAttributes = JSX.IntrinsicAttributes;
 import Dev from "./dev";
+import IntrinsicAttributes = JSX.IntrinsicAttributes;
 
 const AsyncArticleEdit = lazy(() => import("components/articleEdit"));
 const AsyncOffline = lazy(() => import("common/Offline"));
@@ -166,7 +166,11 @@ const AdminDashboardRouter: FunctionComponent<AdminDashboardRouterProps> = ({ of
     const axiosBaseInstance = useAxiosBaseInstance();
 
     const loadData = async (currentPageDataKey: string, cacheData: any, location: H.Location) => {
-        const responseData = await getCsrData(currentPageDataKey, axiosBaseInstance);
+        const responseData = await getCsrData(
+            currentPageDataKey,
+            getTimeInfoBySearchStr(location.search),
+            axiosBaseInstance
+        );
         const { data, documentTitle, pageBuildId } = responseData;
         if (documentTitle) {
             updateDocumentTitle(documentTitle);

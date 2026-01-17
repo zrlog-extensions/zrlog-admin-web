@@ -137,10 +137,12 @@ public class AdminInterceptor implements HandleAbleInterceptor {
                 }
             }
             try {
-                new MethodInterceptor().doInterceptor(request, response);
-                if (Objects.nonNull(method)) {
+                new MethodInterceptor(() -> {
+                    if (Objects.isNull(method)) {
+                        return;
+                    }
                     doRefreshCache(request, method);
-                }
+                }).doInterceptor(request, response);
             } finally {
                 if (Objects.nonNull(lock)) {
                     lock.unlock();

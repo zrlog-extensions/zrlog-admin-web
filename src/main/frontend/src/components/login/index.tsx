@@ -124,7 +124,7 @@ const asyncSaveApiCache = async (axiosInstance: AxiosInstance, responseBody: Log
 
     const promises = uris.map(async (e) => {
         const key = e.split("/api/admin")[1];
-        const { data } = await getCsrData(key, axiosInstance);
+        const { data } = await getCsrData(key, 0, axiosInstance);
         addToCache(key, data);
     });
 

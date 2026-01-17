@@ -1,34 +1,45 @@
-import { FunctionComponent, useEffect, useState } from "react";
+import { FunctionComponent, PropsWithChildren, useEffect, useState } from "react";
 import { Col, Form, Input, InputNumber, message, Modal } from "antd";
 import Row from "antd/es/grid/row";
-import { EditOutlined } from "@ant-design/icons";
 import { Link } from "react-router-dom";
 import { getRes } from "../../utils/constants";
 import { useAxiosBaseInstance } from "../../base/AppBase";
-import { getAppState } from "../../base/ConfigProviderApp";
 
 const layout = {
     labelCol: { span: 4 },
     wrapperCol: { span: 20 },
 };
 
-export type EditNavProps = {
-    record: any;
+export type EditNavProps = PropsWithChildren & {
+    record: LogNav;
     offline: boolean;
     editSuccessCall: () => void;
 };
 
-const EditNav: FunctionComponent<EditNavProps> = ({ record, editSuccessCall, offline }) => {
+type LogNav = {
+    id: number;
+    sort?: number | null;
+    navName: string;
+    url: string;
+    icon: string;
+};
+
+const CreateOrEditNav: FunctionComponent<EditNavProps> = ({ record, editSuccessCall, offline, children }) => {
     const [showModel, setShowModel] = useState<boolean>(false);
-    const [updateForm, setUpdateForm] = useState<any>(record);
+    const [updateForm, setUpdateForm] = useState<LogNav>(record);
     const [messageApi, contextHolder] = message.useMessage({ maxCount: 3 });
     const [loading, setLoading] = useState<boolean>(false);
-
+    const isUpdate = () => {
+        return record.id && record.id > 0;
+    };
     const axiosInstance = useAxiosBaseInstance();
     const handleOk = () => {
+        if (loading) {
+            return;
+        }
         setLoading(true);
         axiosInstance
-            .post("/api/admin/nav/update", updateForm)
+            .post(isUpdate() ? "/api/admin/nav/update" : "/api/admin/nav/add", updateForm)
             .then(async ({ data }) => {
                 if (data.error) {
                     await messageApi.error(data.message);
@@ -58,7 +69,7 @@ const EditNav: FunctionComponent<EditNavProps> = ({ record, editSuccessCall, off
         <>
             {contextHolder}
             <Link
-                to={"#edit-" + record.id}
+                to={isUpdate() ? "#edit-" + record.id : "#add"}
                 onClick={(e) => {
                     e.preventDefault();
                     e.stopPropagation();
@@ -68,10 +79,10 @@ const EditNav: FunctionComponent<EditNavProps> = ({ record, editSuccessCall, off
                     setShowModel(true);
                 }}
             >
-                <EditOutlined style={{ color: getAppState().colorPrimary }} />
+                {children}
             </Link>
             <Modal
-                title={getRes()["edit"]}
+                title={isUpdate() ? getRes()["edit"] : getRes()["add"]}
                 open={showModel}
                 onOk={handleOk}
                 okButtonProps={{
@@ -110,6 +121,18 @@ const EditNav: FunctionComponent<EditNavProps> = ({ record, editSuccessCall, off
                     <Row>
                         <Col span={24}>
                             <Form.Item
+                                label={getRes()["icon"]}
+                                style={{ marginBottom: 8 }}
+                                name="icon"
+                                rules={[{ message: "" }]}
+                            >
+                                <Input />
+                            </Form.Item>
+                        </Col>
+                    </Row>
+                    <Row>
+                        <Col span={24}>
+                            <Form.Item
                                 label={getRes()["order"]}
                                 style={{ marginBottom: 8 }}
                                 name="sort"
@@ -124,4 +147,4 @@ const EditNav: FunctionComponent<EditNavProps> = ({ record, editSuccessCall, off
         </>
     );
 };
-export default EditNav;
+export default CreateOrEditNav;

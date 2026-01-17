@@ -4,9 +4,10 @@ import { FunctionComponent, useEffect, useRef, useState } from "react";
 import { getRes } from "../../utils/constants";
 import Row from "antd/es/grid/row";
 import { Col } from "antd";
-import { getCsrData } from "../../api";
+import { getCsrData, getTimeInfoBySearchStr } from "../../api";
 import { useAxiosBaseInstance } from "../../base/AppBase";
 import BaseTitle from "../../base/BaseTitle";
+import { useLocation } from "react-router";
 
 type SystemProps = {
     data: SystemData;
@@ -22,9 +23,11 @@ const System: FunctionComponent<SystemProps> = ({ data }) => {
 
     const timer = useRef<NodeJS.Timeout | null>(null);
 
+    const location = useLocation();
+
     const fetchSystemInfo = () => {
         if (document.visibilityState === "visible") {
-            getCsrData("/system", axiosInstance).then(({ data }) => {
+            getCsrData("/system", getTimeInfoBySearchStr(location.search), axiosInstance).then(({ data }) => {
                 setState(data);
                 timer.current = setTimeout(fetchSystemInfo, cycleDuration);
             });

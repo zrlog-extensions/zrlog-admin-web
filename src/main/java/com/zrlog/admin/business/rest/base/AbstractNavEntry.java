@@ -5,6 +5,7 @@ public class AbstractNavEntry {
     protected String navName;
     protected String url;
     protected Long sort;
+    protected String icon;
 
     public String getNavName() {
         return navName;
@@ -28,5 +29,13 @@ public class AbstractNavEntry {
 
     public void setSort(Long sort) {
         this.sort = sort;
+    }
+
+    public String getIcon() {
+        return icon;
+    }
+
+    public void setIcon(String icon) {
+        this.icon = icon;
     }
 }
