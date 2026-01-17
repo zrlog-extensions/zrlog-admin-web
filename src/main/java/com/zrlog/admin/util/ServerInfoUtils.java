@@ -8,7 +8,6 @@ import com.hibegin.common.util.StringUtils;
 import com.hibegin.http.server.util.PathUtil;
 import com.sun.management.OperatingSystemMXBean;
 import com.zrlog.admin.web.controller.api.AdminController;
-import com.zrlog.business.util.NativeUtils;
 import com.zrlog.common.Constants;
 import com.zrlog.util.BlogBuildInfoUtil;
 import com.zrlog.util.I18nUtil;
@@ -22,7 +21,7 @@ import java.util.*;
 public class ServerInfoUtils {
     public static List<ServerInfo> convertToServerInfos(Map<String, Object> data) {
         List<ServerInfo> systemInfo = new ArrayList<>();
-        systemInfo.add(new ServerInfo(I18nUtil.getAdminBackendStringFromRes("serverInfo.system"), NativeUtils.getRealFileArch() + " - " + data.get("os.version"), "system"));
+        systemInfo.add(new ServerInfo(I18nUtil.getAdminBackendStringFromRes("serverInfo.system"), BlogBuildInfoUtil.getFileArch() + " - " + data.get("os.version"), "system"));
         systemInfo.add(new ServerInfo(I18nUtil.getAdminBackendStringFromRes("serverInfo.runPath"), (String) data.get("zrlog.runtime.path"), "runPath"));
         systemInfo.add(new ServerInfo(I18nUtil.getAdminBackendStringFromRes("serverInfo.runtime"), data.get("java.vm.name") + " - " + data.get("java.version"), "runtime"));
         systemInfo.add(new ServerInfo(I18nUtil.getAdminBackendStringFromRes("serverInfo.webServer"), (String) data.get("server.info"), "webServer"));
