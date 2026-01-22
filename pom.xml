@@ -5,7 +5,7 @@
     <parent>
         <groupId>com.hibegin</groupId>
         <artifactId>zrlog-base</artifactId>
-        <version>3.3.3</version>
+        <version>3.3.8-SNAPSHOT</version>
     </parent>
     <artifactId>zrlog-admin-web</artifactId>
     <version>3.3.4-SNAPSHOT</version>
@@ -14,7 +14,7 @@
     <properties>
         <finalName>zrlog-admin-web</finalName>
         <libOutputPath>lib</libOutputPath>
-        <zrlog-xx-template.version>3.3.3</zrlog-xx-template.version>
+        <zrlog-xx-template.version>3.3.6-SNAPSHOT</zrlog-xx-template.version>
         <gpg.passphrase/>
     </properties>
 
