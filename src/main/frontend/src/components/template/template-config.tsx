@@ -17,8 +17,7 @@ import MarkedEditor from "@editor/dist/src/editor/marked-editor";
 import { getLangByRes } from "../../base/AppInit";
 import { getAppState } from "../../base/ConfigProviderApp";
 import Card from "antd/es/card";
-import { toStatisticsByMarkdown } from "@editor/dist/src/editor/utils/editor-utils";
-import EditorStatistics from "@editor/dist/src/editor/editor-statistics-info";
+import { getBorderColor } from "@editor/dist/src/editor/editor-helpers";
 
 const layout = {
     labelCol: { span: 8 },
@@ -182,7 +181,17 @@ const TemplateConfig = ({
         for (const [key, value] of Object.entries(state.config)) {
             if (value.type === "yml") {
                 return (
-                    <Card title={value.label} styles={{ body: { padding: 0 } }} style={{ overflow: "hidden" }}>
+                    <Card
+                        title={value.label}
+                        styles={{
+                            body: {
+                                padding: 0,
+                                borderTop: `1px solid ${getBorderColor(getAppState().dark)}`,
+                                boxSizing: "border-box",
+                            },
+                        }}
+                        style={{ overflow: "hidden" }}
+                    >
                         <MarkedEditor
                             height={520}
                             onChange={(e) => {
@@ -195,6 +204,8 @@ const TemplateConfig = ({
                             value={"```yml\n" + value.value + "\n```"}
                             config={{
                                 axiosInstance: axiosInstance,
+                                disableStatistics: true,
+                                disableToolbar: true,
                                 dark: getAppState().dark,
                                 lang: getLangByRes(),
                                 preview: false,
@@ -206,14 +217,6 @@ const TemplateConfig = ({
                                     axiosInstance: axiosInstance,
                                 },
                             }}
-                        />
-                        <EditorStatistics
-                            rubbish={false}
-                            offline={false}
-                            lastUpdateDate={0}
-                            data={toStatisticsByMarkdown(value.value)}
-                            fullScreen={false}
-                            dark={getAppState().dark}
                         />
                     </Card>
                 );

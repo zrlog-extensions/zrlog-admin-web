@@ -16,7 +16,7 @@
     "react-router-dom": "6.28.0",
     "rxjs": "7.8.1",
     "styled-components": "6.1.15",
-    "@editor": "https://dl.zrlog.com/artifacts/v2.0.47.tgz?v=1"
+    "@editor": "https://dl.zrlog.com/artifacts/v2.0.48.tgz?v=1"
   },
   "scripts": {
     "lint": "yarn type-check",

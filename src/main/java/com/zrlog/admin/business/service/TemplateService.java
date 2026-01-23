@@ -10,6 +10,7 @@ import com.zrlog.admin.business.rest.response.UploadTemplateResponse;
 import com.zrlog.admin.web.controller.api.TemplateController;
 import com.zrlog.business.service.TemplateInfoHelper;
 import com.zrlog.business.template.util.TemplateDownloadUtils;
+import com.zrlog.business.type.TemplateType;
 import com.zrlog.common.Constants;
 import com.zrlog.common.vo.TemplateVO;
 import com.zrlog.model.WebSite;
@@ -21,10 +22,7 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 import java.util.logging.Logger;
 
 public class TemplateService {
@@ -100,6 +98,10 @@ public class TemplateService {
             }
         }
         for (TemplateVO templateVO : templates) {
+            if (templateVO.getTemplateType() == TemplateType.NODE_JS) {
+                templateVO.setTags(Arrays.asList("polyglot", templateVO.getViewType().substring(1)));
+            }
+
             //同时存在以使用为主
             if (templateVO.getTemplate().equals(currentTemplate)) {
                 templateVO.setUse(true);
