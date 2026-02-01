@@ -12,7 +12,6 @@ import { RefObject, useState } from "react";
 import { ArticleChangeableValue, ArticleEntry } from "./index.types";
 import Button from "antd/es/button";
 import DigestEditorCard from "./digest-editor-card";
-import { getAppState } from "../../base/ConfigProviderApp";
 import { Link } from "react-router-dom";
 
 const ArticleEditSettingButton = ({
@@ -50,7 +49,6 @@ const ArticleEditSettingButton = ({
                         borderRadius: 8,
                         height: 47,
                         cursor: "pointer",
-                        background: getAppState().dark ? "#141414" : "white",
                         color: "rgb(102, 102, 102)",
                     }}
                     icon={

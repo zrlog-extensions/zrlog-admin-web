@@ -13,6 +13,11 @@ import BaseDragger, { DraggerUploadResponse } from "@editor/dist/src/editor/comm
 import BaseTitle from "../../base/BaseTitle";
 import { CameraOutlined } from "@ant-design/icons";
 import PreviewConfig from "./preview-config";
+import MarkedEditor from "@editor/dist/src/editor/marked-editor";
+import { getLangByRes } from "../../base/AppInit";
+import { getAppState } from "../../base/ConfigProviderApp";
+import Card from "antd/es/card";
+import { getBorderColor } from "@editor/dist/src/editor/editor-helpers";
 
 const layout = {
     labelCol: { span: 8 },
@@ -65,9 +70,11 @@ const TemplateConfig = ({
     const [messageApi, contextHolder] = message.useMessage({ maxCount: 3 });
 
     const setValue = (changedValues: any) => {
-        setState({
-            ...state,
-            dataMap: changedValues,
+        setState((prevState) => {
+            return {
+                ...prevState,
+                dataMap: { ...prevState.dataMap, ...changedValues },
+            };
         });
     };
 
@@ -160,9 +167,60 @@ const TemplateConfig = ({
         return <Input type={value.type} placeholder={value.placeholder} />;
     };
 
+    const isLarge = () => {
+        for (const value of Object.values(state.config)) {
+            if (value.type === "yml") {
+                return true;
+            }
+        }
+        return false;
+    };
+
     const getFormItems = () => {
         const formInputs = [];
         for (const [key, value] of Object.entries(state.config)) {
+            if (value.type === "yml") {
+                return (
+                    <Card
+                        title={value.label}
+                        styles={{
+                            body: {
+                                padding: 0,
+                                borderTop: `1px solid ${getBorderColor(getAppState().dark)}`,
+                                boxSizing: "border-box",
+                            },
+                        }}
+                        style={{ overflow: "hidden" }}
+                    >
+                        <MarkedEditor
+                            height={520}
+                            onChange={(e) => {
+                                setValue({
+                                    [key]: e.markdown.replace("```yml\n", "").replace("\n```", ""),
+                                });
+                            }}
+                            fullscreen={false}
+                            content={""}
+                            value={"```yml\n" + value.value + "\n```"}
+                            config={{
+                                axiosInstance: axiosInstance,
+                                disableStatistics: true,
+                                disableToolbar: true,
+                                dark: getAppState().dark,
+                                lang: getLangByRes(),
+                                preview: false,
+                                uploadConfig: {
+                                    buildUploadUrl: () => {
+                                        return "";
+                                    },
+                                    formName: "",
+                                    axiosInstance: axiosInstance,
+                                },
+                            }}
+                        />
+                    </Card>
+                );
+            }
             const input = (
                 <>
                     <Form.Item
@@ -225,7 +283,7 @@ const TemplateConfig = ({
             {contextHolder}
             <BaseTitle title={getRes()["templateConfig"]} />
             <Row>
-                <Col xs={24} style={{ maxWidth: 600 }}>
+                <Col xs={24} style={{ maxWidth: isLarge() ? 900 : 600 }}>
                     <Form
                         form={form}
                         disabled={offline || offlineData}

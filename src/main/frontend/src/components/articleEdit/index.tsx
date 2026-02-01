@@ -27,7 +27,13 @@ import {
 import ArticleEditFullscreenButton from "./article-edit-fullscreen-button";
 import { auditTime, concatMap, Subject, tap } from "rxjs";
 import { Subscription } from "rxjs/internal/Subscription";
-import { deepEqualWithSpecialJSON, disableExitTips, enableExitTips, getEditorUser } from "../../utils/helpers";
+import {
+    deepEqualWithSpecialJSON,
+    disableExitTips,
+    enableExitTips,
+    getEditorUser,
+    updateDocumentTitle,
+} from "../../utils/helpers";
 import { useLocation } from "react-router";
 import { addToCache, getCacheByKey, getPageDataCacheKeyByPath } from "../../utils/cache";
 import { LockOutlined } from "@ant-design/icons";
@@ -202,6 +208,9 @@ const Index: FunctionComponent<ArticleEditProps> = ({
             }
             const data = responseData;
             if (data.error === 0) {
+                if (data.documentTitle) {
+                    updateDocumentTitle(data.documentTitle);
+                }
                 //没有堆积的消息了，才能触发移除强制离开页面的提示
                 if (pendingMessages === 0) {
                     disableExitTips();
@@ -411,7 +420,7 @@ const Index: FunctionComponent<ArticleEditProps> = ({
     };
 
     const getEditorHeight = () => {
-        const baseHeight = (fullScreen ? 0 : 12 + 64 + 33 + 52) + 30 + 4 + getBaseHeight();
+        const baseHeight = (fullScreen ? 0 : 12 + 64 + 33 + 52) + 32 + 4 + getBaseHeight();
         return `calc(100vh - ${baseHeight}px)`;
     };
 
@@ -475,7 +484,7 @@ const Index: FunctionComponent<ArticleEditProps> = ({
                 title={""}
                 ref={editCardRef}
                 style={{
-                    borderRadius: fullScreen ? 0 : 8,
+                    borderRadius: fullScreen ? 0 : 16,
                     overflow: "hidden",
                 }}
                 styles={{

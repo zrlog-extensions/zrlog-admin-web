@@ -102,7 +102,7 @@ const UserInfo = ({ data, offline }: { data: BasicUserInfo; offline: boolean }) 
             <Dropdown menu={{ items }} placement="bottom">
                 <div
                     style={{
-                        color: "#ffffff",
+                        color: getAppState().dark ? "#ffffff" : "#333333",
                         borderRadius: 0,
                         marginRight: 16,
                         height: 50,
@@ -120,7 +120,7 @@ const UserInfo = ({ data, offline }: { data: BasicUserInfo; offline: boolean }) 
                     <Badge dot={data.lastVersion?.upgrade}>
                         <Text
                             style={{
-                                color: "#ffffff",
+                                color: getAppState().dark ? "#ffffff" : "#333333",
                                 paddingLeft: 8,
                             }}
                         >

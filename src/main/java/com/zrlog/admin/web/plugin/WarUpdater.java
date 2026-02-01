@@ -5,6 +5,7 @@ import com.hibegin.common.util.LoggerUtil;
 import com.hibegin.common.util.ZipUtil;
 import com.hibegin.http.server.util.PathUtil;
 import com.zrlog.admin.business.AdminConstants;
+import com.zrlog.business.service.TemplateInfoHelper;
 import com.zrlog.common.Constants;
 import com.zrlog.common.Updater;
 import com.zrlog.common.UpdaterTypeEnum;
@@ -42,7 +43,7 @@ public class WarUpdater implements Updater {
         File[] templates = templatePath.listFiles();
         if (templates != null) {
             for (File template : templates) {
-                if (template.isDirectory() && template.toString().substring(PathUtil.getRootPath().length()).startsWith(Constants.DEFAULT_TEMPLATE_PATH)) {
+                if (template.isDirectory() && TemplateInfoHelper.isDefaultTemplateStartWith(template.toString().substring(PathUtil.getRootPath().length()))) {
                     //skip default template folder
                     continue;
                 }

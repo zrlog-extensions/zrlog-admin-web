@@ -1,7 +1,8 @@
-import { useState } from "react";
-import { Button, Col, Form, Input, message, Modal } from "antd";
+import { FunctionComponent, PropsWithChildren, useEffect, useState } from "react";
+import { Col, Form, Input, message, Modal } from "antd";
 import Row from "antd/es/grid/row";
 import TextArea from "antd/es/input/TextArea";
+import { Link } from "react-router-dom";
 import { getRes } from "../../utils/constants";
 import { useAxiosBaseInstance } from "../../base/AppBase";
 
@@ -10,17 +11,33 @@ const layout = {
     wrapperCol: { span: 20 },
 };
 
-const AddType = ({ addSuccessCall, offline }: { addSuccessCall: () => void; offline: boolean }) => {
+type TypeEntry = {
+    id: number;
+    typeName: string;
+    alias: string;
+    remark?: string;
+};
+
+export type EditTypeProps = PropsWithChildren & {
+    record: TypeEntry;
+    editSuccessCall: () => void;
+    offline: boolean;
+};
+
+const CreateOrEditType: FunctionComponent<EditTypeProps> = ({ record, editSuccessCall, offline, children }) => {
     const [showModel, setShowModel] = useState<boolean>(false);
-    const [form, setForm] = useState<any>();
+    const [updateForm, setUpdateForm] = useState<TypeEntry>(record);
     const [messageApi, contextHolder] = message.useMessage({ maxCount: 3 });
     const [loading, setLoading] = useState<boolean>(false);
 
+    const isUpdate = () => {
+        return record.id && record.id > 0;
+    };
     const axiosInstance = useAxiosBaseInstance();
     const handleOk = () => {
         setLoading(true);
         axiosInstance
-            .post("/api/admin/type/add", form)
+            .post(isUpdate() ? "/api/admin/type/update" : "/api/admin/type/add", updateForm)
             .then(async ({ data }) => {
                 if (data.error) {
                     await messageApi.error(data.message);
@@ -28,7 +45,9 @@ const AddType = ({ addSuccessCall, offline }: { addSuccessCall: () => void; offl
                 }
                 if (data.error === 0) {
                     setShowModel(false);
-                    addSuccessCall();
+                    if (editSuccessCall) {
+                        editSuccessCall();
+                    }
                 }
             })
             .finally(() => {
@@ -37,16 +56,31 @@ const AddType = ({ addSuccessCall, offline }: { addSuccessCall: () => void; offl
     };
 
     const setValue = (changedValues: any) => {
-        setForm(changedValues);
+        setUpdateForm(changedValues);
     };
+
+    useEffect(() => {
+        setUpdateForm(record);
+    }, [record]);
+
     return (
         <>
             {contextHolder}
-            <Button type="primary" disabled={offline} onClick={() => setShowModel(true)} style={{ marginBottom: 8 }}>
-                {getRes()["add"]}
-            </Button>
+            <Link
+                to={isUpdate() ? "#edit-" + record.id : "#add"}
+                onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    if (offline) {
+                        return;
+                    }
+                    setShowModel(true);
+                }}
+            >
+                {children}
+            </Link>
             <Modal
-                title={getRes()["add"]}
+                title={isUpdate() ? getRes()["edit"] : getRes()["add"]}
                 open={showModel}
                 onOk={handleOk}
                 okButtonProps={{
@@ -54,7 +88,10 @@ const AddType = ({ addSuccessCall, offline }: { addSuccessCall: () => void; offl
                 }}
                 onCancel={() => setShowModel(false)}
             >
-                <Form onValuesChange={(_k, v) => setValue(v)} {...layout}>
+                <Form initialValues={updateForm} onValuesChange={(_k, v) => setValue(v)} {...layout}>
+                    <Form.Item name="id" style={{ display: "none" }}>
+                        <Input hidden={true} />
+                    </Form.Item>
                     <Row>
                         <Col span={24}>
                             <Form.Item
@@ -85,7 +122,7 @@ const AddType = ({ addSuccessCall, offline }: { addSuccessCall: () => void; offl
                                 label={getRes()["introduction"]}
                                 style={{ marginBottom: 8 }}
                                 name="remark"
-                                rules={[{ required: true, message: "" }]}
+                                rules={[{ message: "" }]}
                             >
                                 <TextArea />
                             </Form.Item>
@@ -96,4 +133,4 @@ const AddType = ({ addSuccessCall, offline }: { addSuccessCall: () => void; offl
         </>
     );
 };
-export default AddType;
+export default CreateOrEditType;

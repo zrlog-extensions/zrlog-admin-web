@@ -94,18 +94,14 @@ const SliderMenu = () => {
         return 24;
     };
 
-    function getItem(entry: MenuEntry, key: React.Key | null, children: MenuItem[], sub: boolean): MenuItem {
+    function getItem(entry: MenuEntry, key: React.Key | null, children: MenuItem[]): MenuItem {
         const info = getInfo(entry);
         const label = (
             <Link
                 to={getRealRouteUrl(entry.link)}
                 style={{
-                    color: "#FFF",
-                    background: info.selected
-                        ? sub
-                            ? "inherit"
-                            : `${colorToRgba(getAppState().colorPrimary, 0.3)}`
-                        : "inherit",
+                    color: "inherit",
+                    background: "transparent",
                 }}
                 onClick={(e) => {
                     tryBlock(e, modal);
@@ -117,13 +113,9 @@ const SliderMenu = () => {
         );
         const style: CSSProperties = {
             margin: 0,
-            borderRadius: 0,
             width: "100%",
-            color: "#FFF",
         };
-        if (info.selected) {
-            style.background = colorToRgba(getAppState().colorPrimary, 0.3);
-        }
+
         if (children.length > 0) {
             return {
                 key,
@@ -157,8 +149,7 @@ const SliderMenu = () => {
                 icon: <DashboardOutlined style={{ fontSize: getIconSize() }} />,
             },
             "/index",
-            [],
-            false
+            []
         ),
         getItem(
             {
@@ -168,9 +159,7 @@ const SliderMenu = () => {
                 icon: <EditOutlined style={{ fontSize: getIconSize() }} />,
             },
             "/article-edit",
-            [],
-
-            false
+            []
         ),
         getItem(
             {
@@ -180,8 +169,7 @@ const SliderMenu = () => {
                 icon: <ContainerOutlined style={{ fontSize: getIconSize() }} />,
             },
             "/article",
-            [],
-            false
+            []
         ),
         getItem(
             {
@@ -191,8 +179,7 @@ const SliderMenu = () => {
                 icon: <CommentOutlined style={{ fontSize: getIconSize() }} />,
             },
             "/comment",
-            [],
-            false
+            []
         ),
         getItem(
             {
@@ -202,8 +189,7 @@ const SliderMenu = () => {
                 icon: <ApiOutlined style={{ fontSize: getIconSize() }} />,
             },
             "/plugin",
-            [],
-            false
+            []
         ),
         getItem(
             {
@@ -213,8 +199,7 @@ const SliderMenu = () => {
                 icon: <SettingOutlined style={{ fontSize: getIconSize() }} />,
             },
             "/website",
-            [],
-            false
+            []
         ),
         getItem(
             {
@@ -233,8 +218,7 @@ const SliderMenu = () => {
                         icon: <span />,
                     },
                     "/article-type",
-                    [],
-                    true
+                    []
                 ),
                 getItem(
                     {
@@ -244,8 +228,7 @@ const SliderMenu = () => {
                         icon: <span />,
                     },
                     "/link",
-                    [],
-                    true
+                    []
                 ),
                 getItem(
                     {
@@ -255,19 +238,21 @@ const SliderMenu = () => {
                         icon: <span />,
                     },
                     "/nav",
-                    [],
-                    true
+                    []
                 ),
-            ],
-            false
+            ]
         ),
     ];
 
     const getSelectMenu = (): string[] => {
         const selectPath = location.pathname.split(".")[0];
-        if (selectPath === "") {
+        if (selectPath === "" || selectPath === "/" || selectPath === "/system") {
             return ["/index"];
-        } else if (selectPath.startsWith("/website")) {
+        } else if (
+            selectPath.startsWith("/website") ||
+            selectPath === "/upgrade" ||
+            selectPath === "/template-config"
+        ) {
             return ["/website"];
         } else if (
             selectPath.startsWith("/link") ||
@@ -294,11 +279,11 @@ const SliderMenu = () => {
             <Menu
                 selectedKeys={selectMenu}
                 items={items}
-                theme={getAppState().dark ? "light" : "dark"}
+                theme={getAppState().dark ? "dark" : "light"}
                 style={{
                     borderInlineEnd: "none",
                     minHeight: "100%",
-                    backgroundColor: getAppState().dark ? "#1f1f1f" : "#001529",
+                    background: getAppState().dark ? "transparent" : getAppState().colorPrimary + "10",
                 }}
             />
         </>

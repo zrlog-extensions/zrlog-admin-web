@@ -1,8 +1,10 @@
 import BaseTable, { PageDataSource } from "../../common/BaseTable";
 import { getRes } from "../../utils/constants";
-import EditLink from "./edit_link";
-import AddLink from "./add_link";
 import BaseTitle from "../../base/BaseTitle";
+import { Button } from "antd";
+import { EditOutlined } from "@ant-design/icons";
+import { getAppState } from "../../base/ConfigProviderApp";
+import CreateOrEditLink from "./create_or_edit_link";
 
 const BLink = ({ data, offline }: { data: PageDataSource; offline: boolean }) => {
     const getColumns = () => {
@@ -11,7 +13,7 @@ const BLink = ({ data, offline }: { data: PageDataSource; offline: boolean }) =>
                 title: getRes()["admin.link.manage"],
                 dataIndex: "url",
                 key: "url",
-                width: 240,
+                width: 140,
                 render: (url: string) => (
                     <a style={{ display: "inline" }} rel="noopener noreferrer" target={"_blank"} href={url}>
                         {url}
@@ -22,7 +24,7 @@ const BLink = ({ data, offline }: { data: PageDataSource; offline: boolean }) =>
                 title: getRes()["admin.link.name"],
                 key: "linkName",
                 dataIndex: "linkName",
-                width: 240,
+                width: 140,
                 render: (e: string) => {
                     return <span dangerouslySetInnerHTML={{ __html: e }} />;
                 },
@@ -31,6 +33,12 @@ const BLink = ({ data, offline }: { data: PageDataSource; offline: boolean }) =>
                 title: getRes()["introduction"],
                 key: "alt",
                 dataIndex: "alt",
+                width: 140,
+            },
+            {
+                title: getRes()["icon"],
+                dataIndex: "icon",
+                key: "icon",
                 width: 240,
             },
             {
@@ -51,11 +59,23 @@ const BLink = ({ data, offline }: { data: PageDataSource; offline: boolean }) =>
                 hideId={true}
                 columns={getColumns()}
                 addBtnRender={(addSuccessCall) => {
-                    return <AddLink offline={offline} addSuccessCall={addSuccessCall} />;
+                    return (
+                        <CreateOrEditLink
+                            record={{ id: 0, url: "", linkName: "" }}
+                            offline={offline}
+                            editSuccessCall={addSuccessCall}
+                        >
+                            <Button type="primary" disabled={offline} style={{ marginBottom: 8 }}>
+                                {getRes()["add"]}
+                            </Button>
+                        </CreateOrEditLink>
+                    );
                 }}
                 datasource={data}
                 editBtnRender={(_id, record, editSuccessCall) => (
-                    <EditLink offline={offline} record={record} editSuccessCall={editSuccessCall} />
+                    <CreateOrEditLink offline={offline} record={record} editSuccessCall={editSuccessCall}>
+                        <EditOutlined style={{ color: getAppState().colorPrimary }} />
+                    </CreateOrEditLink>
                 )}
                 deleteApi={"/api/admin/link/delete"}
             />

@@ -29,7 +29,7 @@ const AdminDashboardPage: FunctionComponent<AdminDashBroadPageProps> = ({ offlin
         if (userInfo !== undefined && userInfo !== null) {
             return;
         }
-        getCsrData(`/user/info?_t=${new Date().getTime()}`, axiosBaseInstance)
+        getCsrData(`/user/info`, new Date().getTime(), axiosBaseInstance)
             .then((data) => {
                 if (data && data.error === 0) {
                     if (data.key) {

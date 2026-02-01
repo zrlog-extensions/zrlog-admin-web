@@ -4,11 +4,11 @@ import com.hibegin.common.util.IOUtil;
 import com.hibegin.common.util.LoggerUtil;
 import com.hibegin.common.util.StringUtils;
 import com.hibegin.http.server.util.PathUtil;
-import com.zrlog.business.util.NativeUtils;
 import com.zrlog.common.Constants;
 import com.zrlog.common.Updater;
 import com.zrlog.common.UpdaterTypeEnum;
 import com.zrlog.common.vo.Version;
+import com.zrlog.util.BlogBuildInfoUtil;
 import com.zrlog.util.ThreadUtils;
 import com.zrlog.util.ZrLogUtil;
 
@@ -98,7 +98,7 @@ public class NativeImageUpdater implements Updater {
         }
         stringJoiner.add(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMddHHmmss")));
         String fileName = stringJoiner.toString();
-        if (NativeUtils.getRealFileArch().startsWith("Windows")) {
+        if (BlogBuildInfoUtil.getFileArch().startsWith("Windows")) {
             File tempUpgradeFile = new File(PathUtil.getTempPath() + "/" + fileName + ".bat");
             IOUtil.writeStrToFile(buildWindowsBatExec(), tempUpgradeFile);
             return "cmd /c start " + tempUpgradeFile;

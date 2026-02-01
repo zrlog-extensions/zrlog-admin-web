@@ -6,7 +6,8 @@ import com.hibegin.http.server.util.MimeTypeUtil;
 import com.hibegin.http.server.util.PathUtil;
 import com.zrlog.admin.business.service.TemplateService;
 import com.zrlog.admin.util.AdminTemplateUtils;
-import com.zrlog.business.util.TemplateDownloadUtils;
+import com.zrlog.business.service.TemplateInfoHelper;
+import com.zrlog.business.template.util.TemplateDownloadUtils;
 import com.zrlog.common.Constants;
 import com.zrlog.common.controller.BaseController;
 import com.zrlog.common.vo.TemplateVO;
@@ -27,7 +28,7 @@ public class AdminTemplatePageController extends BaseController {
     }
 
     @RequestMethod
-    public void previewImage() throws IOException {
+    public void previewImage() {
         String templateName = AdminTemplateUtils.loadTemplatePathByRequestInfo(this);
         TemplateVO templateVO = new TemplateService().loadTemplateConfig(templateName);
         if (Objects.isNull(templateVO)) {
@@ -40,7 +41,7 @@ public class AdminTemplatePageController extends BaseController {
         }
         ZrLogUtil.putLongTimeCache(response);
         response.addHeader("Content-Type", MimeTypeUtil.getMimeStrByExt(FileUtils.getFileExt(templateVO.getPreviewImage())));
-        if (Objects.equals(templateVO.getTemplate(), Constants.DEFAULT_TEMPLATE_PATH)) {
+        if (TemplateInfoHelper.isDefaultTemplate(templateVO.getTemplate())) {
             response.write(AdminTemplatePageController.class.getResourceAsStream(templateVO.getPreviewImage()));
             return;
         }

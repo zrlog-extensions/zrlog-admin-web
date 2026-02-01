@@ -1,14 +1,12 @@
-import { Content } from "antd/es/layout/layout";
-import Card from "antd/es/card";
-import { Button, Col, Form, Input } from "antd";
-import { getBackendServerUrl } from "../../utils/constants";
-import Row from "antd/es/grid/row";
+import { Button, Form, Input, theme } from "antd";
+import { getBackendServerUrl, getRes } from "../../utils/constants";
 import { LoginOutlined } from "@ant-design/icons";
-import { classes, LoginBg, StyledLoginPage } from "../login";
+import { classes, StyledLoginPage } from "../login";
 import { FunctionComponent, useState } from "react";
 import zh_CN from "antd/es/locale/zh_CN";
 import en_US from "antd/es/locale/en_US";
 import { getAppState } from "../../base/ConfigProviderApp";
+import Title from "antd/es/typography/Title";
 
 const layout = {
     labelCol: { span: 8 },
@@ -46,20 +44,24 @@ const Init: FunctionComponent<InitProps> = ({ onSubmit, lang }) => {
         onSubmit(url + "/");
     };
 
+    const { token } = theme.useToken();
+
     return (
-        <StyledLoginPage mainColor={getAppState().colorPrimary}>
-            <Content className={classes.content}>
-                <Card
-                    className={classes.card}
-                    cover={<LoginBg />}
-                    styles={{
-                        body: {
-                            margin: 16,
-                        },
-                    }}
-                >
+        <StyledLoginPage
+            dark={getAppState().dark}
+            colorBgContainer={token.colorBgContainer}
+            colorBgLayout={token.colorBgLayout}
+            mainColor={getAppState().colorPrimary}
+        >
+            <div className={classes.container}>
+                <div className={classes.sideImage}></div>
+                <div className={classes.formSection}>
+                    <Title level={3} className={classes.title}>
+                        {getRes().login}
+                    </Title>
                     <Form
                         {...layout}
+                        layout="vertical"
                         initialValues={{
                             backendServerUrl: url,
                         }}
@@ -71,18 +73,14 @@ const Init: FunctionComponent<InitProps> = ({ onSubmit, lang }) => {
                         }}
                     >
                         <Form.Item label={getGetaWayUrlDesc()} name={"backendServerUrl"} rules={[{ required: true }]}>
-                            <Input />
+                            <Input styles={{ input: { width: "100%" } }} />
                         </Form.Item>
-                        <Row style={{ alignItems: "center", display: "flex" }}>
-                            <Col xxl={24} xs={24}>
-                                <Button type="primary" style={{ minWidth: 108 }} htmlType="submit">
-                                    <LoginOutlined /> {getNextDesc()}
-                                </Button>
-                            </Col>
-                        </Row>
+                        <Button type="primary" style={{ maxWidth: 208 }} htmlType="submit">
+                            <LoginOutlined /> {getNextDesc()}
+                        </Button>
                     </Form>
-                </Card>
-            </Content>
+                </div>
+            </div>
         </StyledLoginPage>
     );
 };

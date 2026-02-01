@@ -1675,9 +1675,9 @@
   resolved "https://registry.npmmirror.com/@csstools/selector-specificity/-/selector-specificity-2.2.0.tgz#2cbcf822bf3764c9658c4d2e568bd0c0cb748016"
   integrity sha512-+OJ9konv95ClSTOJCmMZqpd5+YGsB2S+x6w3E1oaM8UuR5j8nTNHYSz8c9BEPGDOCMQYIEEGlVPj/VY64iTbGw==
 
-"@editor@https://dl.zrlog.com/artifacts/v2.0.47.tgz?v=1":
-  version "2.0.47"
-  resolved "https://dl.zrlog.com/artifacts/v2.0.47.tgz?v=1#c3caa3c5f4094315da757c1a5372024da6218464"
+"@editor@https://dl.zrlog.com/artifacts/v2.0.52.tgz?v=1":
+  version "2.0.52"
+  resolved "https://dl.zrlog.com/artifacts/v2.0.52.tgz?v=1#6041d8edd69329ca5cf8f733f7ebc93c9b57a980"
   dependencies:
     "@ant-design/cssinjs" "1.21.1"
     "@ant-design/icons" "5.5.1"
@@ -3578,11 +3578,6 @@ adjust-sourcemap-loader@^4.0.0:
   dependencies:
     loader-utils "^2.0.0"
     regex-parser "^2.2.11"
-
-aes-js@3.1.2:
-  version "3.1.2"
-  resolved "https://registry.npmmirror.com/aes-js/-/aes-js-3.1.2.tgz#db9aabde85d5caabbfc0d4f2a4446960f627146a"
-  integrity sha512-e5pEa2kBnBOgR4Y/p20pskXI74UEz7de8ZGVo58asOtvSVG5YAbJeELPZxOmt+Bnz3rX753YKhfIn4X4l1PPRQ==
 
 agent-base@6:
   version "6.0.2"

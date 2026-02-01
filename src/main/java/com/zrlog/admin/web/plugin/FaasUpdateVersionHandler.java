@@ -1,8 +1,8 @@
 package com.zrlog.admin.web.plugin;
 
 import com.hibegin.common.util.EnvKit;
-import com.zrlog.business.util.NativeUtils;
 import com.zrlog.common.vo.Version;
+import com.zrlog.util.BlogBuildInfoUtil;
 
 import java.io.File;
 import java.util.Map;
@@ -11,13 +11,15 @@ import java.util.Objects;
 public class FaasUpdateVersionHandler implements UpdateVersionHandler {
 
     private final Version version;
+    private final Map<String, Object> backend;
 
     public FaasUpdateVersionHandler(Map<String, Object> backend, Version version) {
         this.version = version;
+        this.backend = backend;
     }
 
     private static String getS3UpdateShell(String downloadUrl, String functionName) {
-        String finalName = "zrlog-" + NativeUtils.getRealFileArch() + "-latest.zip";
+        String finalName = "zrlog-" + BlogBuildInfoUtil.getFileArch() + "-latest.zip";
         String envKey = "LAMBDA_S3_REPO_NAME";
         String lambdaRepoName = Objects.requireNonNullElse(System.getenv(envKey), "zrlog-update-bucket");
         File localFile = new File("/tmp/" + finalName);
@@ -36,7 +38,7 @@ public class FaasUpdateVersionHandler implements UpdateVersionHandler {
     public String getMessage() {
         String downloadUrl = version.getZipDownloadUrl().replaceFirst(".zip", "-faas.zip");
         if (EnvKit.isLambda()) {
-            return "#### Update by aws-cli or CloudShell \n```bash\n" +
+            return "#### " + backend.get("lambdaUpdateTitle") + "\n```bash\n" +
                     getS3UpdateShell(downloadUrl, System.getenv("AWS_LAMBDA_FUNCTION_NAME")) +
                     "```";
         }

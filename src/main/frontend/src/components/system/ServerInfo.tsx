@@ -49,13 +49,13 @@ const ServerInfo = ({
                         </Typography.Text>
                     </>
                 );
-            } else if (r.value.startsWith("Darwin")) {
+            } else if (r.value.startsWith("Darwin") || r.value.startsWith("Mac")) {
                 return (
                     <>
                         <AppleOutlined />
                         <Typography.Text style={{ fontSize: 18, lineHeight: 1.5 }} ellipsis={true}>
                             {e}
-                        </Typography.Text>{" "}
+                        </Typography.Text>
                     </>
                 );
             } else {

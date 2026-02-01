@@ -1,7 +1,8 @@
-import { useState } from "react";
-import { Button, Col, Form, Input, InputNumber, message, Modal } from "antd";
+import { FunctionComponent, PropsWithChildren, useEffect, useState } from "react";
+import { Col, Form, Input, InputNumber, message, Modal } from "antd";
 import Row from "antd/es/grid/row";
 import TextArea from "antd/es/input/TextArea";
+import { Link } from "react-router-dom";
 import { getRes } from "../../utils/constants";
 import { useAxiosBaseInstance } from "../../base/AppBase";
 
@@ -10,16 +11,39 @@ const layout = {
     wrapperCol: { span: 20 },
 };
 
-const AddLink = ({ addSuccessCall, offline }: { addSuccessCall: () => void; offline: boolean }) => {
+export type EditLinkProps = PropsWithChildren & {
+    record: LinkEntry;
+    editSuccessCall: () => void;
+    offline: boolean;
+};
+
+type LinkEntry = {
+    id: number;
+    linkName: string;
+    url: string;
+    sort?: number;
+    icon?: string;
+    introduction?: string;
+};
+
+const CreateOrEditLink: FunctionComponent<EditLinkProps> = ({ record, editSuccessCall, offline, children }) => {
     const [showModel, setShowModel] = useState<boolean>(false);
-    const [form, setForm] = useState<any>();
+    const [updateForm, setUpdateForm] = useState<LinkEntry>(record);
     const [messageApi, contextHolder] = message.useMessage({ maxCount: 3 });
     const [loading, setLoading] = useState<boolean>(false);
+
+    const isUpdate = () => {
+        return record.id && record.id > 0;
+    };
+
     const axiosInstance = useAxiosBaseInstance();
     const handleOk = () => {
+        if (loading) {
+            return;
+        }
         setLoading(true);
         axiosInstance
-            .post("/api/admin/link/add", form)
+            .post(isUpdate() ? "/api/admin/link/update" : "/api/admin/link/add", updateForm)
             .then(async ({ data }) => {
                 if (data.error) {
                     await messageApi.error(data.message);
@@ -27,7 +51,9 @@ const AddLink = ({ addSuccessCall, offline }: { addSuccessCall: () => void; offl
                 }
                 if (data.error === 0) {
                     setShowModel(false);
-                    addSuccessCall();
+                    if (editSuccessCall) {
+                        editSuccessCall();
+                    }
                 }
             })
             .finally(() => {
@@ -35,18 +61,32 @@ const AddLink = ({ addSuccessCall, offline }: { addSuccessCall: () => void; offl
             });
     };
 
+    useEffect(() => {
+        setUpdateForm(record);
+    }, [record]);
+
     const setValue = (changedValues: any) => {
-        setForm(changedValues);
+        setUpdateForm(changedValues);
     };
 
     return (
         <>
             {contextHolder}
-            <Button type="primary" disabled={offline} onClick={() => setShowModel(true)} style={{ marginBottom: 8 }}>
-                {getRes()["add"]}
-            </Button>
+            <Link
+                to={isUpdate() ? "#edit-" + record.id : "#add"}
+                onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    if (offline) {
+                        return;
+                    }
+                    setShowModel(true);
+                }}
+            >
+                {children}
+            </Link>
             <Modal
-                title={getRes()["add"]}
+                title={isUpdate() ? getRes()["edit"] : getRes()["add"]}
                 open={showModel}
                 onOk={handleOk}
                 okButtonProps={{
@@ -54,7 +94,10 @@ const AddLink = ({ addSuccessCall, offline }: { addSuccessCall: () => void; offl
                 }}
                 onCancel={() => setShowModel(false)}
             >
-                <Form onValuesChange={(_k, v) => setValue(v)} {...layout}>
+                <Form initialValues={updateForm} onValuesChange={(_k, v) => setValue(v)} {...layout}>
+                    <Form.Item name="id" style={{ display: "none" }}>
+                        <Input hidden={true} />
+                    </Form.Item>
                     <Row>
                         <Col span={24}>
                             <Form.Item
@@ -94,6 +137,18 @@ const AddLink = ({ addSuccessCall, offline }: { addSuccessCall: () => void; offl
                     <Row>
                         <Col span={24}>
                             <Form.Item
+                                label={getRes()["icon"]}
+                                style={{ marginBottom: 8 }}
+                                name="icon"
+                                rules={[{ message: "" }]}
+                            >
+                                <Input />
+                            </Form.Item>
+                        </Col>
+                    </Row>
+                    <Row>
+                        <Col span={24}>
+                            <Form.Item
                                 label={getRes()["order"]}
                                 style={{ marginBottom: 8 }}
                                 name="sort"
@@ -108,5 +163,4 @@ const AddLink = ({ addSuccessCall, offline }: { addSuccessCall: () => void; offl
         </>
     );
 };
-
-export default AddLink;
+export default CreateOrEditLink;

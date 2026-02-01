@@ -4,7 +4,6 @@ import { Button } from "antd";
 import screenfull from "screenfull";
 import { FunctionComponent, useEffect } from "react";
 import { FullScreenProps } from "./index.types";
-import { getAppState } from "../../base/ConfigProviderApp";
 import { getEnterFullscreen, getExitFullscreen } from "../../utils/constants";
 import { Link } from "react-router-dom";
 
@@ -104,7 +103,6 @@ const ArticleEditFullscreenButton: FunctionComponent<ArticleEditFullscreenButton
                     fontSize: 24,
                     cursor: "pointer",
                     color: "rgb(102, 102, 102)",
-                    background: getAppState().dark ? "#141414" : "white",
                 }}
                 onClick={(e) => {
                     toggleFullScreen();

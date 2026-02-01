@@ -1,8 +1,10 @@
 import { getRes } from "../../utils/constants";
 import BaseTable, { PageDataSource } from "../../common/BaseTable";
-import AddType from "./add_type";
-import EditType from "./edit_type";
 import BaseTitle from "../../base/BaseTitle";
+import { getAppState } from "../../base/ConfigProviderApp";
+import { EditOutlined } from "@ant-design/icons";
+import { Button } from "antd";
+import CreateOrEditType from "./create_or_edit_type";
 
 const Type = ({ data, offline }: { data: PageDataSource; offline: boolean }) => {
     const getColumns = () => {
@@ -53,10 +55,22 @@ const Type = ({ data, offline }: { data: PageDataSource; offline: boolean }) => 
                 hideId={true}
                 columns={getColumns()}
                 addBtnRender={(addSuccessCall) => {
-                    return <AddType offline={offline} addSuccessCall={addSuccessCall} />;
+                    return (
+                        <CreateOrEditType
+                            record={{ id: 0, typeName: "", alias: "" }}
+                            offline={offline}
+                            editSuccessCall={addSuccessCall}
+                        >
+                            <Button type="primary" disabled={offline} style={{ marginBottom: 8 }}>
+                                {getRes()["add"]}
+                            </Button>
+                        </CreateOrEditType>
+                    );
                 }}
                 editBtnRender={(_id, record, editSuccessCall) => (
-                    <EditType offline={offline} record={record} editSuccessCall={editSuccessCall} />
+                    <CreateOrEditType offline={offline} record={record} editSuccessCall={editSuccessCall}>
+                        <EditOutlined style={{ color: getAppState().colorPrimary }} />
+                    </CreateOrEditType>
                 )}
                 datasource={data}
                 deleteApi={"/api/admin/type/delete"}

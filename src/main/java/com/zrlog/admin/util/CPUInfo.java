@@ -3,6 +3,7 @@ package com.zrlog.admin.util;
 import com.hibegin.common.util.EnvKit;
 import com.hibegin.common.util.LoggerUtil;
 import com.hibegin.common.util.ObjectUtil;
+import com.hibegin.common.util.StringUtils;
 import com.sun.management.OperatingSystemMXBean;
 import com.zrlog.common.Constants;
 
@@ -58,7 +59,11 @@ public class CPUInfo {
                 if (line.contains("Caption")) {
                     continue; // 忽略标题行
                 }
-                return line.trim(); // 返回 CPU 型号
+                String cpuInfo = line.trim();
+                if (StringUtils.isEmpty(cpuInfo)) {
+                    return System.getenv("PROCESSOR_IDENTIFIER");
+                }
+                return cpuInfo; // 返回 CPU 型号
             }
         }
         // Linux 系统

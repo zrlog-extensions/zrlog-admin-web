@@ -37,12 +37,13 @@ public class LinkController extends BaseController {
     @ResponseBody
     @RequestLock
     public UpdateRecordResponse update() throws IOException, SQLException {
-        UpdateLinkRequest typeRequest = getRequestBodyWithNullCheck(UpdateLinkRequest.class);
-        new Link().set("linkName", typeRequest.getLinkName())
-                .set("sort", typeRequest.getSort())
-                .set("url", typeRequest.getUrl())
-                .set("alt", Objects.requireNonNullElse(typeRequest.getAlt(), ""))
-                .updateById(typeRequest.getId());
+        UpdateLinkRequest linkRequest = getRequestBodyWithNullCheck(UpdateLinkRequest.class);
+        new Link().set("linkName", linkRequest.getLinkName())
+                .set("sort", linkRequest.getSort())
+                .set("url", linkRequest.getUrl())
+                .set("icon", linkRequest.getIcon())
+                .set("alt", Objects.requireNonNullElse(linkRequest.getAlt(), ""))
+                .updateById(linkRequest.getId());
         return new UpdateRecordResponse();
     }
 
@@ -55,10 +56,14 @@ public class LinkController extends BaseController {
     @ResponseBody
     @RequestLock
     public UpdateRecordResponse add() throws IOException, SQLException {
-        CreateLinkRequest typeRequest = getRequestBodyWithNullCheck(CreateLinkRequest.class);
-        return new UpdateRecordResponse(new Link().set("linkName", typeRequest.getLinkName())
-                .set("sort", Objects.requireNonNullElse(typeRequest.getSort(), 0))
-                .set("url", typeRequest.getUrl()).set("alt", Objects.requireNonNullElse(typeRequest.getAlt(), "")).save());
+        CreateLinkRequest linkRequest = getRequestBodyWithNullCheck(CreateLinkRequest.class);
+        return new UpdateRecordResponse(new Link()
+                .set("linkName", linkRequest.getLinkName())
+                .set("sort", Objects.requireNonNullElse(linkRequest.getSort(), 0))
+                .set("url", linkRequest.getUrl())
+                .set("icon", linkRequest.getIcon())
+                .set("alt", Objects.requireNonNullElse(linkRequest.getAlt(), ""))
+                .save());
     }
 
 }

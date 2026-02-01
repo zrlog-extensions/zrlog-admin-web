@@ -30,6 +30,8 @@ const Index: FunctionComponent<IndexProps> = ({ data }) => {
                         styles={{
                             body: {
                                 padding: 0,
+                                overflow: "hidden",
+                                position: "relative",
                             },
                         }}
                         style={{
@@ -39,7 +41,7 @@ const Index: FunctionComponent<IndexProps> = ({ data }) => {
                             color: "white",
                         }}
                     >
-                        <IndexTipBg style={{ position: "absolute", height: "100%", width: "100%", zIndex: 2 }} />
+                        <IndexTipBg style={{ position: "absolute", height: "100%", width: "100%" }} />
                         <div style={{ padding: 12 }}>
                             <div
                                 style={{

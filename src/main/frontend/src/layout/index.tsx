@@ -86,7 +86,12 @@ const AdminManageLayout: FunctionComponent<AdminManageLayoutProps> = ({
                 }}
                 rel="noopener noreferrer"
             >
-                <HomeOutlined style={{ fontSize: getAppState().compactMode ? 22 : 28 }} />
+                <HomeOutlined
+                    style={{
+                        fontSize: getAppState().compactMode ? 22 : 28,
+                        color: getAppState().dark ? "rgb(255 255 255 / 65%)" : "#333333",
+                    }}
+                />
             </a>
         );
         if (showSliderBtn) {
@@ -146,7 +151,15 @@ const AdminManageLayout: FunctionComponent<AdminManageLayoutProps> = ({
                         display: fullScreen ? "none" : "flex",
                         justifyContent: "space-between",
                         alignItems: "center",
-                        backgroundColor: getAppState().dark ? "#1f1f1f" : "#011529",
+                        backgroundColor: getAppState().dark
+                            ? "rgba(26, 26, 26, 0.85)"
+                            : getAppState().colorPrimary + "10",
+                        backdropFilter: "blur(20px) saturate(180%)",
+                        WebkitBackdropFilter: "blur(20px) saturate(180%)",
+                        paddingLeft: 0,
+                        boxShadow: getAppState().dark
+                            ? "0 4px 12px rgba(0, 0, 0, 0.3)"
+                            : "0 4px 12px rgba(0, 0, 0, 0.08)",
                     }}
                 >
                     {getMainButton()}
@@ -159,6 +172,8 @@ const AdminManageLayout: FunctionComponent<AdminManageLayoutProps> = ({
                                 paddingLeft: 24,
                                 userSelect: "none",
                                 color: getAppState().colorPrimary,
+                                fontWeight: 600,
+                                textShadow: `0 2px 8px ${getAppState().colorPrimary}40`,
                             }}
                         >
                             {getRes()["admin.offline.desc"]}
@@ -168,7 +183,6 @@ const AdminManageLayout: FunctionComponent<AdminManageLayoutProps> = ({
                 </Header>
                 <Row
                     style={{
-                        transition: "all .2s ease",
                         position: "relative",
                         minHeight: getMainHeight(),
                     }}
@@ -178,10 +192,17 @@ const AdminManageLayout: FunctionComponent<AdminManageLayoutProps> = ({
                         style={{
                             opacity: fullScreen || hiddenSlider ? 0 : 1,
                             position: "absolute",
-                            left: hiddenSlider ? `-${getSiderWidth()}px` : "0", // 动画控制显示隐藏
+                            left: hiddenSlider ? `-${getSiderWidth()}px` : "0",
                             height: "100%",
                             transform: fullScreen || hiddenSlider ? "translateX(-100%)" : "translateX(0)",
-                            backgroundColor: getAppState().dark ? "#1f1f1f" : "#001529",
+                            backgroundColor: getAppState().dark
+                                ? "rgba(26, 26, 26, 0.95)"
+                                : "rgba(255, 255, 255, 0.95)",
+                            backdropFilter: "blur(20px) saturate(180%)",
+                            WebkitBackdropFilter: "blur(20px) saturate(180%)",
+                            boxShadow: getAppState().dark
+                                ? "4px 0 12px rgba(0, 0, 0, 0.3)"
+                                : "4px 0 12px rgba(0, 0, 0, 0.08)",
                         }}
                     >
                         <SliderMenu />
@@ -191,7 +212,6 @@ const AdminManageLayout: FunctionComponent<AdminManageLayoutProps> = ({
                             flex: 1,
                             width: 100,
                             minHeight: fullScreen ? 0 : 1,
-                            transition: "margin-left .2s ease", // 动画完成后调整布局
                             marginLeft: hiddenSlider || fullScreen ? 0 : getSiderWidth(),
                         }}
                     >

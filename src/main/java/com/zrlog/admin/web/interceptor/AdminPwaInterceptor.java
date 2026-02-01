@@ -8,7 +8,6 @@ import com.hibegin.http.server.web.Controller;
 import com.zrlog.admin.business.AdminConstants;
 import com.zrlog.admin.business.service.AdminResource;
 import com.zrlog.business.service.TemplateInfoHelper;
-import com.zrlog.common.vo.TemplateVO;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
@@ -26,10 +25,11 @@ public class AdminPwaInterceptor implements HandleAbleInterceptor {
 
     public AdminPwaInterceptor() {
         resourceUris.add(AdminResource.ADMIN_ASSET_MANIFEST_JSON);
-        TemplateVO defaultTemplateVO = TemplateInfoHelper.getDefaultTemplateVO();
-        if (Objects.nonNull(defaultTemplateVO)) {
-            resourceUris.add(defaultTemplateVO.getAdminPreviewImage());
-        }
+        TemplateInfoHelper.getClassPathTemplates().forEach(clazz -> {
+            if (Objects.nonNull(clazz)) {
+                resourceUris.add(clazz.getAdminPreviewImage());
+            }
+        });
         resourceUris.add(AdminConstants.ADMIN_SERVICE_WORKER_JS);
     }
 

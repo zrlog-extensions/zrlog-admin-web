@@ -5,7 +5,6 @@ import com.hibegin.common.util.EnvKit;
 import com.hibegin.common.util.LoggerUtil;
 import com.hibegin.common.util.StringUtils;
 import com.hibegin.common.util.http.HttpUtil;
-import com.zrlog.business.util.NativeUtils;
 import com.zrlog.common.Constants;
 import com.zrlog.common.vo.Version;
 import com.zrlog.util.BlogBuildInfoUtil;
@@ -101,7 +100,7 @@ public class UpdateVersionTimerTask extends TimerTask {
 
     private static String getJsonFilename() {
         if (EnvKit.isNativeImage()) {
-            return "last." + NativeUtils.getRealFileArch() + ".version.json";
+            return "last." + BlogBuildInfoUtil.getFileArch() + ".version.json";
         }
         return "last.version.json";
     }

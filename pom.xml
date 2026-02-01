@@ -5,15 +5,16 @@
     <parent>
         <groupId>com.hibegin</groupId>
         <artifactId>zrlog-base</artifactId>
-        <version>3.2.125</version>
+        <version>3.3.8-SNAPSHOT</version>
     </parent>
     <artifactId>zrlog-admin-web</artifactId>
-    <version>3.2.128-SNAPSHOT</version>
+    <version>3.3.4-SNAPSHOT</version>
     <modelVersion>4.0.0</modelVersion>
 
     <properties>
         <finalName>zrlog-admin-web</finalName>
         <libOutputPath>lib</libOutputPath>
+        <zrlog-xx-template.version>3.3.6-SNAPSHOT</zrlog-xx-template.version>
         <gpg.passphrase/>
     </properties>
 
@@ -68,7 +69,23 @@
         </dependency>
         <dependency>
             <groupId>com.hibegin</groupId>
+            <artifactId>zrlog-template</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.hibegin</groupId>
             <artifactId>zrlog-admin-token</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.hibegin</groupId>
+            <artifactId>zrlog-freemarker-template</artifactId>
+            <version>${zrlog-xx-template.version}</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.hibegin</groupId>
+            <artifactId>zrlog-polyglot-template</artifactId>
+            <version>${zrlog-xx-template.version}</version>
+            <scope>compile</scope>
         </dependency>
     </dependencies>
 

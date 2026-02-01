@@ -113,7 +113,7 @@ const Upgrade: FunctionComponent<UpgradeProps> = ({ data, offline, offlineData }
             };
         });
         try {
-            const data = await getCsrData("/upgrade/download?preUpgradeKey=" + preUpgradeKey, axiosInstance);
+            const data = await getCsrData("/upgrade/download?preUpgradeKey=" + preUpgradeKey, 0, axiosInstance);
             if (data.error) {
                 messageApi.error(data.message);
                 return;
@@ -148,7 +148,7 @@ const Upgrade: FunctionComponent<UpgradeProps> = ({ data, offline, offlineData }
             };
         });
         try {
-            const { data } = await getCsrData("/upgrade/doUpgrade?preUpgradeKey=" + preUpgradeKey, axiosInstance);
+            const { data } = await getCsrData("/upgrade/doUpgrade?preUpgradeKey=" + preUpgradeKey, 0, axiosInstance);
             if (data && data.message) {
                 const htmlContent = await markdownToHtml(data.message);
                 setState((prevState) => {
