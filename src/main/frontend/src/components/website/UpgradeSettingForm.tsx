@@ -7,12 +7,12 @@ import Select from "antd/es/select";
 import Switch from "antd/es/switch";
 import Divider from "antd/es/divider";
 import { App, message } from "antd";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Upgrade } from "./index";
 import { useAxiosBaseInstance } from "../../base/AppBase";
 import { ApiResponse, UpgradeData } from "../../type";
-import { AxiosResponse } from "axios";
+import axios, { AxiosResponse, CancelTokenSource } from "axios";
 import UpgradeContent from "../upgrade-content";
 
 const layout = {
@@ -42,6 +42,7 @@ const UpgradeSettingForm = ({
 
     const navigate = useNavigate();
     const axiosInstance = useAxiosBaseInstance();
+    const cancelTokenSource = useRef<CancelTokenSource | null>(null);
 
     const checkNewVersion = async () => {
         if (checking) {
@@ -49,7 +50,11 @@ const UpgradeSettingForm = ({
         }
         setChecking(true);
         try {
-            const { data }: AxiosResponse<ApiResponse<UpgradeData>> = await axiosInstance.get("/api/admin/upgrade");
+            const source = axios.CancelToken.source();
+            cancelTokenSource.current = source;
+            const { data }: AxiosResponse<ApiResponse<UpgradeData>> = await axiosInstance.get("/api/admin/upgrade", {
+                cancelToken: source.token,
+            });
             if (data.data.upgrade) {
                 const title = `${getRes()["newVersion"]} - #${data.data.version.type}`;
                 modal.info({
@@ -68,6 +73,12 @@ const UpgradeSettingForm = ({
                     await messageApi.info(data.message);
                 }
             }
+        } catch (e) {
+            if (axios.isCancel(e)) {
+                console.log("Cancel check version request");
+            } else {
+                throw e;
+            }
         } finally {
             setChecking(false);
         }
@@ -77,6 +88,14 @@ const UpgradeSettingForm = ({
         setState(data);
         form.setFieldsValue(data);
     }, [data]);
+
+    useEffect(() => {
+        return () => {
+            if (cancelTokenSource.current) {
+                cancelTokenSource.current.cancel();
+            }
+        };
+    }, []);
 
     return (
         <Form
@@ -102,20 +121,27 @@ const UpgradeSettingForm = ({
                 </Col>
             </Row>
             <Form.Item name="autoUpgradeVersion" label={getRes()["admin.upgrade.autoCheckCycle"]}>
-                <Select style={{ maxWidth: 120 }}>
-                    <Select.Option key="86400" value={86400}>
-                        {getRes()["admin.upgrade.cycle.oneDay"]}
-                    </Select.Option>
-                    <Select.Option key="604800" value={604800}>
-                        {getRes()["admin.upgrade.cycle.oneWeek"]}
-                    </Select.Option>
-                    <Select.Option key="1296000" value={1296000}>
-                        {getRes()["admin.upgrade.cycle.halfMonth"]}
-                    </Select.Option>
-                    <Select.Option key="-1" value={-1}>
-                        {getRes()["admin.upgrade.cycle.never"]}
-                    </Select.Option>
-                </Select>
+                <Select
+                    style={{ maxWidth: 120 }}
+                    options={[
+                        {
+                            label: getRes()["admin.upgrade.cycle.oneDay"],
+                            value: 86400,
+                        },
+                        {
+                            label: getRes()["admin.upgrade.cycle.oneWeek"],
+                            value: 604800,
+                        },
+                        {
+                            label: getRes()["admin.upgrade.cycle.halfMonth"],
+                            value: 1296000,
+                        },
+                        {
+                            label: getRes()["admin.upgrade.cycle.never"],
+                            value: -1,
+                        },
+                    ]}
+                ></Select>
             </Form.Item>
             <Form.Item valuePropName="checked" name="upgradePreview" label={getRes()["admin.upgrade.canPreview"]}>
                 <Switch />

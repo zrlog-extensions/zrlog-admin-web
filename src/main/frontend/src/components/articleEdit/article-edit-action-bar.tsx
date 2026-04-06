@@ -21,21 +21,17 @@ type ArticleEditActionBarProps = {
     onAiMessagesChange?: (messages: AIContent[]) => void;
     onAiDrawerSizeChange?: (newSize: number) => void;
     aiDrawerWidth?: number | "default" | "large";
+    previewUrl?: string | undefined;
 };
 
 const StyledActionBar = styled(`div`)`
-    .ant-btn {
-        -webkit-transition: none;
-        box-shadow: none;
-    }
-
     .btn {
-        min-width: 120px;
+        width: 120px;
     }
 
     @media screen and (max-width: 576px) {
         .btn {
-            min-width: 40px;
+            width: 40px;
         }
     }
 `;
@@ -49,6 +45,7 @@ const ArticleEditActionBar: FunctionComponent<ArticleEditActionBarProps> = ({
     onAiMessagesChange,
     onAiDrawerSizeChange,
     aiDrawerWidth,
+    previewUrl,
 }) => {
     const enterBtnRef = useRef<HTMLAnchorElement | HTMLButtonElement>(null);
 
@@ -127,9 +124,10 @@ const ArticleEditActionBar: FunctionComponent<ArticleEditActionBarProps> = ({
             <Button
                 className={"btn"}
                 type="dashed"
+                target={"_blank"}
                 disabled={offline || (data.saving.previewIng && !data.saving.autoSaving)}
                 style={{ display: fullScreen ? "none" : "flex" }}
-                onClick={async () => await onSubmit(data.article, !data.rubbish, true, false)}
+                href={previewUrl}
             >
                 <EyeOutlined />
                 {screens.sm && getRes().preview}
@@ -144,7 +142,7 @@ const ArticleEditActionBar: FunctionComponent<ArticleEditActionBarProps> = ({
                     await onSubmit(data.article, true, false, false);
                 }}
             >
-                <SendOutlined />
+                {data.saving.releaseSaving ? <></> : <SendOutlined />}
                 {screens.sm && <span>{data.article.privacy === true ? getRes()["save"] : getRes().release}</span>}
             </Button>
         </StyledActionBar>

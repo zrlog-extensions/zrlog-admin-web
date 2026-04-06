@@ -21,6 +21,7 @@ import com.zrlog.business.template.HtmlTemplateProcessor;
 import com.zrlog.common.Constants;
 import com.zrlog.common.controller.BaseController;
 import com.zrlog.common.exception.ArgsException;
+import com.zrlog.common.vo.BaseTemplateVO;
 import com.zrlog.common.vo.TemplateVO;
 import com.zrlog.model.WebSite;
 import com.zrlog.util.BlogBuildInfoUtil;
@@ -136,7 +137,7 @@ public class TemplateController extends BaseController {
     }
 
     @ResponseBody
-    public AdminApiPageDataStandardResponse<List<TemplateVO>> index() throws IOException {
+    public AdminApiPageDataStandardResponse<List<BaseTemplateVO>> index() throws IOException {
         return new AdminApiPageDataStandardResponse<>(templateService.getAllTemplates(TemplateHelper.getTemplatePath(getRequest())),
                 "", request.getUri());
     }

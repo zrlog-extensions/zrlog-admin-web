@@ -47,16 +47,19 @@ const BasicForm = ({
             <Title level={4}>{getRes()["admin.basic.manage"]}</Title>
             <Divider />
             <Form.Item name="title" label={getRes()["title"]} rules={[{ required: true }]}>
-                <Input placeholder="" showCount={true} maxLength={30} />
+                <Input placeholder="" showCount={true} maxLength={128} />
             </Form.Item>
             <Form.Item name="second_title" label={getRes()["subTitle"]}>
-                <Input placeholder="" showCount={true} maxLength={30} />
+                <Input placeholder="" showCount={true} maxLength={128} />
             </Form.Item>
             <Form.Item name="keywords" label={getRes()["keywords"]}>
                 <TextArea showCount={true} rows={2} maxLength={160} />
             </Form.Item>
             <Form.Item name="description" label={getRes()["websiteDesc"]}>
                 <TextArea showCount={true} rows={5} maxLength={160} />
+            </Form.Item>
+            <Form.Item name="author" label={getRes()["author"]}>
+                <Input placeholder="" showCount={true} maxLength={128} />
             </Form.Item>
             <Form.Item name="favicon_ico_base64" label={`${getRes()["favicon"]}`}>
                 <FaviconUpload

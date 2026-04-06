@@ -232,7 +232,7 @@ const Index = ({ data, offline }: { data: ArticlePageDataSource; offline: boolea
 
     return (
         <>
-            <div style={{ paddingTop: 20, justifyContent: "space-between", display: "flex", alignItems: "center" }}>
+            <div style={{ paddingTop: 24, justifyContent: "space-between", display: "flex", alignItems: "center" }}>
                 <BaseTitle
                     noBottomBorder={true}
                     style={{ marginTop: 0, marginBottom: 0 }}

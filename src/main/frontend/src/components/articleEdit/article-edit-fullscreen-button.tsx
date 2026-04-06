@@ -5,7 +5,7 @@ import screenfull from "screenfull";
 import { FunctionComponent, useEffect } from "react";
 import { FullScreenProps } from "./index.types";
 import { getEnterFullscreen, getExitFullscreen } from "../../utils/constants";
-import { Link } from "react-router-dom";
+import { getAppState } from "../../base/ConfigProviderApp";
 
 type ArticleEditFullscreenButton = FullScreenProps & {
     fullScreenElement: HTMLDivElement;
@@ -81,36 +81,35 @@ const ArticleEditFullscreenButton: FunctionComponent<ArticleEditFullscreenButton
     });
 
     return (
-        <Link to={fullScreen ? "#exitFullScreen" : "#enterFullScreen"}>
-            <Button
-                type={"text"}
-                icon={
-                    fullScreen ? (
-                        <FullscreenExitOutlined title={getExitFullscreen()} style={{ fontSize: 24 }} />
-                    ) : (
-                        <FullscreenOutlined title={getEnterFullscreen()} style={{ fontSize: 24 }} />
-                    )
-                }
-                style={{
-                    border: 0,
-                    display: "flex",
-                    justifyContent: "center",
-                    alignItems: "center",
-                    width: 47,
-                    minWidth: 47,
-                    borderRadius: 8,
-                    height: 47,
-                    fontSize: 24,
-                    cursor: "pointer",
-                    color: "rgb(102, 102, 102)",
-                }}
-                onClick={(e) => {
-                    toggleFullScreen();
-                    e.stopPropagation();
-                    e.preventDefault();
-                }}
-            />
-        </Link>
+        <Button
+            type={"text"}
+            href={fullScreen ? "#exitFullScreen" : "#enterFullScreen"}
+            icon={
+                fullScreen ? (
+                    <FullscreenExitOutlined
+                        title={getExitFullscreen()}
+                        style={{ fontSize: getAppState().compactMode ? 18 : 24, display: "flex" }}
+                    />
+                ) : (
+                    <FullscreenOutlined
+                        title={getEnterFullscreen()}
+                        style={{ fontSize: getAppState().compactMode ? 18 : 24, display: "flex" }}
+                    />
+                )
+            }
+            style={{
+                border: 0,
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+                color: "rgb(119, 119, 119)",
+            }}
+            onClick={(e) => {
+                toggleFullScreen();
+                e.stopPropagation();
+                e.preventDefault();
+            }}
+        />
     );
 };
 

@@ -39,7 +39,7 @@ import { addToCache, getCacheByKey, getPageDataCacheKeyByPath } from "../../util
 import { LockOutlined } from "@ant-design/icons";
 import { getAppState } from "../../base/ConfigProviderApp";
 import BaseTitle from "../../base/BaseTitle";
-import MarkedEditor from "@editor/dist/src/editor/marked-editor";
+import Editor from "@editor/dist/src/editor";
 import EditorStatistics from "@editor/dist/src/editor/editor-statistics-info";
 import { toStatisticsByMarkdown } from "@editor/dist/src/editor/utils/editor-utils";
 import { Locale } from "@editor/dist/src/editor/lang/editor-lang";
@@ -63,6 +63,7 @@ const Index: FunctionComponent<ArticleEditProps> = ({
     const aliasRef = useRef<InputRef>(null);
     const digestRef = useRef<InputRef>(null);
     const versionRef = useRef<number>(defaultState.article.version);
+    const previewUrlRef = useRef<string | undefined>(defaultState.article.previewUrl);
     const logIdRef = useRef<number>(defaultState.article.logId ? defaultState.article.logId : -1);
     const subjectRef = useRef<Subject<ArticleEntry> | null>(null);
     const subRef = useRef<Subscription | null>(null);
@@ -218,10 +219,8 @@ const Index: FunctionComponent<ArticleEditProps> = ({
                 if (!autoSave) {
                     messageApi.info(data.message);
                 }
-                if (preview) {
-                    window.open(data.data.article["previewUrl"], "_blank");
-                }
                 const responseArticle = data.data.article;
+                previewUrlRef.current = responseArticle.previewUrl;
                 const url = new URL(window.location.href);
                 if (create) {
                     logIdRef.current = responseArticle.logId;
@@ -409,18 +408,24 @@ const Index: FunctionComponent<ArticleEditProps> = ({
     const { useBreakpoint } = Grid;
     const screens = useBreakpoint();
 
+    // header + bar + hr + bottom
+    const rawBaseHeight = 64 + 64 + 32 + 14;
+
     const getBaseHeight = () => {
+        if (fullScreen) {
+            return 0;
+        }
         if (screens.md) {
-            return 85;
+            return rawBaseHeight;
         }
         if (screens.sm) {
-            return 85 + 38;
+            return rawBaseHeight + 38;
         }
-        return 85 + 38 + 40;
+        return rawBaseHeight + 38 + 58;
     };
 
     const getEditorHeight = () => {
-        const baseHeight = (fullScreen ? 0 : 12 + 64 + 33 + 52) + 32 + 4 + getBaseHeight();
+        const baseHeight = 58 + 48 + 32 + getBaseHeight();
         return `calc(100vh - ${baseHeight}px)`;
     };
 
@@ -457,9 +462,30 @@ const Index: FunctionComponent<ArticleEditProps> = ({
         addToCache(aiDrawerCacheKey, size);
     };
 
+    const getCardStyle = () => {
+        if (fullScreen) {
+            return {
+                borderRadius: 0,
+                overflow: "hidden",
+            };
+        }
+        return {};
+    };
+
+    const getSelectStyle = () => {
+        if (
+            getAppState().theme === "bootstrap" ||
+            getAppState().theme === "shadcn" ||
+            getAppState().theme === "default"
+        ) {
+            return { border: "none" };
+        }
+        return {};
+    };
+
     return (
         <>
-            <div style={{ paddingTop: fullScreen ? 0 : 20, gap: 8, display: "flex", justifyContent: "space-between" }}>
+            <div style={{ paddingTop: fullScreen ? 0 : 24, gap: 8, display: "flex", justifyContent: "space-between" }}>
                 <BaseTitle
                     noBottomBorder={true}
                     title={getRes()["admin.log.edit"]}
@@ -467,6 +493,7 @@ const Index: FunctionComponent<ArticleEditProps> = ({
                 />
                 {!fullScreen && (
                     <ArticleEditActionBar
+                        previewUrl={previewUrlRef.current}
                         key={data.article.logId + "actionbar_offline:" + offline}
                         fullScreen={fullScreen}
                         offline={offline}
@@ -483,10 +510,7 @@ const Index: FunctionComponent<ArticleEditProps> = ({
             <Card
                 title={""}
                 ref={editCardRef}
-                style={{
-                    borderRadius: fullScreen ? 0 : 16,
-                    overflow: "hidden",
-                }}
+                style={getCardStyle()}
                 styles={{
                     body: {
                         padding: 0,
@@ -497,13 +521,20 @@ const Index: FunctionComponent<ArticleEditProps> = ({
                     gutter={[8, 0]}
                     style={{
                         position: "relative",
-                        borderBottom: getAppState().dark ? "1px solid rgba(253, 253, 253, 0.12)" : "1px solid #DDD",
+                        marginInline: 0,
                     }}
                 >
-                    <Col md={fullScreen ? 4 : 8} xl={9} xxl={12} xs={16} sm={fullScreen ? 4 : 6}>
+                    <Col
+                        md={fullScreen ? 4 : 8}
+                        xl={9}
+                        xxl={12}
+                        xs={16}
+                        sm={fullScreen ? 4 : 6}
+                        style={{ paddingInline: 0 }}
+                    >
                         <BaseInput
                             suffix={
-                                <div style={{ display: "flex", gap: 4 }}>
+                                <div style={{ display: "flex", gap: 4, height: 32, alignItems: "center" }}>
                                     {state.article.rubbish && (
                                         <Button disabled={true} style={{ padding: 0, fontSize: 16 }} type={"text"}>
                                             {getRes()["draft"]}
@@ -541,6 +572,7 @@ const Index: FunctionComponent<ArticleEditProps> = ({
                                     minWidth: 156,
                                     display: "flex",
                                     zIndex: 20,
+                                    ...getSelectStyle(),
                                 }}
                                 size={"large"}
                                 value={state.article.typeId}
@@ -581,7 +613,9 @@ const Index: FunctionComponent<ArticleEditProps> = ({
                             justifyContent: "flex-end",
                             position: "absolute",
                             right: 0,
+                            gap: 2,
                             top: 0,
+                            bottom: 0,
                         }}
                     >
                         {fullScreen && (
@@ -593,6 +627,7 @@ const Index: FunctionComponent<ArticleEditProps> = ({
                                     data={state}
                                     onAiMessagesChange={(messages) => updateAiMessageCache(messages)}
                                     onSubmit={onSubmit}
+                                    previewUrl={previewUrlRef.current}
                                 />
                             </Col>
                         )}
@@ -613,7 +648,8 @@ const Index: FunctionComponent<ArticleEditProps> = ({
                         />
                     </Col>
                 </Row>
-                <MarkedEditor
+                <Divider style={{ padding: 0, margin: 0 }} />
+                <Editor
                     config={{
                         lang: getAppState().lang as Locale,
                         dark: getAppState().dark,
@@ -649,7 +685,7 @@ const Index: FunctionComponent<ArticleEditProps> = ({
                     loadSuccess={() => {
                         //ignore
                     }}
-                    content={state.article.content ? state.article.content : ""}
+                    previewContent={state.article.content ? state.article.content : ""}
                     getContainer={() => {
                         return editCardRef.current as HTMLDivElement;
                     }}
@@ -657,7 +693,7 @@ const Index: FunctionComponent<ArticleEditProps> = ({
                     value={state.article.markdown}
                     onChange={(v) => {
                         if (
-                            v.markdown === "" &&
+                            v.value === "" &&
                             (state.article.markdown === "" ||
                                 state.article.markdown === undefined ||
                                 state.article.markdown === null)
@@ -665,10 +701,10 @@ const Index: FunctionComponent<ArticleEditProps> = ({
                             return;
                         }
                         //不检查 content，避免因为 markdown 渲染库升级，载入文章时自动更新为草稿
-                        if (v.markdown === state.article.markdown) {
+                        if (v.value === state.article.markdown) {
                             return;
                         }
-                        handleValuesChange(v);
+                        handleValuesChange({ markdown: v.value, content: v.previewContent });
                     }}
                 />
                 <EditorStatistics

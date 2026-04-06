@@ -20,6 +20,22 @@ type AppInitState = {
 };
 
 export const getColorPrimaryByRes = (): string => {
+    return getColorByTheme(getThemeByRes());
+};
+
+export const getColorByTheme = (theme: string) => {
+    if (theme === "geek") {
+        return "#39ff14";
+    }
+    if (theme === "cartoon") {
+        return "#225555";
+    }
+    if (theme === "shadcn") {
+        return "#262626";
+    }
+    if (theme === "illustration") {
+        return "#52C41A";
+    }
     const color: string | undefined = getRes()["admin_color_primary"];
     if (color === undefined || (color as string).length === 0) {
         return "#1677ff";
@@ -38,12 +54,32 @@ const getPreferredColorScheme = (): string => {
     return "light";
 };
 
-export const isDarkModeByRes = (): boolean => {
+export const isSupportDarkMode = (theme: string): boolean => {
+    return theme === "antd" || theme === "default";
+};
+
+export const isDarkByTheme = (theme: string) => {
+    if (theme === "geek") {
+        return true;
+    }
+    if (
+        theme === "cartoon" ||
+        theme === "shadcn" ||
+        theme === "illustration" ||
+        theme === "bootstrap" ||
+        theme === "glass"
+    ) {
+        return false;
+    }
     const configDarkMode = getRes()["admin_darkMode"];
     if (configDarkMode !== undefined) {
         return configDarkMode;
     }
     return getPreferredColorScheme() === "dark";
+};
+
+export const isDarkModeByRes = (): boolean => {
+    return isDarkByTheme(getThemeByRes());
 };
 
 export const isCompactModeByRes = (): boolean => {
@@ -56,6 +92,14 @@ export const getLangByRes = (): "en_US" | "zh_CN" => {
         return lang;
     }
     return "zh_CN";
+};
+
+export const getThemeByRes = (): "geek" | "antd" | "shadcn" | "default" | "cartoon" | "illustration" | "bootstrap" => {
+    const theme = getRes()["admin_theme"];
+    if (theme !== undefined) {
+        return theme;
+    }
+    return "default";
 };
 
 export const getLangByAppState = (): "en_US" | "zh_CN" => {
@@ -119,6 +163,7 @@ const AppInit: FunctionComponent<AppInitProps> = ({ lang, offline }) => {
                 dark: isDarkModeByRes(),
                 colorPrimary: getColorPrimaryByRes(),
                 compactMode: isCompactModeByRes(),
+                theme: getThemeByRes(),
             });
             // @ts-ignore
             window.inited = true;

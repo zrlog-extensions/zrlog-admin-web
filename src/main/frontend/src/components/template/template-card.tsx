@@ -1,6 +1,5 @@
-import { Badge, Card } from "antd";
+import { Badge, Card, message } from "antd";
 import { getBackendServerUrl, getRealRouteUrl, getRes } from "../../utils/constants";
-import Meta from "antd/es/card/Meta";
 import Col from "antd/es/grid/col";
 import { TemplateEntry } from "./index";
 import { FunctionComponent, useState } from "react";
@@ -9,6 +8,7 @@ import { Link } from "react-router-dom";
 import Popconfirm from "antd/es/popconfirm";
 import { useAxiosBaseInstance } from "../../base/AppBase";
 import Tags from "../../common/Tags";
+import { Meta } from "antd/es/list/Item";
 
 type TemplateCardProps = {
     template: TemplateEntry;
@@ -19,6 +19,7 @@ const TemplateCard: FunctionComponent<TemplateCardProps> = ({ template, onUpdate
     const axiosInstance = useAxiosBaseInstance();
 
     const [applying, setApplying] = useState<boolean>(false);
+    const [messageApi, contextHolder] = message.useMessage({ maxCount: 3 });
 
     const preview = (shortTemplate: string) => {
         axiosInstance.post("/api/admin/template/preview?shortTemplate=" + shortTemplate).then(() => {
@@ -31,7 +32,11 @@ const TemplateCard: FunctionComponent<TemplateCardProps> = ({ template, onUpdate
         setApplying(true);
         axiosInstance
             .post("/api/admin/template/apply?shortTemplate=" + shortTemplate)
-            .then(() => {
+            .then(async ({ data }) => {
+                if (data.error) {
+                    await messageApi.error(data.message);
+                    return;
+                }
                 onUpdate();
             })
             .finally(() => {
@@ -40,7 +45,11 @@ const TemplateCard: FunctionComponent<TemplateCardProps> = ({ template, onUpdate
     };
 
     const deleteTemplate = (shortTemplate: string) => {
-        axiosInstance.post("/api/admin/template/delete?shortTemplate=" + shortTemplate).then(() => {
+        axiosInstance.post("/api/admin/template/delete?shortTemplate=" + shortTemplate).then(async ({ data }) => {
+            if (data.error) {
+                await messageApi.error(data.message);
+                return;
+            }
             onUpdate();
         });
     };
@@ -81,6 +90,7 @@ const TemplateCard: FunctionComponent<TemplateCardProps> = ({ template, onUpdate
 
     return (
         <>
+            {contextHolder}
             <Col md={6} xxl={4} xs={24}>
                 <Badge.Ribbon
                     text={

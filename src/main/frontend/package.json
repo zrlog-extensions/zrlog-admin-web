@@ -7,7 +7,9 @@
   "dependencies": {
     "@ant-design/cssinjs": "1.21.1",
     "@craco/craco": "7.1.0",
-    "antd": "6.0.1",
+    "@editor": "https://dl.zrlog.com/artifacts/v2.0.76.tgz?v=1",
+    "antd": "6.3.1",
+    "antd-style": "4.1.0",
     "axios": "1.12.0",
     "md5": "2.3.0",
     "react": "18.3.1",
@@ -15,8 +17,7 @@
     "react-router": "6.28.0",
     "react-router-dom": "6.28.0",
     "rxjs": "7.8.1",
-    "styled-components": "6.1.15",
-    "@editor": "https://dl.zrlog.com/artifacts/v2.0.52.tgz?v=1"
+    "styled-components": "6.1.15"
   },
   "scripts": {
     "lint": "yarn type-check",

@@ -14,6 +14,7 @@ import useBreakpoint from "antd/es/grid/hooks/useBreakpoint";
 import { addToCache, getCacheByKey } from "../utils/cache";
 import StaticSite from "../components/StaticSite";
 import { getAppState } from "../base/ConfigProviderApp";
+import { useTheme } from "antd-style";
 
 const { Header, Content, Sider } = Layout;
 
@@ -36,6 +37,7 @@ const AdminManageLayout: FunctionComponent<AdminManageLayoutProps> = ({
     systemNotification,
 }) => {
     const screens = useBreakpoint();
+    const theme = useTheme();
 
     const sliderStateKey = "sliderOpen";
 
@@ -70,18 +72,21 @@ const AdminManageLayout: FunctionComponent<AdminManageLayoutProps> = ({
     };
 
     const getSiderWidth = () => {
-        return getAppState().compactMode ? 58 : 70;
+        return getAppState().compactMode ? 64 : 88;
     };
 
     const getMainButton = () => {
         const home = (
             <a
                 href={getRes()["homeUrl"] + "?spm=admin&buildId=" + getRes()["buildId"]}
-                className="logo"
+                className="ant-menu-item"
                 target="_blank"
                 title={getRes()["websiteTitle"]}
                 style={{
                     height: getHeaderHeight(),
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
                     width: getSiderWidth(),
                 }}
                 rel="noopener noreferrer"
@@ -136,9 +141,9 @@ const AdminManageLayout: FunctionComponent<AdminManageLayoutProps> = ({
                         title={systemNotification}
                         style={{
                             position: "fixed",
-                            zIndex: 1,
+                            zIndex: theme.zIndexPopupBase,
                             top: 38,
-                            borderRadius: 4,
+                            borderRadius: theme.borderRadius,
                             left: "50%",
                             transform: "translateX(-50%)",
                             width: "fit-content",
@@ -157,9 +162,6 @@ const AdminManageLayout: FunctionComponent<AdminManageLayoutProps> = ({
                         backdropFilter: "blur(20px) saturate(180%)",
                         WebkitBackdropFilter: "blur(20px) saturate(180%)",
                         paddingLeft: 0,
-                        boxShadow: getAppState().dark
-                            ? "0 4px 12px rgba(0, 0, 0, 0.3)"
-                            : "0 4px 12px rgba(0, 0, 0, 0.08)",
                     }}
                 >
                     {getMainButton()}
@@ -192,27 +194,48 @@ const AdminManageLayout: FunctionComponent<AdminManageLayoutProps> = ({
                         style={{
                             opacity: fullScreen || hiddenSlider ? 0 : 1,
                             position: "absolute",
+                            zIndex: 1000,
+                            top: 0,
                             left: hiddenSlider ? `-${getSiderWidth()}px` : "0",
                             height: "100%",
                             transform: fullScreen || hiddenSlider ? "translateX(-100%)" : "translateX(0)",
                             backgroundColor: getAppState().dark
                                 ? "rgba(26, 26, 26, 0.95)"
-                                : "rgba(255, 255, 255, 0.95)",
+                                : "rgba(255, 255, 255, 0.95)" /* Solidified for drawer mode */,
                             backdropFilter: "blur(20px) saturate(180%)",
                             WebkitBackdropFilter: "blur(20px) saturate(180%)",
-                            boxShadow: getAppState().dark
-                                ? "4px 0 12px rgba(0, 0, 0, 0.3)"
-                                : "4px 0 12px rgba(0, 0, 0, 0.08)",
                         }}
                     >
                         <SliderMenu />
                     </Sider>
+
+                    {/* MD3 Scrim (Backdrop) */}
+                    {!hiddenSlider && showSliderBtn && (
+                        <div
+                            onClick={() => {
+                                addToCache(sliderStateKey, true);
+                                setHiddenSlider(true);
+                            }}
+                            style={{
+                                position: "fixed",
+                                top: getHeaderHeight(),
+                                left: 0,
+                                width: "100vw",
+                                height: `calc(100vh - ${getHeaderHeight()}px)`,
+                                backgroundColor: "rgba(0,0,0,0.32)" /* MD3 standard scrim */,
+                                zIndex: 999,
+                                transition: "opacity 0.2s cubic-bezier(0.2, 0, 0, 1)",
+                            }}
+                        />
+                    )}
+
                     <Col
                         style={{
                             flex: 1,
-                            width: 100,
+                            width: "100%",
                             minHeight: fullScreen ? 0 : 1,
-                            marginLeft: hiddenSlider || fullScreen ? 0 : getSiderWidth(),
+                            marginLeft: showSliderBtn || fullScreen ? 0 : getSiderWidth(),
+                            transition: "margin-left 0.2s cubic-bezier(0.2, 0, 0, 1)",
                         }}
                     >
                         <Layout style={{ minHeight: getMainHeight(), overflow: fullScreen ? "hidden" : "auto" }}>

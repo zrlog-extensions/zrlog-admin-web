@@ -15,6 +15,7 @@ public class AdminWebSiteInfo implements Validator {
     private String admin_static_resource_base_url;
     private String language;
     private String admin_color_primary;
+    private String admin_theme;
     private Long article_auto_digest_length;
     private Boolean admin_darkMode;
     private Boolean admin_compactMode;
@@ -90,6 +91,9 @@ public class AdminWebSiteInfo implements Validator {
         if (StringUtils.isNotEmpty(admin_color_primary)) {
             this.admin_color_primary = Jsoup.clean(admin_color_primary, Safelist.none());
         }
+        if (StringUtils.isNotEmpty(admin_theme)) {
+            this.admin_theme = Jsoup.clean(admin_theme, Safelist.none());
+        }
         if (StringUtils.isNotEmpty(admin_static_resource_base_url)) {
             if (admin_static_resource_base_url.startsWith("http://") || admin_static_resource_base_url.startsWith("https://")) {
                 this.admin_static_resource_base_url = Jsoup.clean(admin_static_resource_base_url, Safelist.none());
@@ -137,5 +141,13 @@ public class AdminWebSiteInfo implements Validator {
 
     public void setAdmin_compactMode(Boolean admin_compactMode) {
         this.admin_compactMode = admin_compactMode;
+    }
+
+    public String getAdmin_theme() {
+        return admin_theme;
+    }
+
+    public void setAdmin_theme(String admin_theme) {
+        this.admin_theme = admin_theme;
     }
 }

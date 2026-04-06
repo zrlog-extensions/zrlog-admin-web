@@ -12,7 +12,8 @@ import { RefObject, useState } from "react";
 import { ArticleChangeableValue, ArticleEntry } from "./index.types";
 import Button from "antd/es/button";
 import DigestEditorCard from "./digest-editor-card";
-import { Link } from "react-router-dom";
+import { getAppState } from "../../base/ConfigProviderApp";
+import { colorToRgba } from "../../layout/slider";
 
 const ArticleEditSettingButton = ({
     article,
@@ -35,39 +36,33 @@ const ArticleEditSettingButton = ({
 
     return (
         <>
-            <Link to={"#settings"}>
-                <Button
-                    type={"text"}
-                    title={getRes()["admin.setting"]}
-                    style={{
-                        border: 0,
-                        display: "flex",
-                        justifyContent: "center",
-                        alignItems: "center",
-                        width: 47,
-                        minWidth: 47,
-                        borderRadius: 8,
-                        height: 47,
-                        cursor: "pointer",
-                        color: "rgb(102, 102, 102)",
-                    }}
-                    icon={
-                        settingsOpen ? (
-                            <SettingFilled style={{ fontSize: 24 }} />
-                        ) : (
-                            <SettingOutlined style={{ fontSize: 24 }} />
-                        )
-                    }
-                    className={"editor-icon"}
-                    onClick={(e) => {
-                        e.stopPropagation();
-                        e.preventDefault();
-                        setSettingsOpen((prevState) => {
-                            return !prevState;
-                        });
-                    }}
-                />
-            </Link>
+            <Button
+                href={"#settings"}
+                type={"text"}
+                title={getRes()["admin.setting"]}
+                style={{
+                    border: 0,
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center",
+                    cursor: "pointer",
+                    color: "rgb(119, 119, 119)",
+                }}
+                icon={
+                    settingsOpen ? (
+                        <SettingFilled style={{ fontSize: getAppState().compactMode ? 18 : 24, display: "flex" }} />
+                    ) : (
+                        <SettingOutlined style={{ fontSize: getAppState().compactMode ? 18 : 24, display: "flex" }} />
+                    )
+                }
+                onClick={(e) => {
+                    e.stopPropagation();
+                    e.preventDefault();
+                    setSettingsOpen((prevState) => {
+                        return !prevState;
+                    });
+                }}
+            />
             <Drawer
                 title={getRes()["admin.setting"] + (saving ? "[" + getRes().saving + "]" : "")}
                 placement="right"
@@ -80,10 +75,12 @@ const ArticleEditSettingButton = ({
                 styles={{
                     header: {
                         padding: 12,
+                        background: getAppState().dark ? "auto" : colorToRgba(getAppState().colorPrimary, 0.04),
                     },
                     body: {
                         padding: 12,
                         overflowX: "hidden",
+                        background: getAppState().dark ? "auto" : colorToRgba(getAppState().colorPrimary, 0.04),
                     },
                 }}
                 open={settingsOpen}

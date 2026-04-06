@@ -1,4 +1,4 @@
-import React, { CSSProperties, ReactElement, useEffect, useState } from "react";
+import React, { ReactElement, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { getRealRouteUrl, getRes } from "../utils/constants";
 import {
@@ -63,28 +63,47 @@ const SliderMenu = () => {
     const location = useLocation();
     const [modal, contextHolder] = Modal.useModal();
 
-    const getInfo = (entry: MenuEntry): IconInfo => {
-        let realPathName = location.pathname.split(".")[0];
-        if (realPathName === "/") {
-            realPathName = "/index";
-        }
-        if (realPathName.startsWith("/website") && entry.link.startsWith("/website")) {
-            return { selected: true, icon: entry.selectIcon };
-        }
-        if (realPathName === entry.link) {
-            return { selected: true, icon: entry.selectIcon };
-        }
-        if (entry.link !== "#more") {
-            return { selected: false, icon: entry.icon };
-        }
-        if (
-            realPathName.startsWith("/link") ||
-            realPathName.startsWith("/nav") ||
-            realPathName.startsWith("/article-type")
+    const getSelectMenu = (): string[] => {
+        const selectPath = location.pathname.split(".")[0];
+        if (selectPath === "" || selectPath === "/" || selectPath === "/system") {
+            return ["/index"];
+        } else if (
+            selectPath.startsWith("/website") ||
+            selectPath === "/upgrade" ||
+            selectPath === "/template-config"
         ) {
+            return ["/website"];
+        } else if (
+            selectPath.startsWith("/link") ||
+            selectPath.startsWith("/nav") ||
+            selectPath.startsWith("/article-type")
+        ) {
+            return ["/more", selectPath];
+        } else {
+            return [selectPath];
+        }
+    };
+
+    const getInfo = (entry: MenuEntry): IconInfo => {
+        const selectLink = getSelectMenu()[0];
+        if (selectLink === entry.link) {
+            return { selected: true, icon: entry.selectIcon };
+        }
+        if (selectLink.startsWith("/website") && entry.link.startsWith("/website")) {
+            return { selected: true, icon: entry.selectIcon };
+        }
+        if (isMore(entry.link) && selectLink === "/more") {
             return { selected: true, icon: entry.selectIcon };
         }
         return { selected: false, icon: entry.icon };
+    };
+
+    const isMore = (realPathName: string) => {
+        return (
+            realPathName.startsWith("/link") ||
+            realPathName.startsWith("/nav") ||
+            realPathName.startsWith("/article-type")
+        );
     };
 
     const getIconSize = () => {
@@ -104,6 +123,11 @@ const SliderMenu = () => {
                     background: "transparent",
                 }}
                 onClick={(e) => {
+                    if (entry.link.startsWith("#more")) {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        return;
+                    }
                     tryBlock(e, modal);
                 }}
             >
@@ -111,23 +135,17 @@ const SliderMenu = () => {
                 <span className="menu-title">{entry.text}</span>
             </Link>
         );
-        const style: CSSProperties = {
-            margin: 0,
-            width: "100%",
-        };
 
         if (children.length > 0) {
             return {
                 key,
                 children,
                 label,
-                style,
             } as MenuItem;
         }
         return {
             key,
             label,
-            style,
         } as MenuItem;
     }
 
@@ -243,27 +261,6 @@ const SliderMenu = () => {
             ]
         ),
     ];
-
-    const getSelectMenu = (): string[] => {
-        const selectPath = location.pathname.split(".")[0];
-        if (selectPath === "" || selectPath === "/" || selectPath === "/system") {
-            return ["/index"];
-        } else if (
-            selectPath.startsWith("/website") ||
-            selectPath === "/upgrade" ||
-            selectPath === "/template-config"
-        ) {
-            return ["/website"];
-        } else if (
-            selectPath.startsWith("/link") ||
-            selectPath.startsWith("/nav") ||
-            selectPath.startsWith("/article-type")
-        ) {
-            return ["/more", selectPath];
-        } else {
-            return [selectPath];
-        }
-    };
 
     const defaultSelectMenu = getSelectMenu();
 

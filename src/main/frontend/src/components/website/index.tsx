@@ -23,6 +23,7 @@ export interface Basic {
     keywords: string;
     description: string;
     favicon_ico_base64: string;
+    author: string;
 }
 
 export interface Admin {

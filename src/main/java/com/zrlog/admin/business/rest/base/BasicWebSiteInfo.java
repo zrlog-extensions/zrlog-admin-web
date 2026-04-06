@@ -12,6 +12,7 @@ public class BasicWebSiteInfo implements Validator {
 
     private String second_title;
     private String title;
+    private String author;
     private String keywords;
     private String description;
     private String favicon_ico_base64;
@@ -72,6 +73,9 @@ public class BasicWebSiteInfo implements Validator {
         if (StringUtils.isNotEmpty(favicon_ico_base64)) {
             this.favicon_ico_base64 = Jsoup.clean(favicon_ico_base64, Safelist.none());
         }
+        if (StringUtils.isNotEmpty(author)) {
+            this.author = Jsoup.clean(author, Safelist.none());
+        }
     }
 
     public String getFavicon_ico_base64() {
@@ -80,5 +84,13 @@ public class BasicWebSiteInfo implements Validator {
 
     public void setFavicon_ico_base64(String favicon_ico_base64) {
         this.favicon_ico_base64 = favicon_ico_base64;
+    }
+
+    public String getAuthor() {
+        return author;
+    }
+
+    public void setAuthor(String author) {
+        this.author = author;
     }
 }

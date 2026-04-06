@@ -1,9 +1,6 @@
 package com.zrlog.admin.business.service;
 
-import com.hibegin.common.util.EnvKit;
-import com.hibegin.common.util.FileUtils;
-import com.hibegin.common.util.LoggerUtil;
-import com.hibegin.common.util.ZipUtil;
+import com.hibegin.common.util.*;
 import com.hibegin.http.server.util.PathUtil;
 import com.zrlog.admin.business.AdminConstants;
 import com.zrlog.admin.business.rest.response.UpdateRecordResponse;
@@ -13,6 +10,7 @@ import com.zrlog.business.service.TemplateInfoHelper;
 import com.zrlog.business.template.util.TemplateDownloadUtils;
 import com.zrlog.business.type.TemplateType;
 import com.zrlog.common.Constants;
+import com.zrlog.common.vo.BaseTemplateVO;
 import com.zrlog.common.vo.TemplateVO;
 import com.zrlog.model.WebSite;
 import com.zrlog.util.I18nUtil;
@@ -93,7 +91,7 @@ public class TemplateService {
         return list;
     }
 
-    public List<TemplateVO> getAllTemplates(String previewTemplate) throws IOException {
+    public List<BaseTemplateVO> getAllTemplates(String previewTemplate) throws IOException {
         String currentTemplate = AdminConstants.getPublicWebSiteInfo().getTemplate();
         if (!TemplateInfoHelper.isDefaultTemplate(currentTemplate)) {
             try {
@@ -102,7 +100,7 @@ public class TemplateService {
                 LOGGER.warning("Download template failed " + e.getMessage());
             }
         }
-        List<TemplateVO> templates = new ArrayList<>(TemplateInfoHelper.getClassPathTemplates());
+        List<BaseTemplateVO> templates = new ArrayList<>(TemplateInfoHelper.getClassPathTemplates());
         for (File file : getAllTemplatesFiles()) {
             if (file.isDirectory() && !file.isHidden()) {
                 TemplateVO templateVO = TemplateInfoHelper.getTemplateVO(file);
@@ -111,7 +109,7 @@ public class TemplateService {
                 }
                 templateVO.setDeleteAble(true);
                 templateVO.setConfigAble(!templateVO.getConfig().isEmpty());
-                templates.add(templateVO);
+                templates.add(BeanUtil.convert(templateVO, BaseTemplateVO.class));
             } else if (file.getName().endsWith(".zip")) {
                 String templatePath = Constants.TEMPLATE_BASE_PATH + "/" + file.getName().replace(".zip", "");
                 if (TemplateDownloadUtils.exists(templatePath)) {
@@ -120,7 +118,7 @@ public class TemplateService {
                 TemplateDownloadUtils.installByZipFile(file, templatePath);
             }
         }
-        for (TemplateVO templateVO : templates) {
+        for (BaseTemplateVO templateVO : templates) {
             if (templateVO.getTemplateType() == TemplateType.NODE_JS) {
                 templateVO.setTags(Arrays.asList("polyglot", templateVO.getViewType().substring(1)));
             }

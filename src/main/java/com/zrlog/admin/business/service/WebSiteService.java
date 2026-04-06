@@ -34,11 +34,11 @@ public class WebSiteService {
     }
 
     public BasicWebSiteInfo basicWebSiteInfo() {
-        return queryToMap(Arrays.asList(WebSite.title, WebSite.second_title, WebSite.description, WebSite.keywords, "favicon_ico_base64"), BasicWebSiteInfo.class);
+        return queryToMap(Arrays.asList(WebSite.title, WebSite.second_title, WebSite.description, WebSite.keywords, "favicon_ico_base64", WebSite.author), BasicWebSiteInfo.class);
     }
 
     public AdminWebSiteInfo adminWebSiteInfo() {
-        AdminWebSiteInfo admin = queryToMap(Arrays.asList(WebSite.admin_darkMode, WebSite.admin_compactMode, WebSite.language, WebSite.admin_color_primary, WebSite.session_timeout, WebSite.article_auto_digest_length, "favicon_png_pwa_512_base64", "favicon_png_pwa_192_base64", "admin_article_page_size", "admin_static_resource_base_url"), AdminWebSiteInfo.class);
+        AdminWebSiteInfo admin = queryToMap(Arrays.asList(WebSite.admin_darkMode, WebSite.admin_compactMode, WebSite.language, WebSite.admin_color_primary, WebSite.admin_theme, WebSite.session_timeout, WebSite.article_auto_digest_length, "favicon_png_pwa_512_base64", "favicon_png_pwa_192_base64", "admin_article_page_size", "admin_static_resource_base_url"), AdminWebSiteInfo.class);
         if (StringUtils.isEmpty(admin.getAdmin_color_primary())) {
             admin.setAdmin_color_primary(WebSiteUtils.DEFAULT_COLOR_PRIMARY_COLOR);
         }

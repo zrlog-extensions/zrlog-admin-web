@@ -1,33 +1,25 @@
 package com.zrlog.admin.web.controller.api;
 
-import com.google.gson.Gson;
-import com.hibegin.common.util.IOUtil;
-import com.hibegin.common.util.StringUtils;
 import com.hibegin.http.HttpMethod;
 import com.hibegin.http.annotation.RequestMethod;
 import com.hibegin.http.annotation.ResponseBody;
-import com.zrlog.admin.business.AdminConstants;
 import com.zrlog.admin.business.dto.UserLoginDTO;
 import com.zrlog.admin.business.rest.request.LoginRequest;
 import com.zrlog.admin.business.rest.response.*;
 import com.zrlog.admin.business.service.AdminArticleService;
 import com.zrlog.admin.business.service.AdminStatisticsService;
 import com.zrlog.admin.business.service.UserService;
+import com.zrlog.admin.util.ManifestUtils;
 import com.zrlog.admin.web.annotation.RefreshCache;
-import com.zrlog.admin.web.controller.page.AdminPageController;
-import com.zrlog.blog.web.util.WebTools;
 import com.zrlog.business.exception.MissingInstallException;
 import com.zrlog.business.plugin.type.StaticSiteType;
 import com.zrlog.common.Constants;
 import com.zrlog.common.controller.BaseController;
-import com.zrlog.common.vo.PublicWebSiteInfo;
-import com.zrlog.plugin.BaseStaticSitePlugin;
 import com.zrlog.util.BlogBuildInfoUtil;
 import com.zrlog.util.I18nUtil;
 import com.zrlog.util.ThreadUtils;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.sql.SQLException;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
@@ -53,29 +45,7 @@ public class AdminController extends BaseController {
 
     @ResponseBody
     public Map<String, Object> manifest() throws IOException {
-        try (InputStream inputStream = AdminPageController.class.getResourceAsStream(AdminConstants.ADMIN_PWA_MANIFEST_JSON)) {
-            if (inputStream == null) {
-                return new HashMap<>();
-            }
-            Map map = new Gson().fromJson(IOUtil.getStringInputStream(inputStream), Map.class);
-            PublicWebSiteInfo publicWebSiteInfo = AdminConstants.getPublicWebSiteInfo();
-            if (StringUtils.isNotEmpty(publicWebSiteInfo.getTitle())) {
-                map.put("short_name", publicWebSiteInfo.getTitle());
-            }
-            map.put("name", AdminConstants.getAdminDocumentTitleByUri("/", publicWebSiteInfo));
-            map.put("theme_color", publicWebSiteInfo.getAdmin_color_primary());
-            map.put("description", publicWebSiteInfo.getDescription());
-            map.put("id", publicWebSiteInfo.getAppId());
-            map.put("background_color", Objects.equals(publicWebSiteInfo.getAdmin_darkMode(), true) ? "#000000" : "#FFFFFF");
-            List<Map<String, Object>> list = (List<Map<String, Object>>) map.get("icons");
-            for (Map<String, Object> icon : list) {
-                icon.put("src", WebTools.buildEncodedUrl(request, "/admin" + ((String) icon.get("src")).substring(1)));
-            }
-            if (BaseStaticSitePlugin.isStaticPluginRequest(request)) {
-                map.put("start_url", ((String) map.get("start_url")).replace("./index", "./index.html"));
-            }
-            return map;
-        }
+        return ManifestUtils.manifest(request);
     }
 
     /**

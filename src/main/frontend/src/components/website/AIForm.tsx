@@ -7,7 +7,7 @@ import { getRes } from "../../utils/constants";
 import { useEffect, useState } from "react";
 
 import { AI } from "./index";
-import Select from "antd/es/select";
+import Select, { DefaultOptionType } from "antd/es/select";
 import { Input } from "antd";
 import AIIcon from "@editor/dist/src/ai/AIIcon";
 
@@ -31,6 +31,35 @@ const AIForm = ({
 }) => {
     const [state, setState] = useState<AI>(data);
     const [form] = Form.useForm();
+
+    const getModelOptions = (): DefaultOptionType[] => {
+        return data.allProviders
+            .filter((e) => {
+                return state.ai_provider === e.name;
+            })
+            .map((e) => {
+                return e.models.map((e) => {
+                    return {
+                        label: e,
+                        value: e,
+                    } as DefaultOptionType;
+                });
+            })[0];
+    };
+
+    const getAiProviderOptions = (): DefaultOptionType[] => {
+        return data.allProviders.map((e) => {
+            return {
+                label: (
+                    <div style={{ display: "flex", alignItems: "center", gap: 4 }}>
+                        <AIIcon name={e.name} />
+                        {e.name.toLowerCase().replace("_", "")}
+                    </div>
+                ),
+                value: e.name,
+            } as DefaultOptionType;
+        });
+    };
 
     useEffect(() => {
         setState(data);
@@ -58,33 +87,10 @@ const AIForm = ({
             <Title level={4}>{getRes()["admin.ai.manage"]}</Title>
             <Divider />
             <Form.Item name="ai_provider" label={getRes()["website.ai_provider"]} required={true}>
-                <Select style={{ maxWidth: 200 }}>
-                    {data.allProviders.map((provider) => {
-                        return (
-                            <Select.Option value={provider.name}>
-                                <div style={{ display: "flex", alignItems: "center", gap: 4 }}>
-                                    <AIIcon name={provider.name} /> {provider.name.toLowerCase().replace("_", "")}
-                                </div>
-                            </Select.Option>
-                        );
-                    })}
-                </Select>
+                <Select style={{ maxWidth: 200 }} options={getAiProviderOptions()} />
             </Form.Item>
             <Form.Item name={"ai_model"} label={getRes()["website.ai_model"]} required={true}>
-                <Select style={{ maxWidth: 200 }}>
-                    {data.allProviders.map((e) => {
-                        if (state.ai_provider === e.name) {
-                            return (
-                                <>
-                                    {e.models.map((e) => {
-                                        return <Select.Option value={e}>{e}</Select.Option>;
-                                    })}
-                                </>
-                            );
-                        }
-                        return <></>;
-                    })}
-                </Select>
+                <Select style={{ maxWidth: 200 }} options={getModelOptions()} />
             </Form.Item>
             <Form.Item name={"ai_api_key"} label={getRes()["website.ai_api_key"]} required={true}>
                 <Input />

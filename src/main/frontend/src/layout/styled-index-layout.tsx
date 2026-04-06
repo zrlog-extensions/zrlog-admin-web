@@ -7,42 +7,7 @@ type StyledIndexLayoutProps = {
 };
 
 const StyledIndexLayout = styled.div<StyledIndexLayoutProps>`
-    .ant-menu-item {
-        width: 100%;
-    }
-
-    .logo {
-        overflow: hidden;
-        display: inline-flex;
-        justify-content: center;
-        align-items: center;
-
-        &:hover {
-            transform: scale(1.05);
-            filter: drop-shadow(0 4px 8px ${(props) => props.colorPrimary}60);
-        }
-    }
-
-    .ant-layout-content {
-        padding-left: 20px;
-        padding-right: 20px;
-    }
-
-    .ant-layout-footer {
-        padding: 24px;
-        background: linear-gradient(135deg, rgba(255, 255, 255, 0.05) 0%, rgba(255, 255, 255, 0.02) 100%);
-    }
-
-    .ant-layout-footer-copyright {
-        display: block;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        white-space: nowrap;
-    }
-
     .ant-layout-header {
-        padding: 0;
-        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
         backdrop-filter: blur(10px);
 
         .dark & {
@@ -110,7 +75,7 @@ const StyledIndexLayout = styled.div<StyledIndexLayoutProps>`
             left: -100%;
             width: 100%;
             height: 100%;
-            background: linear-gradient(90deg, transparent, ${(props) => props.colorPrimary}20, transparent);
+            background: linear-gradient(90deg, transparent, ${(props) => props.colorPrimary}10, transparent);
         }
 
         &:hover::before {
@@ -130,10 +95,7 @@ const StyledIndexLayout = styled.div<StyledIndexLayoutProps>`
     }
 
     .ant-menu-sub > .ant-menu-item {
-        height: 42px;
-        line-height: 42px;
         margin-bottom: 4px;
-        border-radius: 6px;
         margin-left: 0 !important;
         padding-left: 0 !important;
         display: flex !important;
@@ -153,6 +115,20 @@ const StyledIndexLayout = styled.div<StyledIndexLayoutProps>`
             text-align: center !important;
             margin-left: 0 !important;
             display: block !important;
+            font-size: 13px;
+            font-weight: 500;
+        }
+
+        &:hover {
+            background: ${(props) => colorToRgba(props.colorPrimary, 0.08)} !important;
+        }
+    }
+
+    .ant-menu-sub .ant-menu-item-selected {
+        background: ${(props) => colorToRgba(props.colorPrimary, 0.16)} !important;
+        .menu-title {
+            color: ${(props) => props.colorPrimary};
+            font-weight: 600;
         }
     }
 
@@ -160,26 +136,12 @@ const StyledIndexLayout = styled.div<StyledIndexLayoutProps>`
 
     .ant-menu .ant-menu-item,
     .ant-menu-submenu-title {
-        border-radius: 10px;
-        margin-inline: 6px;
-        width: calc(100% - 12px);
-        backdrop-filter: blur(10px);
+        margin-inline: 12px;
+        width: calc(100% - 24px);
     }
 
     .ant-menu .ant-menu-item {
-        border-radius: 10px !important;
         position: relative;
-
-        &::after {
-            content: "";
-            position: absolute;
-            bottom: 0;
-            left: 50%;
-            transform: translateX(-50%) scaleX(0);
-            width: 80%;
-            height: 2px;
-            background: ${(props) => props.colorPrimary};
-        }
     }
 
     /* Submenu Title */
@@ -197,62 +159,47 @@ const StyledIndexLayout = styled.div<StyledIndexLayoutProps>`
     }
 
     h3.page-header {
-        margin-top: 20px;
-        margin-bottom: 20px;
+        margin-top: 24px;
+        margin-bottom: 24px;
         padding-left: 12px;
         overflow: hidden;
         text-overflow: ellipsis;
         white-space: nowrap;
-        font-size: 1.75rem;
-        font-weight: 700;
-        background: linear-gradient(
-            135deg,
-            ${(props) => props.colorPrimary} 0%,
-            ${(props) => props.colorPrimary}cc 100%
-        );
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        background-clip: text;
+        /* MD3 Headline Large */
+        font-size: 32px;
+        line-height: 40px !important;
+        font-weight: 400;
     }
 
     .userAvatarImg {
         border-radius: 50%;
-        border: 3px solid transparent;
+        border: 2px solid transparent;
         background: linear-gradient(white, white) padding-box,
             linear-gradient(135deg, ${(props) => props.colorPrimary}80, ${(props) => props.colorPrimary}40) border-box;
 
         &:hover {
-            box-shadow: 0 8px 16px ${(props) => props.colorPrimary}40;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1); /* Soft subtle */
         }
     }
 
-    /* Enhanced hover effects for menu items */
+    /* Enhanced hover effects for menu items - MD3 State Layers */
 
     .ant-menu-item:hover,
     .ant-menu-submenu-title:hover {
-        background: linear-gradient(
-            135deg,
-            ${(props) => colorToRgba(props.colorPrimary, 0.12)} 0%,
-            ${(props) => colorToRgba(props.colorPrimary, 0.08)} 100%
-        ) !important;
+        background: ${(props) => colorToRgba(props.colorPrimary, 0.08)} !important; /* MD3 Hover state layer */
         color: ${(props) => props.colorPrimary} !important;
-        box-shadow: 0 4px 12px ${(props) => props.colorPrimary}20;
+        box-shadow: none;
 
         .anticon {
-            transform: scale(1.1);
-            filter: drop-shadow(0 2px 4px ${(props) => props.colorPrimary}40);
+            filter: drop-shadow(0 1px 2px ${(props) => props.colorPrimary}20);
         }
     }
 
     .ant-menu-item-selected {
-        background: linear-gradient(
-            135deg,
-            ${(props) => colorToRgba(props.colorPrimary, 0.2)} 0%,
-            ${(props) => colorToRgba(props.colorPrimary, 0.15)} 100%
-        ) !important;
+        background: ${(props) => colorToRgba(props.colorPrimary, 0.12)} !important; /* MD3 Focus/Active state layer */
         color: ${(props) => props.colorPrimary} !important;
         font-weight: 600;
-        box-shadow: 0 4px 12px ${(props) => props.colorPrimary}30, inset 0 1px 0 ${(props) => props.colorPrimary}40;
+        box-shadow: none;
 
         a {
             background: transparent !important;
@@ -296,14 +243,9 @@ const StyledIndexLayout = styled.div<StyledIndexLayoutProps>`
         }
     }
 
-    .ant-card-body {
-        padding: 24px;
-    }
-
     /* Premium Table Design */
 
     .ant-table {
-        border-radius: 12px;
         overflow: hidden;
         background: white;
 
@@ -337,7 +279,6 @@ const StyledIndexLayout = styled.div<StyledIndexLayoutProps>`
         /* Table rows with elegant spacing */
 
         tbody > tr {
-            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
             border-bottom: 1px solid #f0f0f0;
 
             > td {
@@ -386,10 +327,6 @@ const StyledIndexLayout = styled.div<StyledIndexLayoutProps>`
         }
     }
 
-    .ant-table-wrapper {
-        border-radius: 12px;
-    }
-
     /* Refined Buttons */
 
     .ant-btn-primary {
@@ -400,31 +337,7 @@ const StyledIndexLayout = styled.div<StyledIndexLayoutProps>`
         );
         border: none;
         box-shadow: 0 2px 8px ${(props) => props.colorPrimary}30, 0 1px 2px ${(props) => props.colorPrimary}20;
-        transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
         font-weight: 500;
-
-        &:hover {
-            box-shadow: 0 4px 12px ${(props) => props.colorPrimary}40, 0 2px 4px ${(props) => props.colorPrimary}30;
-            background: linear-gradient(
-                135deg,
-                ${(props) => props.colorPrimary}f0 0%,
-                ${(props) => props.colorPrimary}cc 100%
-            );
-        }
-
-        &:active {
-            transform: translateY(0);
-        }
-    }
-
-    .ant-btn-default {
-        border-color: #e0e0e0;
-        transition: all 0.25s ease;
-
-        &:hover {
-            border-color: ${(props) => props.colorPrimary};
-            color: ${(props) => props.colorPrimary};
-        }
     }
 
     /* Upload list hidden as per original */
@@ -475,7 +388,6 @@ const StyledIndexLayout = styled.div<StyledIndexLayoutProps>`
 
     .ant-form-item-has-error .ant-radio-group {
         border: 1px solid #ff4d4f;
-        border-radius: 6px;
     }
 
     .ant-upload {
@@ -488,8 +400,6 @@ const StyledIndexLayout = styled.div<StyledIndexLayoutProps>`
     .ant-input,
     .ant-input-number,
     .ant-select-selector {
-        transition: all 0.25s ease;
-
         &:hover {
             border-color: ${(props) => props.colorPrimary}80;
         }
@@ -500,18 +410,6 @@ const StyledIndexLayout = styled.div<StyledIndexLayoutProps>`
             box-shadow: 0 0 0 3px ${(props) => props.colorPrimary}15;
         }
     }
-
-    /* Refined Dividers */
-
-    .ant-divider {
-        border-color: #e8eaed;
-
-        .dark & {
-            border-color: #2a2a2a;
-        }
-    }
-
-    /* Typography enhancements */
 
     .ant-typography {
         line-height: 1.65;
@@ -546,6 +444,46 @@ const StyledIndexLayout = styled.div<StyledIndexLayoutProps>`
 
         .dark & {
             color: #9aa0a6;
+        }
+    }
+
+    /* MD3 Floating Action Button (FAB) */
+    .ant-float-btn-body {
+        border-radius: 50% !important; /* MD3 circular FAB */
+        background: ${(props) => props.colorPrimary}20 !important; /* Secondary container default */
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .ant-float-btn-icon {
+        color: ${(props) => props.colorPrimary} !important;
+        font-size: 24px;
+    }
+
+    .ant-float-btn {
+        border-radius: 50% !important;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15), 0 1px 3px rgba(0, 0, 0, 0.1);
+
+        .dark & {
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4), 0 1px 3px rgba(0, 0, 0, 0.3);
+        }
+
+        &:hover .ant-float-btn-body {
+            background: ${(props) => colorToRgba(props.colorPrimary, 0.3)} !important;
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2), 0 2px 4px rgba(0, 0, 0, 0.15);
+        }
+
+        .dark &:hover .ant-float-btn-body {
+            background: ${(props) => colorToRgba(props.colorPrimary, 0.4)} !important;
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.5), 0 2px 4px rgba(0, 0, 0, 0.4);
+        }
+    }
+
+    .ant-float-btn-group {
+        border-radius: 50px !important;
+        .ant-float-btn-body {
+            border-radius: 50px !important;
         }
     }
 `;

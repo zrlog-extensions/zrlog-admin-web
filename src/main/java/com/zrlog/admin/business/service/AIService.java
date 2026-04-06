@@ -32,7 +32,7 @@ public class AIService {
         HttpHandle<Map> httpHandle = HttpUtil.getInstance().sendPostRequest(aiWebSiteInfo.getAi_provider().getBaseUrl(), requestBody.getBytes(), new HttpResponseJsonHandle<>(Map.class), requestHeaders);
         Map responseBody = httpHandle.getT();
         if (Objects.isNull(responseBody)) {
-            throw new AdminUnknownException("response body is null");
+            throw new AdminUnknownException("response body is null, statusCode: " + httpHandle.getStatusCode());
         }
         List<Map<String, Object>> choices = (List<Map<String, Object>>) responseBody.get("choices");
         AIResponseEntry.AIContentEntry outputs = BeanUtil.convert(choices.get(0).get("message"), AIResponseEntry.AIContentEntry.class);

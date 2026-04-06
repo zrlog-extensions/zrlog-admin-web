@@ -9,6 +9,7 @@ import com.hibegin.common.util.StringUtils;
 import com.hibegin.http.server.api.HttpRequest;
 import com.zrlog.admin.business.AdminConstants;
 import com.zrlog.admin.util.AdminWebTools;
+import com.zrlog.admin.util.ManifestUtils;
 import com.zrlog.common.CacheService;
 import com.zrlog.common.Constants;
 import com.zrlog.common.vo.PublicWebSiteInfo;
@@ -20,6 +21,7 @@ import com.zrlog.util.ZrLogUtil;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -45,6 +47,11 @@ public class AdminResourceImpl implements AdminResource {
         resourceMap.put("static", staticUris);
         resourceMap.put("documentTitleMap", AdminConstants.TITLE_MAP);
         resourceMap.put("i18n/admin", I18nUtil.getI18nVOCache().getAdmin());
+        try {
+            resourceMap.put("manifestIcons", ManifestUtils.getManifestIcons());
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
         this.fileBuildId = Math.abs(SecurityUtils.md5(new Gson().toJson(resourceMap)).hashCode());
     }
 
@@ -177,6 +184,7 @@ public class AdminResourceImpl implements AdminResource {
         if (Objects.nonNull(publicWebSiteInfo)) {
             stringObjectMap.put("websiteTitle", ObjectUtil.requireNonNullElse(publicWebSiteInfo.getTitle(), ""));
             stringObjectMap.put("admin_darkMode", Objects.equals(publicWebSiteInfo.getAdmin_darkMode(), true));
+            stringObjectMap.put("admin_theme", Objects.requireNonNullElse(publicWebSiteInfo.getAdmin_theme(), "default"));
             stringObjectMap.put("admin_compactMode", Objects.equals(publicWebSiteInfo.getAdmin_compactMode(), true));
             stringObjectMap.put("appId", ObjectUtil.requireNonNullElse(publicWebSiteInfo.getAppId(), ""));
             stringObjectMap.put("admin_color_primary", ObjectUtil.requireNonNullElse(publicWebSiteInfo.getAdmin_color_primary(), WebSiteUtils.DEFAULT_COLOR_PRIMARY_COLOR));

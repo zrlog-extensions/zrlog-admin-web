@@ -16,10 +16,15 @@ export type AppLangState = {
     lang: "en_US" | "zh_CN";
 };
 
+export type AppThemeState = {
+    theme: string;
+};
+
 export type AppState = AppCompactModeState &
     AppColorPrimaryState &
     AppDarkState &
-    AppLangState & {
+    AppLangState &
+    AppThemeState & {
         offline: boolean;
     };
 

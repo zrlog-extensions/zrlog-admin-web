@@ -2,10 +2,11 @@ import { CameraOutlined, DeleteFilled, LoadingOutlined } from "@ant-design/icons
 import Image from "antd/es/image";
 import { FunctionComponent, useState } from "react";
 import { getRes, tryAppendBackendServerUrl } from "../../utils/constants";
-import { message } from "antd";
+import { message, Typography } from "antd";
 import { getAppState } from "../../base/ConfigProviderApp";
 import BaseDragger from "@editor/dist/src/editor/common/BaseDragger";
 import { useAxiosBaseInstance } from "../../base/AppBase";
+import { useTheme } from "antd-style";
 
 type ThumbnailUploadProps = {
     onChange?: (e: string) => void;
@@ -19,6 +20,8 @@ const ThumbnailUpload: FunctionComponent<ThumbnailUploadProps> = ({ onChange, th
     const [messageApi, contextHolder] = message.useMessage({ maxCount: 3 });
 
     const axiosInstance = useAxiosBaseInstance(getContainer);
+
+    const theme = useTheme();
 
     return (
         <BaseDragger
@@ -61,17 +64,16 @@ const ThumbnailUpload: FunctionComponent<ThumbnailUploadProps> = ({ onChange, th
                             alignItems: "center",
                         }}
                     >
-                        <CameraOutlined style={{ fontSize: 28 }} />
+                        <CameraOutlined style={{ fontSize: 28, color: getAppState().colorPrimary }} />
                     </p>
-                    <p
-                        className="ant-upload-text"
+                    <Typography
                         style={{
-                            padding: `8px 0 8px 0`,
                             margin: 0,
+                            fontSize: "var(--ant-font-size-lg)",
                         }}
                     >
                         {uploading && <LoadingOutlined />} {getRes()["uploadTips"]}
-                    </p>
+                    </Typography>
                 </>
             )}
             {thumbnail != null && thumbnail !== "" && (
@@ -81,14 +83,13 @@ const ThumbnailUpload: FunctionComponent<ThumbnailUploadProps> = ({ onChange, th
                         preview={false}
                         id="thumbnail"
                         src={thumbnail}
-                        wrapperStyle={{ position: "relative" }}
                     />
                     <div
                         style={{
                             position: "absolute",
                             right: 0,
                             top: 0,
-                            borderRadius: "0 8px",
+                            borderRadius: `0 ${theme.borderRadiusLG}px`,
                             padding: 12,
                             background: getAppState().colorPrimary + "5e",
                             color: "white",

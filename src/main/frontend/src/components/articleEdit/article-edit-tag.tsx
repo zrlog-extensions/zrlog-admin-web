@@ -126,6 +126,7 @@ const ArticleEditTag: FunctionComponent<ArticleEditTagProps> = ({ allTags, keywo
                 <Input
                     ref={inputRef}
                     type="text"
+                    size={"small"}
                     style={{ width: 98 }}
                     value={inputValue}
                     onChange={handleInputChange}

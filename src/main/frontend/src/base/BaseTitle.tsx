@@ -17,6 +17,7 @@ const BaseTitle: FunctionComponent<BaseTitleProps> = ({ title, noBottomBorder, s
                 level={3}
                 style={{
                     borderLeft: `3px solid ${getAppState().colorPrimary}`,
+                    color: getAppState().colorPrimary,
                     ...style,
                 }}
             >

@@ -13,11 +13,12 @@ import BaseDragger, { DraggerUploadResponse } from "@editor/dist/src/editor/comm
 import BaseTitle from "../../base/BaseTitle";
 import { CameraOutlined } from "@ant-design/icons";
 import PreviewConfig from "./preview-config";
-import MarkedEditor from "@editor/dist/src/editor/marked-editor";
+import Editor from "@editor/dist/src/editor";
 import { getLangByRes } from "../../base/AppInit";
 import { getAppState } from "../../base/ConfigProviderApp";
 import Card from "antd/es/card";
 import { getBorderColor } from "@editor/dist/src/editor/editor-helpers";
+import { EditorMode } from "@editor/dist/src/editor/editor.types";
 
 const layout = {
     labelCol: { span: 8 },
@@ -106,18 +107,11 @@ const TemplateConfig = ({
                     }}
                 >
                     {state.dataMap[key] && state.dataMap[key].length > 0 ? (
-                        <Image
-                            style={{ borderRadius: 8 }}
-                            preview={false}
-                            height={96}
-                            width={96}
-                            src={state.dataMap[key]}
-                        />
+                        <Image preview={false} height={96} width={96} src={state.dataMap[key]} />
                     ) : (
                         <p
                             className="ant-upload-drag-icon"
                             style={{
-                                borderRadius: 8,
                                 margin: 0,
                                 width: 96,
                                 height: 96,
@@ -141,27 +135,25 @@ const TemplateConfig = ({
             return <Input hidden={true} />;
         } else if (value.htmlElementType === "colorPicker") {
             return (
-                <div style={{ display: "flex", justifyContent: "flex-start", alignItems: "center" }}>
-                    <ColorPicker
-                        value={state.dataMap[key]}
-                        onChange={(color) => {
-                            state.dataMap[key] = color.toHexString();
-                            setState({
-                                ...state,
-                                dataMap: state.dataMap,
-                            });
-                        }}
-                        disabledAlpha={true}
-                        presets={[
-                            {
-                                defaultOpen: true,
-                                label: getPreset(),
-                                colors: colorPickerBgColors,
-                            },
-                        ]}
-                    />
-                    <span style={{ paddingLeft: 8 }}>{state.dataMap[key]}</span>
-                </div>
+                <ColorPicker
+                    value={state.dataMap[key]}
+                    onChange={(color) => {
+                        state.dataMap[key] = color.toHexString();
+                        setState({
+                            ...state,
+                            dataMap: state.dataMap,
+                        });
+                    }}
+                    showText={(color) => color.toHexString()}
+                    disabledAlpha={true}
+                    presets={[
+                        {
+                            defaultOpen: true,
+                            label: getPreset(),
+                            colors: colorPickerBgColors,
+                        },
+                    ]}
+                />
             );
         }
         return <Input type={value.type} placeholder={value.placeholder} />;
@@ -192,17 +184,18 @@ const TemplateConfig = ({
                         }}
                         style={{ overflow: "hidden" }}
                     >
-                        <MarkedEditor
+                        <Editor
                             height={520}
                             onChange={(e) => {
                                 setValue({
-                                    [key]: e.markdown.replace("```yml\n", "").replace("\n```", ""),
+                                    [key]: e.value,
                                 });
                             }}
                             fullscreen={false}
-                            content={""}
-                            value={"```yml\n" + value.value + "\n```"}
+                            previewContent={""}
+                            value={value.value}
                             config={{
+                                mode: EditorMode.YML,
                                 axiosInstance: axiosInstance,
                                 disableStatistics: true,
                                 disableToolbar: true,

@@ -74,7 +74,7 @@ const User = ({ data, offline }: { data: BasicUserInfo; offline: boolean }) => {
                                     },
                                     tryAppendBackendServerUrl: tryAppendBackendServerUrl,
                                 }}
-                                style={{ width: 128, height: 128 }}
+                                style={{ width: 128, height: 128, overflow: "hidden" }}
                                 onSuccess={(e) => onUploadChange(e)}
                                 onError={(e) => {
                                     messageApi.error(e.message);
@@ -86,7 +86,7 @@ const User = ({ data, offline }: { data: BasicUserInfo; offline: boolean }) => {
                                     preview={false}
                                     height={128}
                                     width={128}
-                                    style={{ borderRadius: 8, objectFit: "cover" }}
+                                    style={{ objectFit: "cover" }}
                                     src={tryAppendBackendServerUrl(userInfo.header)}
                                 />
                             </BaseDragger>

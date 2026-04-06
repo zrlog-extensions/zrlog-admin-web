@@ -7,20 +7,20 @@ import { getPreset, getRes } from "../../utils/constants";
 import Select from "antd/es/select";
 import Button from "antd/es/button";
 import { useEffect, useState } from "react";
-import { ColorPicker } from "antd";
+import { ColorPicker, InputNumber } from "antd";
 import { Admin } from "./index";
 import FaviconUpload from "./FaviconUpload";
 import { colorPickerBgColors } from "../../utils/helpers";
 import zh_CN from "antd/es/locale/zh_CN";
 import en_US from "antd/es/locale/en_US";
 import { changeAppState, getAppState } from "../../base/ConfigProviderApp";
+import { getColorByTheme, isDarkByTheme, isSupportDarkMode } from "../../base/AppInit";
+import { editorLang } from "@editor/dist/src/editor/lang/editor-lang";
 
 const layout = {
     labelCol: { span: 8 },
     wrapperCol: { span: 16 },
 };
-
-const { Option } = Select;
 
 const BlogForm = ({
     data,
@@ -57,6 +57,7 @@ const BlogForm = ({
             admin_compactMode: getAppState().compactMode,
             admin_color_primary: getAppState().colorPrimary,
             language: getAppState().lang,
+            admin_theme: getAppState().theme,
         };
     };
 
@@ -84,9 +85,9 @@ const BlogForm = ({
                 <Input style={{ maxWidth: 300 }} placeholder={getRes()["adminStaticResourceUrlTips"]} />
             </Form.Item>
             <Form.Item name="session_timeout" label={getRes()["adminSessionTimeout"]} rules={[{ required: true }]}>
-                <Input
+                <InputNumber
                     suffix={getRes()["adminSessionTimeoutUnit"]}
-                    style={{ maxWidth: 140 }}
+                    style={{ minWidth: 120 }}
                     max={99999}
                     type={"number"}
                     min={5}
@@ -101,20 +102,45 @@ const BlogForm = ({
                             lang: lang,
                         });
                     }}
-                >
-                    <Option value="zh_CN">{getRes()["languageChinese"]}</Option>
-                    <Option value="en_US">{getRes()["languageEnglish"]}</Option>
-                </Select>
-            </Form.Item>
-            <Form.Item valuePropName="checked" name="admin_darkMode" label={getRes()["admin.dark.mode"]}>
-                <Switch
-                    onChange={(admin_darkMode) => {
-                        changeAppState({
-                            dark: admin_darkMode,
-                        });
-                    }}
+                    options={[
+                        { value: "zh_CN", label: getRes()["languageChinese"] },
+                        { value: "en_US", label: getRes()["languageEnglish"] },
+                    ]}
                 />
             </Form.Item>
+            <Form.Item name={"admin_theme"} label={getRes()["admin.theme"]}>
+                <Select
+                    style={{ maxWidth: 120 }}
+                    onChange={(theme: string) => {
+                        changeAppState({
+                            theme: theme,
+                            colorPrimary: getColorByTheme(theme),
+                            dark: isDarkByTheme(theme),
+                        });
+                    }}
+                    options={[
+                        { label: "Default", value: "default" },
+                        { label: "Antd", value: "antd" },
+                        { label: "Bootstrap", value: "bootstrap" },
+                        { label: "Geek", value: "geek" },
+                        { label: "Cartoon", value: "cartoon" },
+                        { label: "Glass", value: "glass" },
+                        { label: "Shadcn", value: "shadcn" },
+                        { label: "Illustration", value: "illustration" },
+                    ]}
+                />
+            </Form.Item>
+            {isSupportDarkMode(getAppState().theme) && (
+                <Form.Item valuePropName="checked" name="admin_darkMode" label={getRes()["admin.dark.mode"]}>
+                    <Switch
+                        onChange={(admin_darkMode) => {
+                            changeAppState({
+                                dark: admin_darkMode,
+                            });
+                        }}
+                    />
+                </Form.Item>
+            )}
             <Form.Item valuePropName="checked" name="admin_compactMode" label={getRes()["admin.compact.mode"]}>
                 <Switch
                     onChange={(admin_compactMode) => {
@@ -123,25 +149,23 @@ const BlogForm = ({
                 />
             </Form.Item>
             <Form.Item label={getRes()["admin.color.primary"]}>
-                <div style={{ display: "flex", justifyContent: "flex-start", alignItems: "center" }}>
-                    <ColorPicker
-                        value={getAppState().colorPrimary}
-                        onChange={(color) => {
-                            changeAppState({
-                                colorPrimary: color.toHexString(),
-                            });
-                        }}
-                        disabledAlpha={true}
-                        presets={[
-                            {
-                                defaultOpen: true,
-                                label: getPreset(),
-                                colors: colorPickerBgColors,
-                            },
-                        ]}
-                    />
-                    <span style={{ paddingLeft: 8 }}>{getAppState().colorPrimary}</span>
-                </div>
+                <ColorPicker
+                    value={getAppState().colorPrimary}
+                    onChange={(color) => {
+                        changeAppState({
+                            colorPrimary: color.toHexString(),
+                        });
+                    }}
+                    showText={(color) => color.toHexString()}
+                    disabledAlpha={true}
+                    presets={[
+                        {
+                            defaultOpen: true,
+                            label: getPreset(),
+                            colors: colorPickerBgColors,
+                        },
+                    ]}
+                />
             </Form.Item>
             <Title level={4}>{getRes()["adminMoreSettings"]}</Title>
             <Divider />
@@ -169,9 +193,9 @@ const BlogForm = ({
                 />
             </Form.Item>
             <Form.Item name="article_auto_digest_length" label={getRes()["article_auto_digest_length_tips"]}>
-                <Input
-                    suffix={getRes()["editor.wordsCount"]}
-                    style={{ maxWidth: 120 }}
+                <InputNumber
+                    suffix={editorLang[getAppState().lang].wordsCount}
+                    style={{ width: 120 }}
                     max={99999}
                     type={"number"}
                     min={-1}

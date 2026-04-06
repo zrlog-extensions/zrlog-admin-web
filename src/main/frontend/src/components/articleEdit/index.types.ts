@@ -14,6 +14,7 @@ export type ArticleEntry = ChangedContent &
         logId?: number;
         lastUpdateDate?: number;
         version: number;
+        previewUrl?: string;
     };
 
 export type ChangedContent = {
