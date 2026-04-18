@@ -15,7 +15,8 @@ import java.util.*;
 
 public class AIService {
 
-    public List<AIResponseEntry.AIContentEntry> getResponse(String input, Long articleId) throws IOException, InterruptedException, SQLException {
+    public List<AIResponseEntry.AIContentEntry> getResponse(String input, Long articleId)
+            throws IOException, InterruptedException, SQLException {
         AIWebSiteInfoWithAIMessages aiWebSiteInfo = new WebSiteService().getAiMessageInfoByArticleId(articleId);
         Map<String, Object> params = new HashMap<>();
         List<AIResponseEntry.AIContentEntry> messages = aiWebSiteInfo.getAiMessages();
@@ -29,13 +30,16 @@ public class AIService {
         Map<String, String> requestHeaders = new HashMap<>();
         requestHeaders.put("Content-Type", "application/json");
         requestHeaders.put("Authorization", "Bearer " + aiWebSiteInfo.getAi_api_key());
-        HttpHandle<Map> httpHandle = HttpUtil.getInstance().sendPostRequest(aiWebSiteInfo.getAi_provider().getBaseUrl(), requestBody.getBytes(), new HttpResponseJsonHandle<>(Map.class), requestHeaders);
+        HttpHandle<Map> httpHandle = HttpUtil.getInstance().sendPostRequest(aiWebSiteInfo.getAi_provider().getBaseUrl(),
+                requestBody.getBytes(), new HttpResponseJsonHandle<>(Map.class), requestHeaders);
         Map responseBody = httpHandle.getT();
         if (Objects.isNull(responseBody)) {
-            throw new AdminUnknownException("response body is null, statusCode: " + httpHandle.getStatusCode());
+            throw new AdminUnknownException(aiWebSiteInfo.getAi_provider() + " response body is null, statusCode: "
+                    + httpHandle.getStatusCode());
         }
         List<Map<String, Object>> choices = (List<Map<String, Object>>) responseBody.get("choices");
-        AIResponseEntry.AIContentEntry outputs = BeanUtil.convert(choices.get(0).get("message"), AIResponseEntry.AIContentEntry.class);
+        AIResponseEntry.AIContentEntry outputs = BeanUtil.convert(choices.get(0).get("message"),
+                AIResponseEntry.AIContentEntry.class);
         messages.add(outputs);
         if (new WebSiteService().saveAIMessage(messages, articleId)) {
             return Collections.singletonList(outputs);
