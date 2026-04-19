@@ -1761,9 +1761,9 @@
   resolved "https://registry.npmmirror.com/@csstools/selector-specificity/-/selector-specificity-2.2.0.tgz#2cbcf822bf3764c9658c4d2e568bd0c0cb748016"
   integrity sha512-+OJ9konv95ClSTOJCmMZqpd5+YGsB2S+x6w3E1oaM8UuR5j8nTNHYSz8c9BEPGDOCMQYIEEGlVPj/VY64iTbGw==
 
-"@editor@https://dl.zrlog.com/artifacts/v2.0.76.tgz?v=1":
-  version "2.0.76"
-  resolved "https://dl.zrlog.com/artifacts/v2.0.76.tgz?v=1#3a4cb6c4a77c214e88d35c7b248f0d5346598e90"
+"@editor@https://dl.zrlog.com/artifacts/v2.0.77.tgz?v=1":
+  version "2.0.77"
+  resolved "https://dl.zrlog.com/artifacts/v2.0.77.tgz?v=1#08aaf30668861a7286b3a03fadbe1406e0fd1b78"
   dependencies:
     "@ant-design/cssinjs" "1.21.1"
     "@ant-design/icons" "5.5.1"
