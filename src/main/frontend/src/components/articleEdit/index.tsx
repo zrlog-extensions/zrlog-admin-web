@@ -437,6 +437,12 @@ const Index: FunctionComponent<ArticleEditProps> = ({
         if (updateCache) {
             updateCache(newData, cacheKey);
         }
+        setState((prevState) => {
+            return {
+                ...prevState,
+                aiMessages: aiMessages,
+            };
+        });
     };
 
     const aiDrawerCacheKey = "ai/chat/drawer/width";
@@ -499,7 +505,7 @@ const Index: FunctionComponent<ArticleEditProps> = ({
                         offline={offline}
                         data={state}
                         onSubmit={onSubmit}
-                        onAiMessagesChange={updateAiMessageCache}
+                        onAiMessagesChange={(messages) => updateAiMessageCache(messages)}
                         onAiDrawerSizeChange={updateAiDrawerWidth}
                         aiDrawerWidth={getDefaultAiDrawerWidth()}
                     />

@@ -1,7 +1,9 @@
 package com.zrlog.admin.web.controller.api;
 
+import com.hibegin.common.util.EnvKit;
 import com.hibegin.common.util.StringUtils;
 import com.hibegin.http.annotation.ResponseBody;
+import com.zrlog.admin.business.dto.AIStreamResponse;
 import com.zrlog.admin.business.exception.PermissionErrorException;
 import com.zrlog.admin.business.rest.request.CreateArticleRequest;
 import com.zrlog.admin.business.rest.request.UpdateArticleRequest;
@@ -57,10 +59,12 @@ public class AdminArticleController extends BaseController {
                 || Objects.equals(response.getPrivacy(), true) ? "saveSuccess" : "releaseSuccess");
     }
 
-    private AdminApiPageDataStandardResponse<ArticleGlobalResponse> toResponseByArticle(CreateOrUpdateArticleResponse createOrUpdateArticleResponse) throws SQLException {
-        AdminApiPageDataStandardResponse<ArticleGlobalResponse> detail = articleService.loadDetailById(createOrUpdateArticleResponse.getLogId() + "", request);
+    private AdminApiPageDataStandardResponse<ArticleGlobalResponse> toResponseByArticle(
+            CreateOrUpdateArticleResponse createOrUpdateArticleResponse) throws SQLException {
+        AdminApiPageDataStandardResponse<ArticleGlobalResponse> detail = articleService
+                .loadDetailById(createOrUpdateArticleResponse.getLogId() + "", request);
         LoadEditArticleResponse loadEditArticleResponse = detail.getData().getArticle();
-        //为发布状态才需要更新缓存信息（避免无用更新）
+        // 为发布状态才需要更新缓存信息（避免无用更新）
         if (Objects.equals(loadEditArticleResponse.isRubbish(), false)) {
             CacheUtils.updateCache(false, request, List.of(StaticSiteType.BLOG));
         }
@@ -75,7 +79,6 @@ public class AdminArticleController extends BaseController {
         return toResponseByArticle(create);
     }
 
-
     @ResponseBody
     public AdminApiPageDataStandardResponse<ArticleGlobalResponse> update() throws SQLException {
         CreateOrUpdateArticleResponse update = articleService.update(AdminTokenThreadLocal.getUser(),
@@ -84,7 +87,8 @@ public class AdminArticleController extends BaseController {
     }
 
     @ResponseBody
-    public AdminApiPageDataStandardResponse<ArticlePageData> index() throws SQLException, ExecutionException, InterruptedException {
+    public AdminApiPageDataStandardResponse<ArticlePageData> index()
+            throws SQLException, ExecutionException, InterruptedException {
         String key = request.getParaToStr("key", "");
         String types = request.getParaToStr("types", "");
         int pageSize = request.getParaToInt("size", -1);
@@ -96,7 +100,8 @@ public class AdminArticleController extends BaseController {
                 pageSize = 10;
             }
         }
-        ArticlePageData pageData = articleService.adminPage(ControllerUtil.toPageRequest(this, pageSize), key, types, request);
+        ArticlePageData pageData = articleService.adminPage(ControllerUtil.toPageRequest(this, pageSize), key, types,
+                request);
         return new AdminApiPageDataStandardResponse<>(pageData, "", request.getUri());
     }
 
@@ -118,10 +123,22 @@ public class AdminArticleController extends BaseController {
         return new AdminApiPageDataStandardResponse<>(articleService.loadDetail(getParamWithEmptyCheck("id"), request));
     }
 
-    @ResponseBody
-    public AdminApiPageDataStandardResponse<List<AIResponseEntry.AIContentEntry>> ai() throws IOException, InterruptedException, SQLException {
-        List<AIResponseEntry.AIContentEntry> aiInfo = new AIService().getResponse(getParamWithEmptyCheck("input"), Long.parseLong(getParamWithEmptyCheck("id")));
-        return new AdminApiPageDataStandardResponse<>(aiInfo, "", request.getUri());
-    }
+    public void ai() throws IOException, InterruptedException, SQLException {
+        if (EnvKit.isLambda()) {
+            List<AIResponseEntry.AIContentEntry> aiInfo = new AIService().getResponse(getParamWithEmptyCheck("input"),
+                    Long.parseLong(getParamWithEmptyCheck("id")));
+            getResponse().renderJson(new AdminApiPageDataStandardResponse<>(aiInfo, "", request.getUri()));
+            return;
+        }
 
+        AIStreamResponse streamResponse = new AIService().startStreamResponse(getParamWithEmptyCheck("input"),
+                Long.parseLong(getParamWithEmptyCheck("id")));
+        // 使用 setHeader 确保覆盖默认的 application/json
+        getResponse().setContentType("text/event-stream;charset=UTF-8");
+        getResponse().addHeader("Cache-Control", "no-cache");
+        getResponse().addHeader("Connection", "keep-alive");
+        getResponse().addHeader("X-Accel-Buffering", "no"); // 禁用 Nginx 缓冲
+        getResponse().write(streamResponse.getInputStream());
+    }
+ q
 }
