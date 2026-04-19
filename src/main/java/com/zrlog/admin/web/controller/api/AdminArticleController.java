@@ -124,13 +124,6 @@ public class AdminArticleController extends BaseController {
     }
 
     public void ai() throws IOException, InterruptedException, SQLException {
-        if (EnvKit.isLambda()) {
-            List<AIResponseEntry.AIContentEntry> aiInfo = new AIService().getResponse(getParamWithEmptyCheck("input"),
-                    Long.parseLong(getParamWithEmptyCheck("id")));
-            getResponse().renderJson(new AdminApiPageDataStandardResponse<>(aiInfo, "", request.getUri()));
-            return;
-        }
-
         AIStreamResponse streamResponse = new AIService().startStreamResponse(getParamWithEmptyCheck("input"),
                 Long.parseLong(getParamWithEmptyCheck("id")));
         // 使用 setHeader 确保覆盖默认的 application/json
