@@ -140,5 +140,4 @@ public class AdminArticleController extends BaseController {
         getResponse().addHeader("X-Accel-Buffering", "no"); // 禁用 Nginx 缓冲
         getResponse().write(streamResponse.getInputStream());
     }
- q
 }
