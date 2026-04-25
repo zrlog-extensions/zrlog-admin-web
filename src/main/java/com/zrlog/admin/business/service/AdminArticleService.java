@@ -262,8 +262,22 @@ public class AdminArticleService {
         return pageData;
     }
 
-    public ArticlePageData adminPage(PageRequest pageRequest, String keywords, String typeAlias, HttpRequest request) {
-        ExecutorService executorService = ThreadUtils.newFixedThreadPool(2);
+    public ArticleStatusCountResponse getStatusCounts() {
+        ArticleStatusCountResponse counts = new ArticleStatusCountResponse();
+        try {
+            Log log = new Log();
+            counts.setTotal(log.getAdminCount());
+            counts.setPublished(((Number) log.queryFirstObj("SELECT count(*) FROM " + Log.TABLE_NAME + " WHERE rubbish = ? AND privacy = ?", false, false)).longValue());
+            counts.setPrivateCount(((Number) log.queryFirstObj("SELECT count(*) FROM " + Log.TABLE_NAME + " WHERE privacy = ?", true)).longValue());
+            counts.setDraft(((Number) log.queryFirstObj("SELECT count(*) FROM " + Log.TABLE_NAME + " WHERE rubbish = ?", true)).longValue());
+        } catch (SQLException e) {
+            LOGGER.warning("Query article counts error: " + e.getMessage());
+        }
+        return counts;
+    }
+
+    public ArticlePageData adminPage(PageRequest pageRequest, String keywords, String typeAlias, String status, HttpRequest request) {
+        ExecutorService executorService = ThreadUtils.newFixedThreadPool(3);
         try {
             CompletableFuture<PageData<ArticleBasicDTO>> dataCompletableFuture = CompletableFuture.supplyAsync(() -> {
                 return new Log().adminFind(pageRequest, keywords, typeAlias);
@@ -271,12 +285,35 @@ public class AdminArticleService {
             CompletableFuture<List<TypeDTO>> listCompletableFuture = CompletableFuture.supplyAsync(() -> {
                 return Constants.zrLogConfig.getCacheService().getArticleTypes();
             }, executorService);
-            CompletableFuture.allOf(listCompletableFuture, dataCompletableFuture).join();
+            // 统计各状态数量
+            CompletableFuture<ArticleStatusCountResponse> countFuture = CompletableFuture.supplyAsync(this::getStatusCounts, executorService);
+            CompletableFuture.allOf(listCompletableFuture, dataCompletableFuture, countFuture).join();
             ArticleHelpers.wrapperSearchKeyword(dataCompletableFuture.join(), keywords);
             PageData<ArticleResponseEntry> articleResponseEntryPageData = convertPageable(dataCompletableFuture.join(), request);
+            // 根据 status 参数过滤文章列表
+            if (StringUtils.isNotEmpty(status)) {
+                List<ArticleResponseEntry> filtered = articleResponseEntryPageData.getRows().stream()
+                        .filter(entry -> {
+                            switch (status) {
+                                case "published":
+                                    return !entry.getRubbish() && !entry.getPrivacy();
+                                case "private":
+                                    return entry.getPrivacy();
+                                case "draft":
+                                    return entry.getRubbish();
+                                default:
+                                    return true;
+                            }
+                        })
+                        .collect(Collectors.toList());
+                articleResponseEntryPageData.setRows(filtered);
+                articleResponseEntryPageData.setTotalElements(filtered.size());
+            }
             ArticlePageData convert = BeanUtil.convert(articleResponseEntryPageData, ArticlePageData.class);
             convert.setTypes(listCompletableFuture.join());
             convert.setKey(keywords);
+            convert.setStatus(status);
+            convert.setStatusCounts(countFuture.join());
             convert.setArticle_thumbnail_status(AdminConstants.getPublicWebSiteInfo().getArticle_thumbnail_status());
             convert.setDefaultPageSize(pageRequest.getSize());
             return convert;

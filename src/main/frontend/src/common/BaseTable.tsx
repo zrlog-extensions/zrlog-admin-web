@@ -34,6 +34,13 @@ export type PageDataSource = {
 export type ArticlePageDataSource = PageDataSource & {
     types: Record<string, any>[];
     article_thumbnail_status: boolean;
+    status?: string;
+    statusCounts?: {
+        total: number;
+        draft: number;
+        privateCount: number;
+        published: number;
+    };
 };
 
 export type TableData = {
@@ -88,6 +95,11 @@ const BaseTable: FunctionComponent<BaseTableProps> = ({
         if (sort.length > 0) {
             //暂时支持一个属性进行排序
             queryParam["sort"] = sort[0];
+        }
+        // 保留当前 URL 中的 status 参数
+        const currentStatus = new URLSearchParams(location.search).get("status");
+        if (currentStatus) {
+            queryParam["status"] = currentStatus;
         }
         const queryStr = mapToQueryString(queryParam);
         if (isDev()) {

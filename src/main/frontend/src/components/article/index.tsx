@@ -1,13 +1,13 @@
-import { EditOutlined, LockOutlined } from "@ant-design/icons";
+import { EditOutlined, LockOutlined, GlobalOutlined, AppstoreOutlined } from "@ant-design/icons";
 
-import { TableColumnsType, Tooltip } from "antd";
+import { Segmented, TableColumnsType, Tooltip } from "antd";
 import Search from "antd/es/input/Search";
 import Divider from "antd/es/divider";
 import { getRealRouteUrl, getRes } from "../../utils/constants";
 import type * as React from "react";
 import { ReactElement, useEffect, useRef, useState } from "react";
 import BaseTable, { ArticlePageDataSource } from "../../common/BaseTable";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { removeCacheDataByKey } from "../../utils/cache";
 import { useLocation } from "react-router";
 import { SortOrder } from "antd/es/table/interface";
@@ -28,10 +28,46 @@ const genTypes = (d: ArticlePageDataSource, search: string) => {
 
 const Index = ({ data, offline }: { data: ArticlePageDataSource; offline: boolean }) => {
     const location = useLocation();
+    const navigate = useNavigate();
     const ds = genTypes(data, location.search);
+
+    const statusOptions = [
+        { label: `${getRes()["allTag"]} (${data.statusCounts?.total || 0})`, value: "", icon: <AppstoreOutlined /> },
+        {
+            label: `${getRes()["published"]} (${data.statusCounts?.published || 0})`,
+            value: "published",
+            icon: <GlobalOutlined />,
+        },
+        {
+            label: `${getRes()["articlePrivate"]} (${data.statusCounts?.privateCount || 0})`,
+            value: "private",
+            icon: <LockOutlined />,
+        },
+        {
+            label: `${getRes()["articleDraft"]} (${data.statusCounts?.draft || 0})`,
+            value: "draft",
+            icon: <EditOutlined />,
+        },
+    ];
 
     const [filters, setFilters] = useState<Record<string, any>[]>(ds); // 用于存储选中的筛选项
     const jumped = useRef(false);
+
+    // 从 URL 或后端数据中读取当前 status
+    const currentStatus = data.status || new URLSearchParams(location.search).get("status") || "";
+
+    const handleStatusChange = (value: string | number) => {
+        const params = new URLSearchParams(location.search);
+        if (value) {
+            params.set("status", value as string);
+        } else {
+            params.delete("status");
+        }
+        // 切换状态时重置到第一页
+        params.delete("page");
+        const queryStr = params.toString();
+        navigate(getRealRouteUrl(location.pathname + (queryStr ? "?" + queryStr : "")));
+    };
 
     const wrapperArticleStateInfo = (record: any, children: ReactElement) => {
         return (
@@ -246,6 +282,9 @@ const Index = ({ data, offline }: { data: ArticlePageDataSource; offline: boolea
                     enterButton={getRes()["search"]}
                     style={{ maxWidth: 196, float: "right" }}
                 />
+            </div>
+            <div style={{ padding: "16px 0 0" }}>
+                <Segmented options={statusOptions} value={currentStatus} onChange={handleStatusChange} />
             </div>
             <Divider />
             <BaseTable

@@ -91,6 +91,7 @@ public class AdminArticleController extends BaseController {
             throws SQLException, ExecutionException, InterruptedException {
         String key = request.getParaToStr("key", "");
         String types = request.getParaToStr("types", "");
+        String status = request.getParaToStr("status", "");
         int pageSize = request.getParaToInt("size", -1);
         if (pageSize <= 0) {
             String adminArticlePageSize = new WebSite().getStringValueByName("admin_article_page_size");
@@ -101,7 +102,7 @@ public class AdminArticleController extends BaseController {
             }
         }
         ArticlePageData pageData = articleService.adminPage(ControllerUtil.toPageRequest(this, pageSize), key, types,
-                request);
+                status, request);
         return new AdminApiPageDataStandardResponse<>(pageData, "", request.getUri());
     }
 

@@ -6,6 +6,9 @@ public class StatisticsInfoResponse {
     private Long toDayCommCount;
     private Long clickCount;
     private Long articleCount;
+    private Long draftCount;
+    private Long privateCount;
+    private Long publishedCount;
 
     public Long getCommCount() {
         return commCount;
@@ -37,5 +40,29 @@ public class StatisticsInfoResponse {
 
     public void setArticleCount(Long articleCount) {
         this.articleCount = articleCount;
+    }
+
+    public Long getDraftCount() {
+        return draftCount;
+    }
+
+    public void setDraftCount(Long draftCount) {
+        this.draftCount = draftCount;
+    }
+
+    public Long getPrivateCount() {
+        return privateCount;
+    }
+
+    public void setPrivateCount(Long privateCount) {
+        this.privateCount = privateCount;
+    }
+
+    public Long getPublishedCount() {
+        return publishedCount;
+    }
+
+    public void setPublishedCount(Long publishedCount) {
+        this.publishedCount = publishedCount;
     }
 }

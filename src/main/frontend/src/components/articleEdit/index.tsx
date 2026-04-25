@@ -65,6 +65,16 @@ const Index: FunctionComponent<ArticleEditProps> = ({
     const versionRef = useRef<number>(defaultState.article.version);
     const previewUrlRef = useRef<string | undefined>(defaultState.article.previewUrl);
     const logIdRef = useRef<number>(defaultState.article.logId ? defaultState.article.logId : -1);
+
+    // 当由于路由跳转导致外部传入的 data 变化时，重新初始化表单状态
+    useEffect(() => {
+        const newState = articleDataToState(data);
+        setState(newState);
+        versionRef.current = newState.article.version;
+        previewUrlRef.current = newState.article.previewUrl;
+        logIdRef.current = newState.article.logId ? newState.article.logId : -1;
+    }, [data]);
+
     const subjectRef = useRef<Subject<ArticleEntry> | null>(null);
     const subRef = useRef<Subscription | null>(null);
     let pendingMessages = 0;

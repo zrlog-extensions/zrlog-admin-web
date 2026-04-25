@@ -1,6 +1,7 @@
 package com.zrlog.admin.business.service;
 
 import com.hibegin.common.util.LoggerUtil;
+import com.zrlog.admin.business.rest.response.ArticleStatusCountResponse;
 import com.zrlog.admin.business.rest.response.StatisticsInfoResponse;
 import com.zrlog.model.Comment;
 import com.zrlog.model.Log;
@@ -45,7 +46,11 @@ public class AdminStatisticsService {
                 }
             }, executor));
             futures.add(CompletableFuture.runAsync(() -> {
-                info.setArticleCount(new Log().getAdminCount());
+                ArticleStatusCountResponse counts = new AdminArticleService().getStatusCounts();
+                info.setArticleCount(counts.getTotal());
+                info.setDraftCount(counts.getDraft());
+                info.setPrivateCount(counts.getPrivateCount());
+                info.setPublishedCount(counts.getPublished());
             }, executor));
             CompletableFuture.allOf(futures.toArray(new CompletableFuture[0])).join();
             return info;

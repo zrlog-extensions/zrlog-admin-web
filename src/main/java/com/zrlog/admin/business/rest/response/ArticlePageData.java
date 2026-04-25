@@ -6,11 +6,12 @@ import com.zrlog.common.cache.dto.TypeDTO;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 public class ArticlePageData extends PageData<ArticleResponseEntry> implements Serializable {
 
     private Boolean article_thumbnail_status;
+    private String status;
+    private ArticleStatusCountResponse statusCounts;
 
     public ArticlePageData() {
     }
@@ -31,5 +32,21 @@ public class ArticlePageData extends PageData<ArticleResponseEntry> implements S
 
     public void setArticle_thumbnail_status(Boolean article_thumbnail_status) {
         this.article_thumbnail_status = article_thumbnail_status;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    public ArticleStatusCountResponse getStatusCounts() {
+        return statusCounts;
+    }
+
+    public void setStatusCounts(ArticleStatusCountResponse statusCounts) {
+        this.statusCounts = statusCounts;
     }
 }

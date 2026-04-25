@@ -88,7 +88,7 @@ const Index: FunctionComponent<IndexProps> = ({ data }) => {
                             <ActivityGraph data={generateCompleteData(data.activityData)} />
                         </div>
                     </div>
-                    <QuickActionCard />
+                    <QuickActionCard draftCount={data.statisticsInfo.draftCount} />
                 </Col>
             </Row>
         </>

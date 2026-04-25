@@ -1,17 +1,27 @@
-import { Col, Row, Typography } from "antd";
+import { Badge, Col, Row, Typography } from "antd";
 
 import { Link } from "react-router-dom";
 import { getRealRouteUrl, getRes } from "utils/constants";
-import { DatabaseOutlined, FolderAddFilled, PlusCircleOutlined } from "@ant-design/icons";
+import { DatabaseOutlined, FolderAddFilled, PlusCircleOutlined, EditOutlined } from "@ant-design/icons";
 import { getAppState } from "../../base/ConfigProviderApp";
 import { useTheme } from "antd-style";
 
-const QuickActionCard = () => {
+const QuickActionCard = ({ draftCount }: { draftCount: number }) => {
     const isDark = getAppState().dark;
     const iconBgColor = isDark ? "rgba(255,255,255,0.08)" : `${getAppState().colorPrimary}15`;
     const theme = useTheme();
 
-    const ActionItem = ({ to, icon, label }: { to: string; icon: React.ReactNode; label: string }) => (
+    const ActionItem = ({
+        to,
+        icon,
+        label,
+        count,
+    }: {
+        to: string;
+        icon: React.ReactNode;
+        label: string;
+        count?: number;
+    }) => (
         <Col xs={12} md={8} lg={6}>
             <Link to={getRealRouteUrl(to)}>
                 <div
@@ -31,22 +41,24 @@ const QuickActionCard = () => {
                         e.currentTarget.style.backgroundColor = "transparent";
                     }}
                 >
-                    <div
-                        style={{
-                            width: 56,
-                            height: 56,
-                            borderRadius: theme.borderRadiusLG, // Complete circle/pill
-                            backgroundColor: iconBgColor,
-                            display: "flex",
-                            alignItems: "center",
-                            justifyContent: "center",
-                            marginBottom: 12,
-                            color: getAppState().colorPrimary,
-                            fontSize: 24,
-                        }}
-                    >
-                        {icon}
-                    </div>
+                    <Badge count={count} offset={[-5, 5]} size="small" color={getAppState().colorPrimary}>
+                        <div
+                            style={{
+                                width: 56,
+                                height: 56,
+                                borderRadius: theme.borderRadiusLG,
+                                backgroundColor: iconBgColor,
+                                display: "flex",
+                                alignItems: "center",
+                                justifyContent: "center",
+                                marginBottom: 12,
+                                color: getAppState().colorPrimary,
+                                fontSize: 24,
+                            }}
+                        >
+                            {icon}
+                        </div>
+                    </Badge>
                     <Typography.Text style={{ fontWeight: 500, fontSize: 13, whiteSpace: "nowrap" }}>
                         {label}
                     </Typography.Text>
@@ -69,6 +81,12 @@ const QuickActionCard = () => {
             </Typography.Title>
             <Row gutter={[16, 16]}>
                 <ActionItem to="/article-edit" icon={<PlusCircleOutlined />} label={getRes()["writeArticle"]} />
+                <ActionItem
+                    to="/article?status=draft"
+                    icon={<EditOutlined />}
+                    label={getRes()["articleDraft"]}
+                    count={draftCount}
+                />
                 <ActionItem to="/article-type" icon={<FolderAddFilled />} label={getRes()["admin.type.manage"]} />
                 <ActionItem
                     to="/plugin?page=backup-sql-file/files"

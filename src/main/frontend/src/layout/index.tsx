@@ -15,6 +15,7 @@ import { addToCache, getCacheByKey } from "../utils/cache";
 import StaticSite from "../components/StaticSite";
 import { getAppState } from "../base/ConfigProviderApp";
 import { useTheme } from "antd-style";
+import SpotlightSearch from "./spotlight-search";
 
 const { Header, Content, Sider } = Layout;
 
@@ -181,7 +182,10 @@ const AdminManageLayout: FunctionComponent<AdminManageLayoutProps> = ({
                             {getRes()["admin.offline.desc"]}
                         </span>
                     )}
-                    <UserInfo offline={offline} data={basicUserInfo} />
+                    <div style={{ display: "flex", alignItems: "center" }}>
+                        <SpotlightSearch />
+                        <UserInfo offline={offline} data={basicUserInfo} />
+                    </div>
                 </Header>
                 <Row
                     style={{

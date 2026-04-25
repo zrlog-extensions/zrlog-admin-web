@@ -55,6 +55,9 @@ export type StatisticsInfoState = {
     articleCount: number;
     commCount: number;
     toDayCommCount: number;
+    draftCount: number;
+    privateCount: number;
+    publishedCount: number;
     loading: boolean;
     usedCacheSpace: number;
     usedDiskSpace: number;
