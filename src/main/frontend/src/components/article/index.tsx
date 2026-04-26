@@ -1,11 +1,12 @@
 import { EditOutlined, LockOutlined, GlobalOutlined, AppstoreOutlined } from "@ant-design/icons";
 
-import { Segmented, TableColumnsType, Tooltip, Space, Tag } from "antd";
+import { Segmented, TableColumnsType, Tooltip, Space } from "antd";
 import Search from "antd/es/input/Search";
 import Divider from "antd/es/divider";
 import { getRealRouteUrl, getRes } from "../../utils/constants";
 import type * as React from "react";
 import { ReactElement, useEffect, useRef, useState } from "react";
+import Tags from "../../common/Tags";
 import BaseTable, { ArticlePageDataSource } from "../../common/BaseTable";
 import { Link, useNavigate } from "react-router-dom";
 import { useLocation } from "react-router";
@@ -94,30 +95,16 @@ const Index = ({ data, offline }: { data: ArticlePageDataSource; offline: boolea
     }, [filters]);
 
     const wrapperArticleStateInfo = (record: any, element: ReactElement) => {
-        const title: ReactElement[] = [];
-        if (record.rubbish) {
-            title.push(
-                <Tag key="rubbish" color="red">
-                    {getRes()["articleDraft"]}
-                </Tag>
-            );
-        }
-        if (record.privacy) {
-            title.push(
-                <Tag key="privacy" color="orange">
-                    {getRes()["articlePrivate"]}
-                </Tag>
-            );
-        }
-        if (title.length > 0) {
-            return (
-                <Space>
-                    {element}
-                    {title}
-                </Space>
-            );
-        }
-        return element;
+        return (
+            <span style={{ display: "flex", gap: 4, whiteSpace: "normal", flexFlow: "wrap", alignItems: "center" }}>
+                {element}
+                {record.rubbish && (
+                    <span style={{ color: "rgb(119, 119, 119)", fontSize: 12 }}>{getRes()["draft"]}</span>
+                )}
+                {record.privacy && <LockOutlined style={{ color: "rgb(119, 119, 119)" }} />}
+                {record.keywords && <Tags closeable={false} keywords={record.keywords} />}
+            </span>
+        );
     };
 
     const getColumns = (): TableColumnsType<any> => {
@@ -137,7 +124,7 @@ const Index = ({ data, offline }: { data: ArticlePageDataSource; offline: boolea
                 ellipsis: {
                     showTitle: false,
                 },
-                width: 300,
+                width: 400,
                 render: (text: string, record: any) => {
                     const t = (
                         <Tooltip
