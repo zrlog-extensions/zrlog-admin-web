@@ -15,6 +15,7 @@ public class StatisticsInfoResponse {
     private Long publishedCount;
     private List<TypeDTO> typeData;
     private List<TagDTO> tagData;
+    private List<java.util.Map<String, Object>> auditLogs;
 
     public Long getCommCount() {
         return commCount;
@@ -88,4 +89,11 @@ public class StatisticsInfoResponse {
         this.tagData = tagData;
     }
 
+    public List<java.util.Map<String, Object>> getAuditLogs() {
+        return auditLogs;
+    }
+
+    public void setAuditLogs(List<java.util.Map<String, Object>> auditLogs) {
+        this.auditLogs = auditLogs;
+    }
 }

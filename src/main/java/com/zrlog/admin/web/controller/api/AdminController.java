@@ -39,6 +39,7 @@ public class AdminController extends BaseController {
         UserLoginDTO dto = userService.login(loginRequest);
         Constants.zrLogConfig.getTokenService().setAdminToken(dto.getId(), dto.getSecretKey(), dto.getUserBasicInfoResponse().getKey(),
                 Objects.equals(loginRequest.getHttps(), true) ? "https" : "http", getRequest(), getResponse());
+        new com.zrlog.admin.business.service.AdminAuditService().record(request, "登录成功", "login");
         return new AdminApiPageDataStandardResponse<>(dto.getUserBasicInfoResponse());
     }
 

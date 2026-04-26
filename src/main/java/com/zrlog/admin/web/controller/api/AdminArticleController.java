@@ -51,6 +51,7 @@ public class AdminArticleController extends BaseController {
                 throw new DAOException(e);
             }
         });
+        new com.zrlog.admin.business.service.AdminAuditService().record(request, "删除文章 ID：" + idStr, "article");
         return new DeleteResponse(deleted);
     }
 
@@ -74,15 +75,17 @@ public class AdminArticleController extends BaseController {
 
     @ResponseBody
     public AdminApiPageDataStandardResponse<ArticleGlobalResponse> create() throws SQLException {
-        CreateOrUpdateArticleResponse create = articleService.create(AdminTokenThreadLocal.getUser(),
-                getRequestBodyWithNullCheck(CreateArticleRequest.class));
+        CreateArticleRequest body = getRequestBodyWithNullCheck(CreateArticleRequest.class);
+        CreateOrUpdateArticleResponse create = articleService.create(AdminTokenThreadLocal.getUser(), body);
+        new com.zrlog.admin.business.service.AdminAuditService().record(request, "发布文章：" + body.getTitle(), "article");
         return toResponseByArticle(create);
     }
 
     @ResponseBody
     public AdminApiPageDataStandardResponse<ArticleGlobalResponse> update() throws SQLException {
-        CreateOrUpdateArticleResponse update = articleService.update(AdminTokenThreadLocal.getUser(),
-                getRequestBodyWithNullCheck(UpdateArticleRequest.class));
+        UpdateArticleRequest body = getRequestBodyWithNullCheck(UpdateArticleRequest.class);
+        CreateOrUpdateArticleResponse update = articleService.update(AdminTokenThreadLocal.getUser(), body);
+        new com.zrlog.admin.business.service.AdminAuditService().record(request, "更新文章：" + body.getTitle(), "article");
         return toResponseByArticle(update);
     }
 

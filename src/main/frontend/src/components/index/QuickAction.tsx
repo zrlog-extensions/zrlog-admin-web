@@ -1,8 +1,14 @@
-import { Badge, Col, Row, Typography } from "antd";
+import { Badge, Col, Row, Typography, Card } from "antd";
 
 import { Link } from "react-router-dom";
 import { getRealRouteUrl, getRes } from "utils/constants";
-import { DatabaseOutlined, FolderAddFilled, PlusCircleOutlined, EditOutlined } from "@ant-design/icons";
+import {
+    DatabaseOutlined,
+    FolderAddFilled,
+    PlusCircleOutlined,
+    EditOutlined,
+    ThunderboltOutlined,
+} from "@ant-design/icons";
 import { getAppState } from "../../base/ConfigProviderApp";
 import { useTheme } from "antd-style";
 
@@ -33,12 +39,15 @@ const QuickActionCard = ({ draftCount }: { draftCount: number }) => {
                         padding: "16px 8px",
                         borderRadius: theme.borderRadiusLG,
                         cursor: "pointer",
+                        transition: "all 0.3s",
                     }}
                     onMouseEnter={(e) => {
                         e.currentTarget.style.backgroundColor = isDark ? "rgba(255,255,255,0.04)" : "rgba(0,0,0,0.02)";
+                        e.currentTarget.style.transform = "translateY(-2px)";
                     }}
                     onMouseLeave={(e) => {
                         e.currentTarget.style.backgroundColor = "transparent";
+                        e.currentTarget.style.transform = "translateY(0)";
                     }}
                 >
                     <Badge count={count} offset={[-5, 5]} size="small" color={getAppState().colorPrimary}>
@@ -46,7 +55,7 @@ const QuickActionCard = ({ draftCount }: { draftCount: number }) => {
                             style={{
                                 width: 56,
                                 height: 56,
-                                borderRadius: theme.borderRadiusLG,
+                                borderRadius: "16px",
                                 backgroundColor: iconBgColor,
                                 display: "flex",
                                 alignItems: "center",
@@ -68,17 +77,17 @@ const QuickActionCard = ({ draftCount }: { draftCount: number }) => {
     );
 
     return (
-        <div
-            style={{
-                marginTop: 16,
-                padding: 24,
-                borderRadius: theme.borderRadiusLG,
-                boxShadow: isDark ? "0 1px 3px rgba(0,0,0,0.3)" : "0 1px 3px rgba(0,0,0,0.05)",
-            }}
+        <Card
+            title={
+                <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                    <ThunderboltOutlined />
+                    <span>{getRes()["quickAction"]}</span>
+                </div>
+            }
+            bordered={false}
+            className="dashboard-card"
+            style={{ marginTop: 24 }}
         >
-            <Typography.Title level={4} style={{ marginTop: 0, marginBottom: 20, fontWeight: 600 }}>
-                {getRes()["quickAction"]}
-            </Typography.Title>
             <Row gutter={[16, 16]}>
                 <ActionItem to="/article-edit" icon={<PlusCircleOutlined />} label={getRes()["writeArticle"]} />
                 <ActionItem
@@ -94,7 +103,7 @@ const QuickActionCard = ({ draftCount }: { draftCount: number }) => {
                     label={getRes()["backupFiles"]}
                 />
             </Row>
-        </div>
+        </Card>
     );
 };
 

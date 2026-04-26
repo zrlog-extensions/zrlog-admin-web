@@ -59,6 +59,9 @@ public class AdminStatisticsService {
                 info.setPrivateCount(counts.getPrivateCount());
                 info.setPublishedCount(counts.getPublished());
             }, executor));
+            futures.add(CompletableFuture.runAsync(() -> {
+                info.setAuditLogs(new AdminAuditService().getRecentLogs());
+            }, executor));
             CompletableFuture.allOf(futures.toArray(new CompletableFuture[0])).join();
             return info;
         }, executor);

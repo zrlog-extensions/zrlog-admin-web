@@ -1,11 +1,9 @@
-import Row from "antd/es/grid/row";
-import Col from "antd/es/grid/col";
+import { Row, Col, Card } from "antd";
 import { getRes } from "../../utils/constants";
 
 import { FunctionComponent } from "react";
 import { IndexData } from "../../type";
 import ActivityGraph, { generateCompleteData } from "./ActivityGraph";
-import { Typography } from "antd";
 import IndexTipBg from "./IndexTipBg";
 import StatisticsInfo from "./StatisticsInfo";
 import BaseTitle from "../../base/BaseTitle";
@@ -13,6 +11,8 @@ import QuickActionCard from "./QuickAction";
 import { getAppState } from "../../base/ConfigProviderApp";
 import { useTheme } from "antd-style";
 import DataInsights from "./DataInsights";
+import AuditTrail from "./AuditTrail";
+import { BarChartOutlined } from "@ant-design/icons";
 
 type IndexProps = {
     data: IndexData;
@@ -76,21 +76,22 @@ const Index: FunctionComponent<IndexProps> = ({ data }) => {
 
                 {/* Right Column */}
                 <Col xs={24} lg={12}>
-                    <div
-                        style={{
-                            padding: 24,
-                            borderRadius: theme.borderRadiusLG,
-                            boxShadow: getAppState().dark ? "0 1px 3px rgba(0,0,0,0.3)" : "0 1px 3px rgba(0,0,0,0.05)",
-                            backgroundColor: getAppState().dark ? "transparent" : "#fff",
-                        }}
+                    <Card
+                        title={
+                            <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                                <BarChartOutlined />
+                                <span>{getRes()["admin.index.activity"]}</span>
+                            </div>
+                        }
+                        bordered={false}
+                        className="dashboard-card"
+                        style={{ marginBottom: 24 }}
                     >
-                        <Typography.Title level={4} style={{ marginTop: 0, marginBottom: 20, fontWeight: 600 }}>
-                            {getRes()["admin.index.activity"]}
-                        </Typography.Title>
                         <div style={{ overflow: "auto" }}>
                             <ActivityGraph data={generateCompleteData(data.activityData)} />
                         </div>
-                    </div>
+                    </Card>
+                    <AuditTrail logs={data.statisticsInfo.auditLogs} />
                     <DataInsights typeData={data.statisticsInfo.typeData} tagData={data.statisticsInfo.tagData} />
                 </Col>
             </Row>

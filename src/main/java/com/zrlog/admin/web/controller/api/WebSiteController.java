@@ -70,6 +70,7 @@ public class WebSiteController extends BaseController {
     }
 
     private AdminApiPageDataStandardResponse<Void> update(Object t) throws SQLException {
+        new com.zrlog.admin.business.service.AdminAuditService().record(request, "修改系统设置：" + t.getClass().getSimpleName(), "setting");
         Map<String, Object> requestMap = BeanUtil.convert(t, Map.class);
         if (Objects.nonNull(requestMap)) {
             for (Entry<String, Object> param : requestMap.entrySet()) {
