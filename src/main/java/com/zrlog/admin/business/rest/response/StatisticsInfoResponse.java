@@ -1,5 +1,9 @@
 package com.zrlog.admin.business.rest.response;
 
+import com.zrlog.common.cache.dto.TagDTO;
+import com.zrlog.common.cache.dto.TypeDTO;
+import java.util.List;
+
 public class StatisticsInfoResponse {
 
     private Long commCount;
@@ -9,6 +13,8 @@ public class StatisticsInfoResponse {
     private Long draftCount;
     private Long privateCount;
     private Long publishedCount;
+    private List<TypeDTO> typeData;
+    private List<TagDTO> tagData;
 
     public Long getCommCount() {
         return commCount;
@@ -65,4 +71,21 @@ public class StatisticsInfoResponse {
     public void setPublishedCount(Long publishedCount) {
         this.publishedCount = publishedCount;
     }
+
+    public List<TypeDTO> getTypeData() {
+        return typeData;
+    }
+
+    public void setTypeData(List<TypeDTO> typeData) {
+        this.typeData = typeData;
+    }
+
+    public List<TagDTO> getTagData() {
+        return tagData;
+    }
+
+    public void setTagData(List<TagDTO> tagData) {
+        this.tagData = tagData;
+    }
+
 }

@@ -12,6 +12,7 @@ import BaseTitle from "../../base/BaseTitle";
 import QuickActionCard from "./QuickAction";
 import { getAppState } from "../../base/ConfigProviderApp";
 import { useTheme } from "antd-style";
+import DataInsights from "./DataInsights";
 
 type IndexProps = {
     data: IndexData;
@@ -26,19 +27,20 @@ const Index: FunctionComponent<IndexProps> = ({ data }) => {
     return (
         <>
             <BaseTitle title={getRes().dashboard} />
-            <Row gutter={[8, 8]}>
-                <Col xs={24} md={12}>
+            <Row gutter={[24, 24]}>
+                {/* Left Column */}
+                <Col xs={24} lg={12}>
                     <div
                         style={{
                             position: "relative",
                             background: getAppState().dark
-                                ? "linear-gradient(135deg, #2b2930 0%, #1c1b1f 100%)" // MD3 surface layers
+                                ? "linear-gradient(135deg, #2b2930 0%, #1c1b1f 100%)"
                                 : `linear-gradient(135deg, ${getAppState().colorPrimary} 0%, ${
                                       getAppState().colorPrimary
                                   }dd 100%)`,
-                            padding: "24px 16px",
+                            padding: "32px 24px",
                             marginBottom: 24,
-                            borderRadius: theme.borderRadiusLG, // MD3 Extra Large
+                            borderRadius: theme.borderRadiusLG,
                             color: "white",
                             overflow: "hidden",
                             boxShadow: getAppState().dark
@@ -46,17 +48,14 @@ const Index: FunctionComponent<IndexProps> = ({ data }) => {
                                 : `0 8px 24px ${getAppState().colorPrimary}40`,
                         }}
                     >
-                        {/* Decorative Background */}
                         <IndexTipBg style={{ position: "absolute", height: "100%", width: "100%", top: 0, left: 0 }} />
-
-                        {/* Content */}
-                        <div style={{ position: "relative", zIndex: 1, padding: 6 }}>
+                        <div style={{ position: "relative", zIndex: 1 }}>
                             <div
                                 style={{
-                                    fontSize: 26,
-                                    lineHeight: 1.4,
+                                    fontSize: 28,
+                                    lineHeight: 1.2,
                                     fontWeight: 700,
-                                    paddingBottom: 6,
+                                    paddingBottom: 8,
                                     textShadow: "0 2px 4px rgba(0,0,0,0.1)",
                                 }}
                             >
@@ -72,13 +71,17 @@ const Index: FunctionComponent<IndexProps> = ({ data }) => {
                         </div>
                     </div>
                     <StatisticsInfo data={data.statisticsInfo} versionInfo={data.versionInfo} />
+                    <QuickActionCard draftCount={data.statisticsInfo.draftCount} />
                 </Col>
-                <Col xs={24} md={12}>
+
+                {/* Right Column */}
+                <Col xs={24} lg={12}>
                     <div
                         style={{
                             padding: 24,
                             borderRadius: theme.borderRadiusLG,
                             boxShadow: getAppState().dark ? "0 1px 3px rgba(0,0,0,0.3)" : "0 1px 3px rgba(0,0,0,0.05)",
+                            backgroundColor: getAppState().dark ? "transparent" : "#fff",
                         }}
                     >
                         <Typography.Title level={4} style={{ marginTop: 0, marginBottom: 20, fontWeight: 600 }}>
@@ -88,7 +91,7 @@ const Index: FunctionComponent<IndexProps> = ({ data }) => {
                             <ActivityGraph data={generateCompleteData(data.activityData)} />
                         </div>
                     </div>
-                    <QuickActionCard draftCount={data.statisticsInfo.draftCount} />
+                    <DataInsights typeData={data.statisticsInfo.typeData} tagData={data.statisticsInfo.tagData} />
                 </Col>
             </Row>
         </>

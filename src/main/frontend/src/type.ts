@@ -58,6 +58,8 @@ export type StatisticsInfoState = {
     draftCount: number;
     privateCount: number;
     publishedCount: number;
+    typeData: { typeName: string, alias: string, typeamount: number }[];
+    tagData: { text: string, count: number }[];
     loading: boolean;
     usedCacheSpace: number;
     usedDiskSpace: number;

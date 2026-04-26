@@ -46,3 +46,4 @@ zrlog-admin-web-starter.jar
 bin
 doc
 README.en-us.md
+conf/temp.properties

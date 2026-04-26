@@ -1,0 +1,140 @@
+import { Typography, Tooltip, Empty } from "antd";
+import { getAppState } from "../../base/ConfigProviderApp";
+import { useTheme } from "antd-style";
+import { getRes } from "../../utils/constants";
+
+type DataInsightsProps = {
+    typeData: { typeName: string; alias: string; typeamount: number }[];
+    tagData: { text: string; count: number }[];
+};
+
+const DataInsights = ({ typeData, tagData }: DataInsightsProps) => {
+    const theme = useTheme();
+    const isDark = getAppState().dark;
+
+    // Filter out items with 0 count for the visualization
+    const activeTypes = typeData?.filter((t) => t.typeamount > 0).sort((a, b) => b.typeamount - a.typeamount) || [];
+    const activeTags = tagData?.filter((t) => t.count > 0).sort((a, b) => b.count - a.count) || [];
+
+    const totalArticles = activeTypes.reduce((acc, curr) => acc + curr.typeamount, 0);
+
+    return (
+        <div style={{ marginTop: 24 }}>
+            <div
+                style={{
+                    padding: 24,
+                    borderRadius: theme.borderRadiusLG,
+                    boxShadow: isDark ? "0 1px 3px rgba(0,0,0,0.3)" : "0 1px 3px rgba(0,0,0,0.05)",
+                    backgroundColor: isDark ? "transparent" : "#fff",
+                }}
+            >
+                <Typography.Title level={4} style={{ marginTop: 0, marginBottom: 20, fontWeight: 600 }}>
+                    {getRes()["admin.index.insight"]}
+                </Typography.Title>
+
+                <div style={{ marginBottom: 32 }}>
+                    <Typography.Text type="secondary" style={{ display: "block", marginBottom: 12, fontSize: 13 }}>
+                        {getRes()["categoryDistribution"]}
+                    </Typography.Text>
+                    {activeTypes.length > 0 ? (
+                        <div
+                            style={{
+                                display: "flex",
+                                height: 24,
+                                borderRadius: 12,
+                                overflow: "hidden",
+                                backgroundColor: isDark ? "rgba(255,255,255,0.05)" : "#f5f5f5",
+                            }}
+                        >
+                            {activeTypes.map((type, index) => {
+                                const percentage = (type.typeamount / totalArticles) * 100;
+                                const colors = [
+                                    getAppState().colorPrimary,
+                                    "#52c41a",
+                                    "#1890ff",
+                                    "#722ed1",
+                                    "#faad14",
+                                    "#eb2f96",
+                                ];
+                                return (
+                                    <Tooltip
+                                        key={type.alias}
+                                        title={`${type.typeName}: ${type.typeamount} (${percentage.toFixed(1)}%)`}
+                                    >
+                                        <div
+                                            style={{
+                                                width: `${percentage}%`,
+                                                backgroundColor: colors[index % colors.length],
+                                                transition: "all 0.3s",
+                                            }}
+                                        />
+                                    </Tooltip>
+                                );
+                            })}
+                        </div>
+                    ) : (
+                        <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} description="暂无分类数据" />
+                    )}
+                    <div style={{ display: "flex", flexWrap: "wrap", gap: 12, marginTop: 12 }}>
+                        {activeTypes.slice(0, 6).map((type, index) => (
+                            <div key={type.alias} style={{ display: "flex", alignItems: "center", gap: 4 }}>
+                                <div
+                                    style={{
+                                        width: 8,
+                                        height: 8,
+                                        borderRadius: "50%",
+                                        backgroundColor: [
+                                            getAppState().colorPrimary,
+                                            "#52c41a",
+                                            "#1890ff",
+                                            "#722ed1",
+                                            "#faad14",
+                                            "#eb2f96",
+                                        ][index % 6],
+                                    }}
+                                />
+                                <Typography.Text style={{ fontSize: 12 }}>{type.typeName}</Typography.Text>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+
+                <div>
+                    <Typography.Text type="secondary" style={{ display: "block", marginBottom: 12, fontSize: 13 }}>
+                        {getRes()["hotTags"]}
+                    </Typography.Text>
+                    <div style={{ display: "flex", flexWrap: "wrap", gap: "8px 12px", alignItems: "baseline" }}>
+                        {activeTags.length > 0 ? (
+                            activeTags.slice(0, 15).map((tag) => {
+                                // Scale font size based on count
+                                const maxCount = activeTags[0].count;
+                                const size = Math.max(12, Math.min(24, 12 + (tag.count / maxCount) * 12));
+                                const opacity = Math.max(0.5, tag.count / maxCount);
+
+                                return (
+                                    <span
+                                        key={tag.text}
+                                        style={{
+                                            fontSize: size,
+                                            opacity: opacity,
+                                            fontWeight: size > 18 ? 600 : 400,
+                                            color: isDark ? "rgba(255,255,255,0.85)" : "rgba(0,0,0,0.85)",
+                                            cursor: "default",
+                                            transition: "all 0.2s",
+                                        }}
+                                    >
+                                        {tag.text}
+                                    </span>
+                                );
+                            })
+                        ) : (
+                            <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} description="暂无标签数据" />
+                        )}
+                    </div>
+                </div>
+            </div>
+        </div>
+    );
+};
+
+export default DataInsights;

@@ -1,6 +1,6 @@
 import { EditOutlined, LockOutlined, GlobalOutlined, AppstoreOutlined } from "@ant-design/icons";
 
-import { Segmented, TableColumnsType, Tooltip } from "antd";
+import { Segmented, TableColumnsType, Tooltip, Space, Tag } from "antd";
 import Search from "antd/es/input/Search";
 import Divider from "antd/es/divider";
 import { getRealRouteUrl, getRes } from "../../utils/constants";
@@ -8,20 +8,22 @@ import type * as React from "react";
 import { ReactElement, useEffect, useRef, useState } from "react";
 import BaseTable, { ArticlePageDataSource } from "../../common/BaseTable";
 import { Link, useNavigate } from "react-router-dom";
-import { removeCacheDataByKey } from "../../utils/cache";
 import { useLocation } from "react-router";
-import { SortOrder } from "antd/es/table/interface";
-import Image from "antd/es/image";
 import { getAppState } from "../../base/ConfigProviderApp";
 import BaseTitle from "../../base/BaseTitle";
-import Tags from "../../common/Tags";
+import { ArticlePreviewAction } from "./ArticlePreviewAction";
+import { removeCacheDataByKey } from "../../utils/cache";
 
 const genTypes = (d: ArticlePageDataSource, search: string) => {
-    const types = new URLSearchParams(search).get("types") as unknown as string;
+    const typesStr = new URLSearchParams(search).get("types");
 
     return d.types
         ? d.types.map((e) => {
-              return { text: e.typeName, value: e.alias, selected: types ? types.split(",").includes(e.alias) : false };
+              return {
+                  text: e.typeName,
+                  value: e.alias,
+                  selected: typesStr ? typesStr.split(",").includes(e.alias) : false,
+              };
           })
         : [];
 };
@@ -63,91 +65,75 @@ const Index = ({ data, offline }: { data: ArticlePageDataSource; offline: boolea
         } else {
             params.delete("status");
         }
-        // 切换状态时重置到第一页
-        params.delete("page");
-        const queryStr = params.toString();
-        navigate(getRealRouteUrl(location.pathname + (queryStr ? "?" + queryStr : "")));
-    };
-
-    const wrapperArticleStateInfo = (record: any, children: ReactElement) => {
-        return (
-            <span style={{ display: "flex", gap: 4, whiteSpace: "normal", flexFlow: "wrap" }}>
-                {children}
-                {record.rubbish && <span style={{ color: "rgb(119, 119, 119)" }}>{getRes()["draft"]}</span>}
-                {record.privacy && <LockOutlined style={{ color: "rgb(119, 119, 119)" }} />}
-                {record.keywords && <Tags closeable={false} keywords={record.keywords} />}
-            </span>
-        );
+        navigate(getRealRouteUrl(location.pathname + "?" + params.toString()));
     };
 
     const handleNavigation = () => {
-        if (jumped.current) {
-            return;
+        const params = new URLSearchParams(location.search);
+        const selectedTypes = filters
+            .filter((e) => e.selected)
+            .map((e) => e.value)
+            .join(",");
+        if (selectedTypes) {
+            params.set("types", selectedTypes);
+        } else {
+            params.delete("types");
         }
-        jumped.current = true;
-        const sortArgs: string[] = [];
-        data.sort.forEach((e) => {
-            sortArgs.push("sort=" + encodeURIComponent(e));
-        });
-        //FIXME jump append sort
-        const endTag = location.search.includes("sort=") ? "&" : "";
-        location.pathname =
-            location.pathname +
-            "?types=" +
-            encodeURIComponent(
-                filters
-                    .filter((e) => e.selected)
-                    .map((e) => e.value)
-                    .join(",")
-            ) +
-            "&" +
-            sortArgs.join("&") +
-            endTag;
+        navigate(getRealRouteUrl(location.pathname + "?" + params.toString()));
+    };
+
+    const handleFilterChange = (value: string, checked: boolean) => {
+        setFilters((prevFilters) => prevFilters.map((f) => (f.value === value ? { ...f, selected: checked } : f)));
     };
 
     useEffect(() => {
-        jumped.current = false;
-        setFilters(genTypes(data, location.search));
-    }, [data]);
+        if (jumped.current) {
+            handleNavigation();
+        }
+        jumped.current = true;
+    }, [filters]);
 
-    const handleFilterChange = (value: string, checked: boolean) => {
-        console.log(value);
-        filters.forEach((filter) => {
-            if (filter.value === value) {
-                filter.selected = checked;
-            } else {
-                filter.selected = false;
-            }
-        });
-        setFilters(filters);
+    const wrapperArticleStateInfo = (record: any, element: ReactElement) => {
+        const title: ReactElement[] = [];
+        if (record.rubbish) {
+            title.push(
+                <Tag key="rubbish" color="red">
+                    {getRes()["articleDraft"]}
+                </Tag>
+            );
+        }
+        if (record.privacy) {
+            title.push(
+                <Tag key="privacy" color="orange">
+                    {getRes()["articlePrivate"]}
+                </Tag>
+            );
+        }
+        if (title.length > 0) {
+            return (
+                <Space>
+                    {element}
+                    {title}
+                </Space>
+            );
+        }
+        return element;
     };
 
     const getColumns = (): TableColumnsType<any> => {
-        const sorterMap: Record<string, SortOrder> = {};
-
-        data.sort &&
-            data.sort.map((e) => {
-                const arr: string[] = e.split(",");
-                sorterMap[arr[0]] = arr[1] === "ASC" ? "ascend" : "descend";
-            });
+        const queryParams = new URLSearchParams(location.search);
+        const sortParam = queryParams.get("sort");
+        const sorterMap: Record<string, "descend" | "ascend" | undefined> = {};
+        if (sortParam) {
+            const [field, order] = sortParam.split(",");
+            sorterMap[field] = order.toUpperCase() === "DESC" ? "descend" : "ascend";
+        }
 
         return [
             {
-                title: getRes()["articleCover"] as string,
-                dataIndex: "thumbnail",
-                key: "thumbnail",
-                width: data.article_thumbnail_status ? 108 : 0,
-                render: (url: string) => {
-                    if (url && url.length > 0 && data.article_thumbnail_status) {
-                        return <Image style={{ objectFit: "contain", maxHeight: 108 }} src={url} />;
-                    }
-                    return <></>;
-                },
-            },
-            {
-                title: getRes()["title"] as string,
-                dataIndex: "title",
+                title: getRes()["title"],
                 key: "title",
+                dataIndex: "title",
                 ellipsis: {
                     showTitle: false,
                 },
@@ -179,12 +165,6 @@ const Index = ({ data, offline }: { data: ArticlePageDataSource; offline: boolea
                     );
                 },
             },
-            /*{
-                title: "作者",
-                key: "userName",
-                dataIndex: "userName",
-                width: 80,
-            },*/
             {
                 title: getRes()["type"],
                 key: "typeName",
@@ -293,9 +273,14 @@ const Index = ({ data, offline }: { data: ArticlePageDataSource; offline: boolea
                 datasource={data}
                 columns={getColumns()}
                 editBtnRender={(id) => (
-                    <Link to={getRealRouteUrl("/article-edit?id=" + id)}>
-                        <EditOutlined style={{ color: getAppState().colorPrimary }} />
-                    </Link>
+                    <Space size={16}>
+                        <ArticlePreviewAction id={id} />
+                        <Tooltip title={getRes()["edit"]}>
+                            <Link to={getRealRouteUrl("/article-edit?id=" + id)}>
+                                <EditOutlined style={{ color: getAppState().colorPrimary }} />
+                            </Link>
+                        </Tooltip>
+                    </Space>
                 )}
                 deleteSuccessCallback={(id) => {
                     removeCacheDataByKey(getRealRouteUrl("/article-edit?id=" + id));

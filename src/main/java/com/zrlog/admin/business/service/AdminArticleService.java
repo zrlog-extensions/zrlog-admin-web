@@ -280,7 +280,7 @@ public class AdminArticleService {
         ExecutorService executorService = ThreadUtils.newFixedThreadPool(3);
         try {
             CompletableFuture<PageData<ArticleBasicDTO>> dataCompletableFuture = CompletableFuture.supplyAsync(() -> {
-                return new Log().adminFind(pageRequest, keywords, typeAlias);
+                return new Log().adminFind(pageRequest, keywords, typeAlias, status);
             }, executorService);
             CompletableFuture<List<TypeDTO>> listCompletableFuture = CompletableFuture.supplyAsync(() -> {
                 return Constants.zrLogConfig.getCacheService().getArticleTypes();
@@ -290,25 +290,6 @@ public class AdminArticleService {
             CompletableFuture.allOf(listCompletableFuture, dataCompletableFuture, countFuture).join();
             ArticleHelpers.wrapperSearchKeyword(dataCompletableFuture.join(), keywords);
             PageData<ArticleResponseEntry> articleResponseEntryPageData = convertPageable(dataCompletableFuture.join(), request);
-            // 根据 status 参数过滤文章列表
-            if (StringUtils.isNotEmpty(status)) {
-                List<ArticleResponseEntry> filtered = articleResponseEntryPageData.getRows().stream()
-                        .filter(entry -> {
-                            switch (status) {
-                                case "published":
-                                    return !entry.getRubbish() && !entry.getPrivacy();
-                                case "private":
-                                    return entry.getPrivacy();
-                                case "draft":
-                                    return entry.getRubbish();
-                                default:
-                                    return true;
-                            }
-                        })
-                        .collect(Collectors.toList());
-                articleResponseEntryPageData.setRows(filtered);
-                articleResponseEntryPageData.setTotalElements(filtered.size());
-            }
             ArticlePageData convert = BeanUtil.convert(articleResponseEntryPageData, ArticlePageData.class);
             convert.setTypes(listCompletableFuture.join());
             convert.setKey(keywords);

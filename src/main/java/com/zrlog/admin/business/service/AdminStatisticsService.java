@@ -5,6 +5,7 @@ import com.zrlog.admin.business.rest.response.ArticleStatusCountResponse;
 import com.zrlog.admin.business.rest.response.StatisticsInfoResponse;
 import com.zrlog.model.Comment;
 import com.zrlog.model.Log;
+import com.zrlog.common.Constants;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -21,6 +22,12 @@ public class AdminStatisticsService {
         return CompletableFuture.supplyAsync(() -> {
             StatisticsInfoResponse info = new StatisticsInfoResponse();
             List<CompletableFuture<Void>> futures = new ArrayList<>();
+            futures.add(CompletableFuture.runAsync(() -> {
+                info.setTypeData(Constants.zrLogConfig.getCacheService().getArticleTypes());
+            }, executor));
+            futures.add(CompletableFuture.runAsync(() -> {
+                info.setTagData(Constants.zrLogConfig.getCacheService().getTags());
+            }, executor));
             futures.add(CompletableFuture.runAsync(() -> {
                 try {
                     info.setCommCount(new Comment().count());
