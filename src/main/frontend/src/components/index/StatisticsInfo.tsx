@@ -2,12 +2,13 @@ import { Typography } from "antd";
 import { getRealRouteUrl, getRes } from "../../utils/constants";
 import Row from "antd/es/grid/row";
 import Col from "antd/es/grid/col";
-import { CommentOutlined, ContainerOutlined, InfoCircleOutlined } from "@ant-design/icons";
+import { CommentOutlined, ContainerOutlined, DashboardOutlined, InfoCircleOutlined } from "@ant-design/icons";
 import { Link } from "react-router-dom";
 import { StatisticsInfoState } from "../../type";
 import { ReactElement } from "react";
 import { getAppState } from "../../base/ConfigProviderApp";
 import { useTheme } from "antd-style";
+import Card from "antd/es/card";
 
 const StatisticsInfo = ({ data, versionInfo }: { data: StatisticsInfoState; versionInfo: string }) => {
     const isDark = getAppState().dark;
@@ -96,7 +97,15 @@ const StatisticsInfo = ({ data, versionInfo }: { data: StatisticsInfoState; vers
     };
 
     return (
-        <div style={{ marginTop: 24 }}>
+        <Card
+            style={{ marginTop: 24 }}
+            title={
+                <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                    <DashboardOutlined />
+                    <span>{getRes()["admin.index.statistics"]}</span>
+                </div>
+            }
+        >
             <Row gutter={[16, 16]}>
                 <Col xs={12} sm={12} md={6}>
                     <StatCard
@@ -132,7 +141,7 @@ const StatisticsInfo = ({ data, versionInfo }: { data: StatisticsInfoState; vers
                     />
                 </Col>
             </Row>
-        </div>
+        </Card>
     );
 };
 

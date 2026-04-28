@@ -4,9 +4,9 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.hibegin.common.util.StringUtils;
 import com.hibegin.http.server.api.HttpRequest;
-import com.zrlog.admin.business.util.UserAgentUtils;
 import com.zrlog.blog.web.util.WebTools;
 import com.zrlog.model.WebSite;
+import com.zrlog.util.UserAgentUtils;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -41,6 +41,7 @@ public class AdminAuditService {
                 UserAgentUtils.UserAgentInfo uaInfo = UserAgentUtils.parse(uaString);
                 newLog.put("os", uaInfo.getOs());
                 newLog.put("browser", uaInfo.getFullBrowser());
+                newLog.put("crawler", uaInfo.isCrawler());
             }
 
             logs.add(0, newLog); // Add to the beginning

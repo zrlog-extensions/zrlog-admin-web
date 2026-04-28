@@ -14,7 +14,7 @@
     <properties>
         <finalName>zrlog-admin-web</finalName>
         <libOutputPath>lib</libOutputPath>
-        <zrlog-xx-template.version>3.3.9</zrlog-xx-template.version>
+        <zrlog-xx-template.version>3.3.11-SNAPSHOT</zrlog-xx-template.version>
         <gpg.passphrase/>
     </properties>
 
