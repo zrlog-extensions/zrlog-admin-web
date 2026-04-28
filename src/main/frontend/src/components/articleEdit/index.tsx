@@ -1,5 +1,5 @@
 import { FunctionComponent, useEffect, useRef, useState } from "react";
-import { App, Button, Grid, InputRef, message, Space } from "antd";
+import { App, Button, Grid, InputRef, message, Space, Tag } from "antd";
 import Row from "antd/es/grid/row";
 import Col from "antd/es/grid/col";
 import Divider from "antd/es/divider";
@@ -39,6 +39,7 @@ import { addToCache, getCacheByKey, getPageDataCacheKeyByPath } from "../../util
 import { LockOutlined } from "@ant-design/icons";
 import { getAppState } from "../../base/ConfigProviderApp";
 import BaseTitle from "../../base/BaseTitle";
+import { usePageHeaderContext } from "../../base/PageHeaderContext";
 import Editor from "@editor/dist/src/editor";
 import EditorStatistics from "@editor/dist/src/editor/editor-statistics-info";
 import { toStatisticsByMarkdown } from "@editor/dist/src/editor/utils/editor-utils";
@@ -54,11 +55,22 @@ const Index: FunctionComponent<ArticleEditProps> = ({
     fullScreen,
     updateCache,
 }) => {
+    const { title: headerTitle } = usePageHeaderContext();
+    const duplicatedTitle = headerTitle === getRes()["admin.log.edit"];
+
     const location = useLocation();
     const editCardRef = useRef<HTMLDivElement>(null);
 
     const defaultState = articleDataToState(data);
     const [state, setState] = useState<ArticleEditState>(defaultState);
+    const isNewArticle = !state.article.logId;
+    const articleStatusText = isNewArticle
+        ? getRes()["admin.article.new"]
+        : state.rubbish
+        ? getRes()["draft"]
+        : state.article.privacy
+        ? getRes()["articlePrivate"]
+        : getRes()["published"];
 
     const aliasRef = useRef<InputRef>(null);
     const digestRef = useRef<InputRef>(null);
@@ -501,7 +513,32 @@ const Index: FunctionComponent<ArticleEditProps> = ({
 
     return (
         <>
-            <div style={{ paddingTop: fullScreen ? 0 : 24, gap: 8, display: "flex", justifyContent: "space-between" }}>
+            <div
+                style={{
+                    gap: 8,
+                    display: "flex",
+                    justifyContent: "space-between",
+                    alignItems: "center",
+                }}
+            >
+                {duplicatedTitle && !fullScreen ? (
+                    <Tag
+                        bordered={false}
+                        style={{
+                            marginInlineEnd: 0,
+                            borderRadius: 999,
+                            paddingInline: 10,
+                            height: 28,
+                            lineHeight: "28px",
+                            fontSize: 12,
+                            fontWeight: 500,
+                            backgroundColor: getAppState().dark ? "rgba(255,255,255,0.08)" : "rgba(15,23,42,0.05)",
+                            color: getAppState().dark ? "rgba(255,255,255,0.72)" : "rgba(15,23,42,0.72)",
+                        }}
+                    >
+                        {articleStatusText}
+                    </Tag>
+                ) : null}
                 <BaseTitle
                     noBottomBorder={true}
                     title={getRes()["admin.log.edit"]}

@@ -1,11 +1,10 @@
-import React, { ReactElement, useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { ReactElement, useEffect, useState } from "react";
+import { Link, useLocation } from "react-router-dom";
 import { getRealRouteUrl, getRes } from "../utils/constants";
 import {
     ApiFilled,
     ApiOutlined,
-    AppstoreFilled,
-    AppstoreOutlined,
+    ApartmentOutlined,
     CommentOutlined,
     ContainerFilled,
     ContainerOutlined,
@@ -13,28 +12,31 @@ import {
     DashboardOutlined,
     EditFilled,
     EditOutlined,
+    LinkOutlined,
     SettingFilled,
     SettingOutlined,
+    TagsOutlined,
 } from "@ant-design/icons";
 import { Menu, MenuProps, Modal } from "antd";
-import { useLocation } from "react-router";
 import { parseQueryParamsToMap, tryBlock } from "../utils/helpers";
 import { getAppState } from "../base/ConfigProviderApp";
 
 type MenuItem = Required<MenuProps>["items"][number];
 
 type MenuEntry = {
+    key: string;
     link: string;
     selectIcon: ReactElement;
     icon: ReactElement;
     text: string;
 };
 
-type IconInfo = { selected: boolean; icon: ReactElement };
+type SliderMenuProps = {
+    expanded?: boolean;
+};
 
 export function colorToRgba(color: string, alpha: number) {
     if (color.startsWith("#")) {
-        // Convert hexadecimal to rgba
         const hex = color.slice(1);
         let bigint;
         if (hex.length === 3) {
@@ -49,105 +51,17 @@ export function colorToRgba(color: string, alpha: number) {
         const b = bigint & 255;
         return `rgba(${r}, ${g}, ${b}, ${alpha})`;
     } else if (color.startsWith("rgba(")) {
-        // Extract alpha from rgba and replace with the specified alpha
         return color.replace(/[^,]+(?=\))/, alpha.toString());
     } else if (color.startsWith("rgb(")) {
-        // Convert rgb to rgba
         return `rgba(${color.slice(color.indexOf("(") + 1, color.lastIndexOf(","))}, ${alpha})`;
     } else {
         throw new Error("Unsupported color format");
     }
 }
 
-const SliderMenu = () => {
+const SliderMenu = ({ expanded = false }: SliderMenuProps) => {
     const location = useLocation();
     const [modal, contextHolder] = Modal.useModal();
-
-    const getSelectMenu = (): string[] => {
-        const selectPath = location.pathname.split(".")[0];
-        if (selectPath === "" || selectPath === "/" || selectPath === "/system") {
-            return ["/index"];
-        } else if (
-            selectPath.startsWith("/website") ||
-            selectPath === "/upgrade" ||
-            selectPath === "/template-config"
-        ) {
-            return ["/website"];
-        } else if (
-            selectPath.startsWith("/link") ||
-            selectPath.startsWith("/nav") ||
-            selectPath.startsWith("/article-type")
-        ) {
-            return ["/more", selectPath];
-        } else {
-            return [selectPath];
-        }
-    };
-
-    const getInfo = (entry: MenuEntry): IconInfo => {
-        const selectLink = getSelectMenu()[0];
-        if (selectLink === entry.link) {
-            return { selected: true, icon: entry.selectIcon };
-        }
-        if (selectLink.startsWith("/website") && entry.link.startsWith("/website")) {
-            return { selected: true, icon: entry.selectIcon };
-        }
-        if (isMore(entry.link) && selectLink === "/more") {
-            return { selected: true, icon: entry.selectIcon };
-        }
-        return { selected: false, icon: entry.icon };
-    };
-
-    const isMore = (realPathName: string) => {
-        return (
-            realPathName.startsWith("/link") ||
-            realPathName.startsWith("/nav") ||
-            realPathName.startsWith("/article-type")
-        );
-    };
-
-    const getIconSize = () => {
-        if (getAppState().compactMode) {
-            return 20;
-        }
-        return 24;
-    };
-
-    function getItem(entry: MenuEntry, key: React.Key | null, children: MenuItem[]): MenuItem {
-        const info = getInfo(entry);
-        const label = (
-            <Link
-                to={getRealRouteUrl(entry.link)}
-                style={{
-                    color: "inherit",
-                    background: "transparent",
-                }}
-                onClick={(e) => {
-                    if (entry.link.startsWith("#more")) {
-                        e.preventDefault();
-                        e.stopPropagation();
-                        return;
-                    }
-                    tryBlock(e, modal);
-                }}
-            >
-                {info.icon}
-                <span className="menu-title">{entry.text}</span>
-            </Link>
-        );
-
-        if (children.length > 0) {
-            return {
-                key,
-                children,
-                label,
-            } as MenuItem;
-        }
-        return {
-            key,
-            label,
-        } as MenuItem;
-    }
 
     const getArticleEditUrl = () => {
         const paramMap = parseQueryParamsToMap(location.search);
@@ -158,132 +72,226 @@ const SliderMenu = () => {
         return "/article-edit";
     };
 
-    const items: MenuItem[] = [
-        getItem(
-            {
-                text: getRes().dashboard,
-                link: "/index",
-                selectIcon: <DashboardFilled style={{ fontSize: getIconSize() }} />,
-                icon: <DashboardOutlined style={{ fontSize: getIconSize() }} />,
-            },
-            "/index",
-            []
-        ),
-        getItem(
-            {
-                text: getRes()["admin.log.edit"],
-                link: getArticleEditUrl(),
-                selectIcon: <EditFilled style={{ fontSize: getIconSize() }} />,
-                icon: <EditOutlined style={{ fontSize: getIconSize() }} />,
-            },
-            "/article-edit",
-            []
-        ),
-        getItem(
-            {
-                text: getRes()["blogManage"],
-                link: "/article",
-                selectIcon: <ContainerFilled style={{ fontSize: getIconSize() }} />,
-                icon: <ContainerOutlined style={{ fontSize: getIconSize() }} />,
-            },
-            "/article",
-            []
-        ),
-        getItem(
-            {
-                text: getRes()["admin.comment.manage"],
-                link: "/comment",
-                selectIcon: <CommentOutlined style={{ fontSize: getIconSize() }} />,
-                icon: <CommentOutlined style={{ fontSize: getIconSize() }} />,
-            },
-            "/comment",
-            []
-        ),
-        getItem(
-            {
-                text: getRes()["admin.plugin.manage"],
-                link: "/plugin",
-                selectIcon: <ApiFilled style={{ fontSize: getIconSize() }} />,
-                icon: <ApiOutlined style={{ fontSize: getIconSize() }} />,
-            },
-            "/plugin",
-            []
-        ),
-        getItem(
-            {
-                text: getRes()["admin.setting"],
-                link: "/website",
-                selectIcon: <SettingFilled style={{ fontSize: getIconSize() }} />,
-                icon: <SettingOutlined style={{ fontSize: getIconSize() }} />,
-            },
-            "/website",
-            []
-        ),
-        getItem(
-            {
-                text: getRes()["admin.more"],
-                link: "#more",
-                selectIcon: <AppstoreFilled style={{ fontSize: getIconSize() }} />,
-                icon: <AppstoreOutlined style={{ fontSize: getIconSize() }} />,
-            },
-            "/more",
-            [
-                getItem(
-                    {
-                        text: getRes()["admin.type.manage"],
-                        link: "/article-type",
-                        selectIcon: <span />,
-                        icon: <span />,
-                    },
-                    "/article-type",
-                    []
-                ),
-                getItem(
-                    {
-                        text: getRes()["admin.link.manage"],
-                        link: "/link",
-                        selectIcon: <span />,
-                        icon: <span />,
-                    },
-                    "/link",
-                    []
-                ),
-                getItem(
-                    {
-                        text: getRes()["admin.nav.manage"],
-                        link: "/nav",
-                        selectIcon: <span />,
-                        icon: <span />,
-                    },
-                    "/nav",
-                    []
-                ),
-            ]
-        ),
+    const getSelectMenu = (): string[] => {
+        const selectPath = location.pathname.split(".")[0];
+        if (selectPath === "" || selectPath === "/") {
+            return ["/index"];
+        }
+        if (selectPath === "/upgrade" || selectPath === "/template-config" || selectPath === "/system") {
+            return ["/website"];
+        }
+        if (selectPath.startsWith("/website")) {
+            return ["/website"];
+        }
+        if (selectPath.startsWith("/link")) {
+            return ["/link"];
+        }
+        if (selectPath.startsWith("/nav")) {
+            return ["/nav"];
+        }
+        if (selectPath.startsWith("/article-type")) {
+            return ["/article-type"];
+        }
+        return [selectPath];
+    };
+
+    const getIconSize = () => {
+        if (expanded) {
+            return 19;
+        }
+        return getAppState().compactMode ? 22 : 24;
+    };
+
+    const getRailSelectedKey = () => {
+        const selectedKey = getSelectMenu()[0];
+        if (selectedKey === "/article-type" || selectedKey === "/nav" || selectedKey === "/link") {
+            return "/article";
+        }
+        return selectedKey;
+    };
+
+    const getInfo = (entry: MenuEntry) => {
+        const selected = (expanded ? getSelectMenu()[0] : getRailSelectedKey()) === entry.key;
+        return { selected, icon: selected ? entry.selectIcon : entry.icon };
+    };
+
+    const createLabel = (entry: MenuEntry) => {
+        const info = getInfo(entry);
+        return (
+            <Link
+                to={getRealRouteUrl(entry.link)}
+                style={{
+                    color: "inherit",
+                    background: "transparent",
+                }}
+                onClick={(e) => {
+                    tryBlock(e, modal);
+                }}
+            >
+                {info.icon}
+                <span className="menu-title">{entry.text}</span>
+            </Link>
+        );
+    };
+
+    const getItem = (entry: MenuEntry): MenuItem => {
+        return {
+            key: entry.key,
+            label: createLabel(entry),
+        } as MenuItem;
+    };
+
+    const railEntries: MenuEntry[] = [
+        {
+            key: "/index",
+            text: getRes().dashboard,
+            link: "/index",
+            selectIcon: <DashboardFilled style={{ fontSize: getIconSize() }} />,
+            icon: <DashboardOutlined style={{ fontSize: getIconSize() }} />,
+        },
+        {
+            key: "/article-edit",
+            text: getRes()["admin.log.edit"],
+            link: getArticleEditUrl(),
+            selectIcon: <EditFilled style={{ fontSize: getIconSize() }} />,
+            icon: <EditOutlined style={{ fontSize: getIconSize() }} />,
+        },
+        {
+            key: "/article",
+            text: getRes()["blogManage"],
+            link: "/article",
+            selectIcon: <ContainerFilled style={{ fontSize: getIconSize() }} />,
+            icon: <ContainerOutlined style={{ fontSize: getIconSize() }} />,
+        },
+        {
+            key: "/comment",
+            text: getRes()["admin.comment.manage"],
+            link: "/comment",
+            selectIcon: <CommentOutlined style={{ fontSize: getIconSize() }} />,
+            icon: <CommentOutlined style={{ fontSize: getIconSize() }} />,
+        },
+        {
+            key: "/plugin",
+            text: getRes()["admin.plugin.manage"],
+            link: "/plugin",
+            selectIcon: <ApiFilled style={{ fontSize: getIconSize() }} />,
+            icon: <ApiOutlined style={{ fontSize: getIconSize() }} />,
+        },
+        {
+            key: "/website",
+            text: getRes()["admin.setting"],
+            link: "/website",
+            selectIcon: <SettingFilled style={{ fontSize: getIconSize() }} />,
+            icon: <SettingOutlined style={{ fontSize: getIconSize() }} />,
+        },
     ];
 
-    const defaultSelectMenu = getSelectMenu();
+    const panelItems: MenuItem[] = [
+        {
+            type: "group",
+            label: getRes().dashboard,
+            children: [
+                getItem({
+                    key: "/index",
+                    text: getRes().dashboard,
+                    link: "/index",
+                    selectIcon: <DashboardFilled style={{ fontSize: getIconSize() }} />,
+                    icon: <DashboardOutlined style={{ fontSize: getIconSize() }} />,
+                }),
+            ],
+        },
+        {
+            type: "group",
+            label: getRes()["blogManage"],
+            children: [
+                getItem({
+                    key: "/article-edit",
+                    text: getRes()["admin.log.edit"],
+                    link: getArticleEditUrl(),
+                    selectIcon: <EditFilled style={{ fontSize: getIconSize() }} />,
+                    icon: <EditOutlined style={{ fontSize: getIconSize() }} />,
+                }),
+                getItem({
+                    key: "/article",
+                    text: getRes()["blogManage"],
+                    link: "/article",
+                    selectIcon: <ContainerFilled style={{ fontSize: getIconSize() }} />,
+                    icon: <ContainerOutlined style={{ fontSize: getIconSize() }} />,
+                }),
+                getItem({
+                    key: "/article-type",
+                    text: getRes()["admin.type.manage"],
+                    link: "/article-type",
+                    selectIcon: <TagsOutlined style={{ fontSize: getIconSize() }} />,
+                    icon: <TagsOutlined style={{ fontSize: getIconSize() }} />,
+                }),
+                getItem({
+                    key: "/nav",
+                    text: getRes()["admin.nav.manage"],
+                    link: "/nav",
+                    selectIcon: <ApartmentOutlined style={{ fontSize: getIconSize() }} />,
+                    icon: <ApartmentOutlined style={{ fontSize: getIconSize() }} />,
+                }),
+                getItem({
+                    key: "/link",
+                    text: getRes()["admin.link.manage"],
+                    link: "/link",
+                    selectIcon: <LinkOutlined style={{ fontSize: getIconSize() }} />,
+                    icon: <LinkOutlined style={{ fontSize: getIconSize() }} />,
+                }),
+            ],
+        },
+        {
+            type: "group",
+            label: getRes()["admin.setting"],
+            children: [
+                getItem({
+                    key: "/comment",
+                    text: getRes()["admin.comment.manage"],
+                    link: "/comment",
+                    selectIcon: <CommentOutlined style={{ fontSize: getIconSize() }} />,
+                    icon: <CommentOutlined style={{ fontSize: getIconSize() }} />,
+                }),
+                getItem({
+                    key: "/plugin",
+                    text: getRes()["admin.plugin.manage"],
+                    link: "/plugin",
+                    selectIcon: <ApiFilled style={{ fontSize: getIconSize() }} />,
+                    icon: <ApiOutlined style={{ fontSize: getIconSize() }} />,
+                }),
+                getItem({
+                    key: "/website",
+                    text: getRes()["admin.setting"],
+                    link: "/website",
+                    selectIcon: <SettingFilled style={{ fontSize: getIconSize() }} />,
+                    icon: <SettingOutlined style={{ fontSize: getIconSize() }} />,
+                }),
+            ],
+        },
+    ];
 
-    const [selectMenu, setSelectMenu] = useState<string[]>(defaultSelectMenu);
+    const [selectMenu, setSelectMenu] = useState<string[]>(getSelectMenu());
 
     useEffect(() => {
         setSelectMenu(getSelectMenu());
-    }, [location.pathname]);
+    }, [location.pathname, location.search]);
 
     return (
         <>
             {contextHolder}
             <Menu
                 selectedKeys={selectMenu}
-                items={items}
+                items={expanded ? panelItems : railEntries.map(getItem)}
                 theme={getAppState().dark ? "dark" : "light"}
+                className={expanded ? "sidebar-panel" : "sidebar-rail"}
                 style={{
                     borderInlineEnd: "none",
                     minHeight: "100%",
-                    background: getAppState().dark ? "transparent" : getAppState().colorPrimary + "10",
+                    background: "transparent",
                 }}
             />
         </>
     );
 };
+
 export default SliderMenu;

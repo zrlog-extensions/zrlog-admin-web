@@ -1,7 +1,6 @@
 import { EditOutlined, LockOutlined, GlobalOutlined, AppstoreOutlined } from "@ant-design/icons";
 
-import { Segmented, TableColumnsType, Tooltip, Space } from "antd";
-import Search from "antd/es/input/Search";
+import { Input, Segmented, TableColumnsType, Tooltip, Space } from "antd";
 import Divider from "antd/es/divider";
 import { getRealRouteUrl, getRes } from "../../utils/constants";
 import type * as React from "react";
@@ -14,6 +13,8 @@ import { getAppState } from "../../base/ConfigProviderApp";
 import BaseTitle from "../../base/BaseTitle";
 import { ArticlePreviewAction } from "./ArticlePreviewAction";
 import { removeCacheDataByKey } from "../../utils/cache";
+
+const { Search } = Input;
 
 const genTypes = (d: ArticlePageDataSource, search: string) => {
     const typesStr = new URLSearchParams(search).get("types");
@@ -235,23 +236,37 @@ const Index = ({ data, offline }: { data: ArticlePageDataSource; offline: boolea
 
     return (
         <>
-            <div style={{ paddingTop: 24, justifyContent: "space-between", display: "flex", alignItems: "center" }}>
-                <BaseTitle
-                    noBottomBorder={true}
-                    style={{ marginTop: 0, marginBottom: 0 }}
-                    title={getRes()["blogManage"]}
-                />
+            <div
+                style={{
+                    justifyContent: "space-between",
+                    display: "flex",
+                    alignItems: "center",
+                    gap: 16,
+                    flexWrap: "wrap",
+                }}
+            >
+                <div style={{ display: "flex", alignItems: "center", gap: 16, flex: 1, minWidth: 0 }}>
+                    <BaseTitle
+                        noBottomBorder={true}
+                        style={{ marginTop: 0, marginBottom: 0 }}
+                        title={getRes()["blogManage"]}
+                    />
+                    <Segmented
+                        options={statusOptions}
+                        value={currentStatus}
+                        onChange={handleStatusChange}
+                        style={{ maxWidth: "100%" }}
+                    />
+                </div>
                 <Search
+                    allowClear
                     disabled={offline}
                     placeholder={getRes().searchTip}
                     onSearch={onSearch}
                     defaultValue={data.key}
                     enterButton={getRes()["search"]}
-                    style={{ maxWidth: 196, float: "right" }}
+                    style={{ width: 220 }}
                 />
-            </div>
-            <div style={{ padding: "16px 0 0" }}>
-                <Segmented options={statusOptions} value={currentStatus} onChange={handleStatusChange} />
             </div>
             <Divider />
             <BaseTable

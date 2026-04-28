@@ -2,6 +2,7 @@ import Divider from "antd/es/divider";
 import Title from "antd/es/typography/Title";
 import { getAppState } from "./ConfigProviderApp";
 import { CSSProperties, FunctionComponent } from "react";
+import { usePageHeaderContext } from "./PageHeaderContext";
 
 type BaseTitleProps = {
     title: string;
@@ -10,6 +11,13 @@ type BaseTitleProps = {
 };
 
 const BaseTitle: FunctionComponent<BaseTitleProps> = ({ title, noBottomBorder, style }) => {
+    const { title: headerTitle } = usePageHeaderContext();
+    const duplicatedWithHeader = headerTitle === title;
+
+    if (duplicatedWithHeader) {
+        return <></>;
+    }
+
     return (
         <>
             <Title

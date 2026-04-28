@@ -373,6 +373,46 @@ const StyledIndexLayout = styled.div<StyledIndexLayoutProps>`
         box-shadow: none;
     }
 
+    .header-title-block {
+        min-width: 0;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        gap: 1px;
+    }
+
+    .header-title-eyebrow,
+    .header-title-main {
+        display: block;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    .header-title-eyebrow {
+        font-size: 11px;
+        line-height: 1.1;
+        font-weight: 600;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+        color: rgba(17, 24, 39, 0.42);
+    }
+
+    .header-title-main {
+        font-size: 16px;
+        line-height: 1.2;
+        font-weight: 600;
+        color: rgba(17, 24, 39, 0.88);
+    }
+
+    .dark .header-title-eyebrow {
+        color: rgba(255, 255, 255, 0.4);
+    }
+
+    .dark .header-title-main {
+        color: rgba(255, 255, 255, 0.9);
+    }
+
     .ant-menu .menu-title {
         margin-left: 0 !important;
         font-size: 12px;
@@ -485,6 +525,252 @@ const StyledIndexLayout = styled.div<StyledIndexLayoutProps>`
         .ant-float-btn-body {
             border-radius: 50px !important;
         }
+    }
+
+    .sidebar-shell {
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+    }
+
+    .sidebar-brand {
+        display: flex;
+        align-items: center;
+        text-decoration: none;
+        color: #111827;
+        margin: 10px 10px 8px;
+        border-radius: 16px;
+        width: calc(100% - 20px);
+        min-height: ${(props) => (props.compactMode ? 50 : 56)}px;
+        transition: background-color 0.2s ease, border-color 0.2s ease;
+    }
+
+    .dark .sidebar-brand {
+        color: rgba(255, 255, 255, 0.9);
+    }
+
+    .sidebar-brand:hover {
+        background: rgba(0, 0, 0, 0.03);
+    }
+
+    .dark .sidebar-brand:hover {
+        background: rgba(255, 255, 255, 0.05);
+    }
+
+    .sidebar-brand-collapsed {
+        justify-content: center;
+        padding: 0;
+    }
+
+    .sidebar-brand-expanded {
+        justify-content: flex-start;
+        padding: 0 14px 0 12px;
+        gap: 9px;
+    }
+
+    .sidebar-brand-mark {
+        width: 34px;
+        height: 34px;
+        border-radius: 11px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        background: ${(props) => colorToRgba(props.colorPrimary, 0.12)};
+        color: ${(props) => props.colorPrimary};
+        font-size: 18px;
+        flex-shrink: 0;
+    }
+
+    .dark .sidebar-brand-mark {
+        background: ${(props) => colorToRgba(props.colorPrimary, 0.2)};
+    }
+
+    .sidebar-brand-copy {
+        min-width: 0;
+        display: flex;
+        flex-direction: column;
+        gap: 1px;
+    }
+
+    .sidebar-brand-title,
+    .sidebar-brand-subtitle {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    .sidebar-brand-title {
+        font-size: 13px;
+        line-height: 1.15;
+        font-weight: 600;
+        color: #111827;
+    }
+
+    .sidebar-brand-subtitle {
+        font-size: 11px;
+        line-height: 1.1;
+        color: rgba(17, 24, 39, 0.56);
+    }
+
+    .dark .sidebar-brand-title {
+        color: rgba(255, 255, 255, 0.92);
+    }
+
+    .dark .sidebar-brand-subtitle {
+        color: rgba(255, 255, 255, 0.52);
+    }
+
+    .sidebar-rail.ant-menu {
+        text-align: center;
+        padding: 8px 0 12px;
+    }
+
+    .sidebar-rail.ant-menu .ant-menu-item,
+    .sidebar-rail.ant-menu .ant-menu-item-selected {
+        margin: 0 10px 6px;
+        width: calc(100% - 20px);
+        height: ${(props) => (props.compactMode ? 60 : 66)}px;
+        border-radius: 18px;
+    }
+
+    .sidebar-rail.ant-menu .ant-menu-title-content > a {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
+        height: 100%;
+    }
+
+    .sidebar-rail.ant-menu .menu-title {
+        font-size: 11px;
+        line-height: 1.1;
+        font-weight: 500;
+        margin-top: 0;
+        color: rgba(17, 24, 39, 0.68);
+    }
+
+    .dark .sidebar-rail.ant-menu .menu-title {
+        color: rgba(255, 255, 255, 0.62);
+    }
+
+    .sidebar-rail.ant-menu .ant-menu-item .anticon {
+        font-size: ${(props) => (props.compactMode ? 22 : 24)}px;
+    }
+
+    .sidebar-rail.ant-menu .ant-menu-title-content > a {
+        color: rgba(17, 24, 39, 0.78);
+    }
+
+    .dark .sidebar-rail.ant-menu .ant-menu-title-content > a {
+        color: rgba(255, 255, 255, 0.82);
+    }
+
+    .sidebar-rail.ant-menu .ant-menu-item-selected .menu-title {
+        color: ${(props) => props.colorPrimary};
+    }
+
+    .sidebar-rail.ant-menu .ant-menu-item-selected > .ant-menu-title-content > a {
+        color: ${(props) => props.colorPrimary};
+    }
+
+    .sidebar-panel.ant-menu {
+        text-align: left;
+        padding: 4px 10px 24px;
+    }
+
+    .sidebar-panel.ant-menu .ant-menu-item-group {
+        margin-bottom: 16px;
+    }
+
+    .sidebar-panel.ant-menu .ant-menu-item-group-title {
+        padding: 0 12px 8px;
+        font-size: 11px;
+        font-weight: 700;
+        letter-spacing: 0.4px;
+        text-transform: uppercase;
+        color: rgba(17, 24, 39, 0.44);
+    }
+
+    .dark .sidebar-panel.ant-menu .ant-menu-item-group-title {
+        color: rgba(255, 255, 255, 0.44);
+    }
+
+    .sidebar-panel.ant-menu .ant-menu-item {
+        margin: 0 6px 4px;
+        width: calc(100% - 12px);
+        height: 46px;
+        border-radius: 14px;
+    }
+
+    .sidebar-panel.ant-menu .ant-menu-title-content > a {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: flex-start;
+        gap: 12px;
+        height: 100%;
+        padding: 0 14px;
+    }
+
+    .sidebar-panel.ant-menu .menu-title {
+        margin-top: 0;
+        font-size: 14px;
+        line-height: 1.2;
+        font-weight: 500;
+        color: rgba(17, 24, 39, 0.78);
+    }
+
+    .dark .sidebar-panel.ant-menu .menu-title {
+        color: rgba(255, 255, 255, 0.76);
+    }
+
+    .sidebar-panel.ant-menu .ant-menu-title-content > a {
+        color: rgba(17, 24, 39, 0.82);
+    }
+
+    .dark .sidebar-panel.ant-menu .ant-menu-title-content > a {
+        color: rgba(255, 255, 255, 0.82);
+    }
+
+    .sidebar-panel.ant-menu .ant-menu-item .anticon {
+        font-size: 19px;
+    }
+
+    .sidebar-panel.ant-menu .ant-menu-item-selected .menu-title {
+        color: ${(props) => props.colorPrimary};
+    }
+
+    .sidebar-panel.ant-menu .ant-menu-item-selected > .ant-menu-title-content > a {
+        color: ${(props) => props.colorPrimary};
+    }
+
+    .sidebar-rail.ant-menu .ant-menu-item::before,
+    .sidebar-panel.ant-menu .ant-menu-item::before {
+        display: none;
+    }
+
+    .sidebar-rail.ant-menu .ant-menu-item:hover,
+    .sidebar-panel.ant-menu .ant-menu-item:hover {
+        box-shadow: none;
+    }
+
+    .sidebar-rail.ant-menu .ant-menu-item-selected,
+    .sidebar-panel.ant-menu .ant-menu-item-selected {
+        background: ${(props) => colorToRgba(props.colorPrimary, 0.12)} !important;
+    }
+
+    .sidebar-rail.ant-menu .ant-menu-item:hover {
+        background: rgba(15, 23, 42, 0.05) !important;
+    }
+
+    .sidebar-panel.ant-menu .ant-menu-item:hover {
+        background: rgba(15, 23, 42, 0.045) !important;
+    }
+
+    .dark .sidebar-rail.ant-menu .ant-menu-item:hover,
+    .dark .sidebar-panel.ant-menu .ant-menu-item:hover {
+        background: rgba(255, 255, 255, 0.06) !important;
     }
 `;
 

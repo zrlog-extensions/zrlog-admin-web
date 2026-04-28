@@ -34,7 +34,7 @@ type SearchItem = {
 
 const { useBreakpoint } = Grid;
 
-const SpotlightSearch = () => {
+const SpotlightSearch = ({ compact = false }: { compact?: boolean }) => {
     const [open, setOpen] = useState(false);
     const [keyword, setKeyword] = useState("");
     const [activeIndex, setActiveIndex] = useState(0);
@@ -383,7 +383,7 @@ const SpotlightSearch = () => {
                             style={{
                                 fontSize: 12,
                                 border: `1px solid ${getAppState().dark ? "#444" : "#ddd"}`,
-                                borderRadius: 4,
+                                borderRadius: 999,
                                 padding: "0 4px",
                                 backgroundColor: getAppState().dark ? "rgba(255,255,255,0.05)" : "#fafafa",
                                 color: getAppState().dark ? "#888" : "#999",
@@ -397,10 +397,11 @@ const SpotlightSearch = () => {
                     placeholder={getRes()["search"]}
                     readOnly
                     style={{
-                        width: 220,
-                        marginRight: 16,
+                        width: compact ? 180 : 220,
+                        marginRight: compact ? 0 : 16,
                         cursor: "pointer",
                         caretColor: "transparent",
+                        borderRadius: 999,
                     }}
                 />
             )}
