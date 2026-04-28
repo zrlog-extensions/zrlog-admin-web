@@ -70,7 +70,10 @@ const DataInsights = ({ typeData, tagData }: DataInsightsProps) => {
                         })}
                     </div>
                 ) : (
-                    <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} description="暂无分类数据" />
+                    <Empty
+                        image={Empty.PRESENTED_IMAGE_SIMPLE}
+                        description={getRes()["admin.index.insight.empty.category"]}
+                    />
                 )}
                 <div style={{ display: "flex", flexWrap: "wrap", gap: 12, marginTop: 12 }}>
                     {activeTypes.slice(0, 6).map((type, index) => (
@@ -125,7 +128,10 @@ const DataInsights = ({ typeData, tagData }: DataInsightsProps) => {
                             );
                         })
                     ) : (
-                        <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} description="暂无标签数据" />
+                        <Empty
+                            image={Empty.PRESENTED_IMAGE_SIMPLE}
+                            description={getRes()["admin.index.insight.empty.tag"]}
+                        />
                     )}
                 </div>
             </div>

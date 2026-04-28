@@ -1,8 +1,16 @@
-import { Typography } from "antd";
+import { Divider, Typography } from "antd";
 import { getRealRouteUrl, getRes } from "../../utils/constants";
 import Row from "antd/es/grid/row";
 import Col from "antd/es/grid/col";
-import { CommentOutlined, ContainerOutlined, DashboardOutlined, InfoCircleOutlined } from "@ant-design/icons";
+import {
+    CloudServerOutlined,
+    CommentOutlined,
+    ContainerOutlined,
+    DashboardOutlined,
+    FileTextOutlined,
+    HddOutlined,
+    InfoCircleOutlined,
+} from "@ant-design/icons";
 import { Link } from "react-router-dom";
 import { StatisticsInfoState } from "../../type";
 import { ReactElement } from "react";
@@ -13,6 +21,62 @@ import Card from "antd/es/card";
 const StatisticsInfo = ({ data, versionInfo }: { data: StatisticsInfoState; versionInfo: string }) => {
     const isDark = getAppState().dark;
     const theme = useTheme();
+    const totalArticles = Math.max(data.articleCount, data.publishedCount + data.privateCount + data.draftCount);
+
+    const formatBytes = (bytes?: number) => {
+        if (!bytes || bytes <= 0) {
+            return "0 B";
+        }
+        const units = ["B", "KB", "MB", "GB", "TB"];
+        let value = bytes;
+        let unitIndex = 0;
+        while (value >= 1024 && unitIndex < units.length - 1) {
+            value /= 1024;
+            unitIndex++;
+        }
+        return `${value >= 100 || unitIndex === 0 ? value.toFixed(0) : value.toFixed(1)} ${units[unitIndex]}`;
+    };
+
+    const statusItems = [
+        { key: "published", label: getRes()["published"], value: data.publishedCount, color: "#52c41a" },
+        { key: "private", label: getRes()["private"], value: data.privateCount, color: "#fa8c16" },
+        { key: "draft", label: getRes()["draft"], value: data.draftCount, color: "#1677ff" },
+    ].filter((item) => item.value > 0 || totalArticles === 0);
+
+    const summaryCard = ({
+        icon,
+        title,
+        value,
+        subtitle,
+    }: {
+        icon: ReactElement;
+        title: string;
+        value: string | number;
+        subtitle?: string;
+    }) => (
+        <div
+            style={{
+                padding: 16,
+                borderRadius: theme.borderRadiusLG,
+                background: isDark ? "rgba(255,255,255,0.02)" : "rgba(0,0,0,0.015)",
+                border: `1px solid ${isDark ? "rgba(255,255,255,0.06)" : "rgba(0,0,0,0.05)"}`,
+                height: "100%",
+            }}
+        >
+            <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 10 }}>
+                <span style={{ color: getAppState().colorPrimary }}>{icon}</span>
+                <Typography.Text type="secondary">{title}</Typography.Text>
+            </div>
+            <Typography.Text style={{ display: "block", fontSize: 24, fontWeight: 700, lineHeight: 1.2 }}>
+                {value}
+            </Typography.Text>
+            {subtitle && (
+                <Typography.Text type="secondary" style={{ display: "block", marginTop: 6, fontSize: 12 }}>
+                    {subtitle}
+                </Typography.Text>
+            )}
+        </div>
+    );
 
     const value = (icon: ReactElement, text: string | number) => {
         return (
@@ -49,7 +113,7 @@ const StatisticsInfo = ({ data, versionInfo }: { data: StatisticsInfoState; vers
         const content = (
             <div
                 style={{
-                    padding: 24,
+                    padding: 18,
                     height: "100%",
                     display: "flex",
                     flexDirection: "column",
@@ -57,22 +121,19 @@ const StatisticsInfo = ({ data, versionInfo }: { data: StatisticsInfoState; vers
                     borderRadius: theme.borderRadiusLG,
                     transition: "all 0.3s ease",
                     cursor: link ? "pointer" : "default",
-                    boxShadow: isDark ? "0 1px 3px rgba(0,0,0,0.3)" : "0 1px 3px rgba(0,0,0,0.05)",
+                    background: isDark ? "rgba(255,255,255,0.02)" : "rgba(0,0,0,0.015)",
+                    border: `1px solid ${isDark ? "rgba(255,255,255,0.06)" : "rgba(0,0,0,0.05)"}`,
                 }}
                 onMouseEnter={(e) => {
                     if (link) {
                         e.currentTarget.style.transform = "translateY(-2px)";
-                        e.currentTarget.style.boxShadow = isDark
-                            ? "0 4px 12px rgba(0,0,0,0.4)"
-                            : "0 4px 12px rgba(0,0,0,0.08)";
+                        e.currentTarget.style.background = isDark ? "rgba(255,255,255,0.035)" : "rgba(0,0,0,0.025)";
                     }
                 }}
                 onMouseLeave={(e) => {
                     if (link) {
                         e.currentTarget.style.transform = "translateY(0)";
-                        e.currentTarget.style.boxShadow = isDark
-                            ? "0 1px 3px rgba(0,0,0,0.3)"
-                            : "0 1px 3px rgba(0,0,0,0.05)";
+                        e.currentTarget.style.background = isDark ? "rgba(255,255,255,0.02)" : "rgba(0,0,0,0.015)";
                     }
                 }}
             >
@@ -99,6 +160,7 @@ const StatisticsInfo = ({ data, versionInfo }: { data: StatisticsInfoState; vers
     return (
         <Card
             style={{ marginTop: 24 }}
+            bordered={false}
             title={
                 <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
                     <DashboardOutlined />
@@ -139,6 +201,89 @@ const StatisticsInfo = ({ data, versionInfo }: { data: StatisticsInfoState; vers
                         link="/system"
                         valueRender={() => value(<InfoCircleOutlined />, versionInfo)}
                     />
+                </Col>
+            </Row>
+            <Divider style={{ margin: "20px 0" }} />
+            <Row gutter={[16, 16]}>
+                <Col xs={24} md={12}>
+                    <div
+                        style={{
+                            padding: 16,
+                            borderRadius: theme.borderRadiusLG,
+                            background: isDark ? "rgba(255,255,255,0.02)" : "rgba(0,0,0,0.015)",
+                            border: `1px solid ${isDark ? "rgba(255,255,255,0.06)" : "rgba(0,0,0,0.05)"}`,
+                            height: "100%",
+                        }}
+                    >
+                        <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 10 }}>
+                            <span style={{ color: getAppState().colorPrimary }}>
+                                <FileTextOutlined />
+                            </span>
+                            <Typography.Text type="secondary">{getRes()["admin.index.status"]}</Typography.Text>
+                        </div>
+                        <Typography.Text style={{ display: "block", fontSize: 24, fontWeight: 700, lineHeight: 1.2 }}>
+                            {`${data.publishedCount}/${totalArticles}`}
+                        </Typography.Text>
+                        <Typography.Text type="secondary" style={{ display: "block", marginTop: 6, fontSize: 12 }}>
+                            {`${getRes()["published"]} ${data.publishedCount} · ${getRes()["private"]} ${
+                                data.privateCount
+                            } · ${getRes()["draft"]} ${data.draftCount}`}
+                        </Typography.Text>
+                        <div
+                            style={{
+                                display: "flex",
+                                height: 10,
+                                borderRadius: 999,
+                                overflow: "hidden",
+                                marginTop: 16,
+                                background: isDark ? "rgba(255,255,255,0.06)" : "rgba(0,0,0,0.06)",
+                            }}
+                        >
+                            {statusItems.map((item) => (
+                                <div
+                                    key={item.key}
+                                    style={{
+                                        width: totalArticles > 0 ? `${(item.value / totalArticles) * 100}%` : "33.33%",
+                                        background: item.color,
+                                        minWidth: item.value > 0 ? 8 : 0,
+                                        transition: "all 0.3s ease",
+                                    }}
+                                />
+                            ))}
+                        </div>
+                        <div style={{ display: "flex", flexWrap: "wrap", gap: 12, marginTop: 12 }}>
+                            {statusItems.map((item) => (
+                                <div key={item.key} style={{ display: "flex", alignItems: "center", gap: 6 }}>
+                                    <span
+                                        style={{
+                                            width: 8,
+                                            height: 8,
+                                            borderRadius: "50%",
+                                            background: item.color,
+                                            display: "inline-block",
+                                        }}
+                                    />
+                                    <Typography.Text type="secondary" style={{ fontSize: 12 }}>
+                                        {`${item.label} ${item.value}`}
+                                    </Typography.Text>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                </Col>
+                <Col xs={24} md={6}>
+                    {summaryCard({
+                        icon: <HddOutlined />,
+                        title: getRes()["admin.index.storage.disk"],
+                        value: formatBytes(data.usedDiskSpace),
+                    })}
+                </Col>
+                <Col xs={24} md={6}>
+                    {summaryCard({
+                        icon: <CloudServerOutlined />,
+                        title: getRes()["admin.index.storage.cache"],
+                        value: formatBytes(data.usedCacheSpace),
+                    })}
                 </Col>
             </Row>
         </Card>

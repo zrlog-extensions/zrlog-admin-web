@@ -70,8 +70,8 @@ const Index: FunctionComponent<IndexProps> = ({ data }) => {
                             </div>
                         </div>
                     </div>
-                    <StatisticsInfo data={data.statisticsInfo} versionInfo={data.versionInfo} />
                     <QuickActionCard draftCount={data.statisticsInfo.draftCount} />
+                    <StatisticsInfo data={data.statisticsInfo} versionInfo={data.versionInfo} />
                 </Col>
 
                 {/* Right Column */}

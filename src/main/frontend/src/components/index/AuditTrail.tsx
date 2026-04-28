@@ -1,7 +1,8 @@
-import { Card, Typography, Timeline, Drawer, Button } from "antd";
+import { Card, Typography, Timeline, Drawer, Button, Tag } from "antd";
 import { HistoryOutlined, LoginOutlined, EditOutlined, SettingOutlined, RightOutlined } from "@ant-design/icons";
 import TimeAgo from "@editor/dist/src/editor/TimeAgo";
 import React, { useState } from "react";
+import { getRes } from "../../utils/constants";
 
 const { Text } = Typography;
 
@@ -12,6 +13,7 @@ interface AuditLog {
     type: string;
     os?: string;
     browser?: string;
+    crawler?: boolean;
 }
 
 interface AuditTrailProps {
@@ -52,6 +54,11 @@ const AuditTrail: React.FC<AuditTrailProps> = ({ logs = [], loading }) => {
                                         {log.browser && ` · ${log.browser}`}
                                     </span>
                                 )}
+                                {log.crawler && (
+                                    <Tag color="gold" style={{ marginInlineStart: 8 }}>
+                                        {getRes()["admin.index.audit.crawler"]}
+                                    </Tag>
+                                )}
                             </Text>
                         </div>
                         <Text type="secondary" style={{ fontSize: 12, whiteSpace: "nowrap", marginLeft: 12 }}>
@@ -61,7 +68,9 @@ const AuditTrail: React.FC<AuditTrailProps> = ({ logs = [], loading }) => {
                 </Timeline.Item>
             ))}
             {data.length === 0 && !loading && (
-                <div style={{ textAlign: "center", padding: "40px 0", color: "#999" }}>暂无审计日志</div>
+                <div style={{ textAlign: "center", padding: "40px 0", color: "#999" }}>
+                    {getRes()["admin.index.audit.empty"]}
+                </div>
             )}
         </Timeline>
     );
@@ -72,13 +81,13 @@ const AuditTrail: React.FC<AuditTrailProps> = ({ logs = [], loading }) => {
                 title={
                     <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
                         <HistoryOutlined />
-                        <span>最近操作审计</span>
+                        <span>{getRes()["admin.index.audit"]}</span>
                     </div>
                 }
                 extra={
                     logs.length > 3 && (
                         <Button type="link" size="small" onClick={() => setDrawerVisible(true)}>
-                            查看更多 <RightOutlined />
+                            {getRes()["admin.index.audit.more"]} <RightOutlined />
                         </Button>
                     )
                 }
@@ -93,7 +102,7 @@ const AuditTrail: React.FC<AuditTrailProps> = ({ logs = [], loading }) => {
                 title={
                     <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
                         <HistoryOutlined />
-                        <span>完整操作审计 (最近100条)</span>
+                        <span>{getRes()["admin.index.audit.full"]}</span>
                     </div>
                 }
                 width={450}
