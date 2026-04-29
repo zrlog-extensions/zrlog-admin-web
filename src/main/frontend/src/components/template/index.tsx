@@ -1,4 +1,3 @@
-import Title from "antd/es/typography/Title";
 import Divider from "antd/es/divider";
 import Row from "antd/es/grid/row";
 import { CloudDownloadOutlined } from "@ant-design/icons";
@@ -52,8 +51,6 @@ const Template = ({ data }: { data: TemplateEntry[] }) => {
 
     return (
         <>
-            <Title level={4}>{getRes()["admin.template.manage"]}</Title>
-            <Divider />
             <Row gutter={[16, 16]}>
                 {templateState.map((template) => {
                     return <TemplateCard key={template.template} template={template} onUpdate={load} />;

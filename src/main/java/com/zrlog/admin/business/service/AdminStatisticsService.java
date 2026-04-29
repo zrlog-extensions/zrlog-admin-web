@@ -3,6 +3,8 @@ package com.zrlog.admin.business.service;
 import com.hibegin.common.util.LoggerUtil;
 import com.zrlog.admin.business.rest.response.ArticleStatusCountResponse;
 import com.zrlog.admin.business.rest.response.StatisticsInfoResponse;
+import com.zrlog.admin.util.ServerInfo;
+import com.zrlog.admin.util.ServerInfoUtils;
 import com.zrlog.model.Comment;
 import com.zrlog.model.Log;
 import com.zrlog.common.Constants;
@@ -61,6 +63,17 @@ public class AdminStatisticsService {
             }, executor));
             futures.add(CompletableFuture.runAsync(() -> {
                 info.setAuditLogs(new AdminAuditService().getRecentLogs());
+            }, executor));
+            futures.add(CompletableFuture.runAsync(() -> {
+                List<ServerInfo> serverInfos = ServerInfoUtils.getServerInfos2();
+                for (ServerInfo serverInfo : serverInfos) {
+                    if ("usedCacheSpace".equals(serverInfo.getKey())) {
+                        info.setUsedCacheSpace(serverInfo.getValue());
+                    }
+                    if ("usedDiskSpace".equals(serverInfo.getKey())) {
+                        info.setUsedDiskSpace(serverInfo.getValue());
+                    }
+                }
             }, executor));
             CompletableFuture.allOf(futures.toArray(new CompletableFuture[0])).join();
             return info;

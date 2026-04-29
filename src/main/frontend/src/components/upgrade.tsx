@@ -6,7 +6,6 @@ import { AxiosError } from "axios";
 import { getContextPath } from "../utils/helpers";
 import { useAxiosBaseInstance } from "../base/AppBase";
 import { getCsrData, getVersion } from "../api";
-import BaseTitle from "../base/BaseTitle";
 import { UpgradeData } from "../type";
 import UpgradeContent from "./upgrade-content";
 import { markdownToHtml } from "@editor/dist/src/editor/utils/marked-utils";
@@ -211,7 +210,6 @@ const Upgrade: FunctionComponent<UpgradeProps> = ({ data, offline, offlineData }
         <Row key={data.preUpgradeKey}>
             {contextHolder}
             <Col style={{ maxWidth: 600 }} xs={24}>
-                <BaseTitle title={getRes()["upgradeWizard"]} />
                 <Steps current={state.current} style={{ paddingTop: 16 }} items={steps} />
                 <div className="steps-content" style={{ marginTop: 20 }}>
                     {state.current === 0 && (

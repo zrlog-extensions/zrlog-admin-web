@@ -27,7 +27,6 @@ const DataInsights = ({ typeData, tagData }: DataInsightsProps) => {
             }
             bordered={false}
             className="dashboard-card"
-            style={{ marginTop: 24 }}
         >
             <div style={{ marginBottom: 32 }}>
                 <Typography.Text type="secondary" style={{ display: "block", marginBottom: 12, fontSize: 13 }}>

@@ -6,7 +6,6 @@ import Row from "antd/es/grid/row";
 import { Col } from "antd";
 import { getCsrData, getTimeInfoBySearchStr } from "../../api";
 import { useAxiosBaseInstance } from "../../base/AppBase";
-import BaseTitle from "../../base/BaseTitle";
 import { useLocation } from "react-router";
 
 type SystemProps = {
@@ -51,7 +50,6 @@ const System: FunctionComponent<SystemProps> = ({ data }) => {
 
     return (
         <>
-            <BaseTitle title={getRes()["systemInfo"]} />
             <Row gutter={[8, 8]}>
                 <Col xs={24} md={12}>
                     <ServerInfo

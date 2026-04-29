@@ -16,6 +16,8 @@ public class StatisticsInfoResponse {
     private List<TypeDTO> typeData;
     private List<TagDTO> tagData;
     private List<java.util.Map<String, Object>> auditLogs;
+    private String usedCacheSpace;
+    private String usedDiskSpace;
 
     public Long getCommCount() {
         return commCount;
@@ -95,5 +97,21 @@ public class StatisticsInfoResponse {
 
     public void setAuditLogs(List<java.util.Map<String, Object>> auditLogs) {
         this.auditLogs = auditLogs;
+    }
+
+    public String getUsedCacheSpace() {
+        return usedCacheSpace;
+    }
+
+    public void setUsedCacheSpace(String usedCacheSpace) {
+        this.usedCacheSpace = usedCacheSpace;
+    }
+
+    public String getUsedDiskSpace() {
+        return usedDiskSpace;
+    }
+
+    public void setUsedDiskSpace(String usedDiskSpace) {
+        this.usedDiskSpace = usedDiskSpace;
     }
 }

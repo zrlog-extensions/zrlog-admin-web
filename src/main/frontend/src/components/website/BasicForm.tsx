@@ -7,7 +7,6 @@ import { getRes } from "../../utils/constants";
 import { useEffect, useState } from "react";
 import { Basic } from "./index";
 import FaviconUpload from "./FaviconUpload";
-import Title from "antd/es/typography/Title";
 
 const layout = {
     labelCol: { span: 8 },
@@ -44,8 +43,6 @@ const BasicForm = ({
             onValuesChange={(_k, v) => setState({ ...state, ...v })}
             onFinish={(nv) => onSubmit({ ...state, ...nv })}
         >
-            <Title level={4}>{getRes()["admin.basic.manage"]}</Title>
-            <Divider />
             <Form.Item name="title" label={getRes()["title"]} rules={[{ required: true }]}>
                 <Input placeholder="" showCount={true} maxLength={128} />
             </Form.Item>

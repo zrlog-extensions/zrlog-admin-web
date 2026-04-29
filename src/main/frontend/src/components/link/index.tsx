@@ -1,6 +1,5 @@
 import BaseTable, { PageDataSource } from "../../common/BaseTable";
 import { getRes } from "../../utils/constants";
-import BaseTitle from "../../base/BaseTitle";
 import { Button } from "antd";
 import { EditOutlined } from "@ant-design/icons";
 import { getAppState } from "../../base/ConfigProviderApp";
@@ -52,7 +51,6 @@ const BLink = ({ data, offline }: { data: PageDataSource; offline: boolean }) =>
 
     return (
         <>
-            <BaseTitle title={getRes()["admin.link.manage"]} />
             <BaseTable
                 defaultPageSize={10}
                 offline={offline}

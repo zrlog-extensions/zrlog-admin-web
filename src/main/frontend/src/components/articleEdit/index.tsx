@@ -38,8 +38,6 @@ import { useLocation } from "react-router";
 import { addToCache, getCacheByKey, getPageDataCacheKeyByPath } from "../../utils/cache";
 import { LockOutlined } from "@ant-design/icons";
 import { getAppState } from "../../base/ConfigProviderApp";
-import BaseTitle from "../../base/BaseTitle";
-import { usePageHeaderContext } from "../../base/PageHeaderContext";
 import Editor from "@editor/dist/src/editor";
 import EditorStatistics from "@editor/dist/src/editor/editor-statistics-info";
 import { toStatisticsByMarkdown } from "@editor/dist/src/editor/utils/editor-utils";
@@ -55,9 +53,6 @@ const Index: FunctionComponent<ArticleEditProps> = ({
     fullScreen,
     updateCache,
 }) => {
-    const { title: headerTitle } = usePageHeaderContext();
-    const duplicatedTitle = headerTitle === getRes()["admin.log.edit"];
-
     const location = useLocation();
     const editCardRef = useRef<HTMLDivElement>(null);
 
@@ -521,7 +516,7 @@ const Index: FunctionComponent<ArticleEditProps> = ({
                     alignItems: "center",
                 }}
             >
-                {duplicatedTitle && !fullScreen ? (
+                {!fullScreen ? (
                     <Tag
                         bordered={false}
                         style={{
@@ -539,11 +534,6 @@ const Index: FunctionComponent<ArticleEditProps> = ({
                         {articleStatusText}
                     </Tag>
                 ) : null}
-                <BaseTitle
-                    noBottomBorder={true}
-                    title={getRes()["admin.log.edit"]}
-                    style={{ marginTop: 0, marginBottom: 0, display: fullScreen ? "none" : "inherit" }}
-                />
                 {!fullScreen && (
                     <ArticleEditActionBar
                         previewUrl={previewUrlRef.current}

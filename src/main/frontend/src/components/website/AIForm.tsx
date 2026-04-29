@@ -1,4 +1,3 @@
-import Title from "antd/es/typography/Title";
 import Divider from "antd/es/divider";
 import Form from "antd/es/form";
 import TextArea from "antd/es/input/TextArea";
@@ -84,8 +83,6 @@ const AIForm = ({
             onValuesChange={(_k, v) => setState({ ...state, ...v })}
             onFinish={(nv) => onSubmit({ ...state, ...nv })}
         >
-            <Title level={4}>{getRes()["admin.ai.manage"]}</Title>
-            <Divider />
             <Form.Item name="ai_provider" label={getRes()["website.ai_provider"]} required={true}>
                 <Select style={{ maxWidth: 200 }} options={getAiProviderOptions()} />
             </Form.Item>

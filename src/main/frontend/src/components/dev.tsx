@@ -2,7 +2,6 @@ import { FunctionComponent } from "react";
 import { AdminCommonProps } from "../type";
 import { Button, message, Table } from "antd";
 import { useAxiosBaseInstance } from "../base/AppBase";
-import BaseTitle from "../base/BaseTitle";
 import Divider from "antd/es/divider";
 import { getRes } from "../utils/constants";
 
@@ -25,7 +24,6 @@ const Dev: FunctionComponent<AdminCommonProps<DevResponse>> = ({ data }) => {
     return (
         <>
             {messageContextHolder}
-            <BaseTitle title={getRes().dev} />
             <Button
                 type={"primary"}
                 onClick={async () => {

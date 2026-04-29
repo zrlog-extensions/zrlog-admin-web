@@ -7,7 +7,6 @@ import Col from "antd/es/grid/col";
 import Image from "antd/es/image";
 import Constants, { getRes, tryAppendBackendServerUrl } from "../utils/constants";
 import { useAxiosBaseInstance } from "../base/AppBase";
-import BaseTitle from "../base/BaseTitle";
 import BaseDragger, { DraggerUploadResponse } from "@editor/dist/src/editor/common/BaseDragger";
 
 const layout = {
@@ -47,7 +46,6 @@ const User = ({ data, offline }: { data: BasicUserInfo; offline: boolean }) => {
     return (
         <>
             {contextHolder}
-            <BaseTitle title={getRes()["admin.user.info"]} />
             <Row>
                 <Col style={{ maxWidth: 600 }} xs={24}>
                     <Form

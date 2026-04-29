@@ -10,7 +10,6 @@ import BaseTable, { ArticlePageDataSource } from "../../common/BaseTable";
 import { Link, useNavigate } from "react-router-dom";
 import { useLocation } from "react-router";
 import { getAppState } from "../../base/ConfigProviderApp";
-import BaseTitle from "../../base/BaseTitle";
 import { ArticlePreviewAction } from "./ArticlePreviewAction";
 import { removeCacheDataByKey } from "../../utils/cache";
 
@@ -246,11 +245,6 @@ const Index = ({ data, offline }: { data: ArticlePageDataSource; offline: boolea
                 }}
             >
                 <div style={{ display: "flex", alignItems: "center", gap: 16, flex: 1, minWidth: 0 }}>
-                    <BaseTitle
-                        noBottomBorder={true}
-                        style={{ marginTop: 0, marginBottom: 0 }}
-                        title={getRes()["blogManage"]}
-                    />
                     <Segmented
                         options={statusOptions}
                         value={currentStatus}

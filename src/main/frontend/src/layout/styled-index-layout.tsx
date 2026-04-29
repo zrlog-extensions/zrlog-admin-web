@@ -4,6 +4,9 @@ import { colorToRgba } from "./slider";
 type StyledIndexLayoutProps = {
     compactMode: boolean;
     colorPrimary: string;
+    textColor: string;
+    textSecondaryColor: string;
+    textTertiaryColor: string;
 };
 
 const StyledIndexLayout = styled.div<StyledIndexLayoutProps>`
@@ -395,22 +398,12 @@ const StyledIndexLayout = styled.div<StyledIndexLayoutProps>`
         font-weight: 600;
         letter-spacing: 0.04em;
         text-transform: uppercase;
-        color: rgba(17, 24, 39, 0.42);
     }
 
     .header-title-main {
         font-size: 16px;
         line-height: 1.2;
         font-weight: 600;
-        color: rgba(17, 24, 39, 0.88);
-    }
-
-    .dark .header-title-eyebrow {
-        color: rgba(255, 255, 255, 0.4);
-    }
-
-    .dark .header-title-main {
-        color: rgba(255, 255, 255, 0.9);
     }
 
     .ant-menu .menu-title {
@@ -537,16 +530,12 @@ const StyledIndexLayout = styled.div<StyledIndexLayoutProps>`
         display: flex;
         align-items: center;
         text-decoration: none;
-        color: #111827;
+        color: ${(props) => props.textColor};
         margin: 10px 10px 8px;
         border-radius: 16px;
         width: calc(100% - 20px);
         min-height: ${(props) => (props.compactMode ? 50 : 56)}px;
         transition: background-color 0.2s ease, border-color 0.2s ease;
-    }
-
-    .dark .sidebar-brand {
-        color: rgba(255, 255, 255, 0.9);
     }
 
     .sidebar-brand:hover {
@@ -564,8 +553,11 @@ const StyledIndexLayout = styled.div<StyledIndexLayoutProps>`
 
     .sidebar-brand-expanded {
         justify-content: flex-start;
-        padding: 0 14px 0 12px;
         gap: 9px;
+    }
+
+    .sidebar-brand-expanded .sidebar-brand-mark {
+        margin-left: 12px;
     }
 
     .sidebar-brand-mark {
@@ -590,6 +582,7 @@ const StyledIndexLayout = styled.div<StyledIndexLayoutProps>`
         display: flex;
         flex-direction: column;
         gap: 1px;
+        padding-right: 14px;
     }
 
     .sidebar-brand-title,
@@ -603,21 +596,16 @@ const StyledIndexLayout = styled.div<StyledIndexLayoutProps>`
         font-size: 13px;
         line-height: 1.15;
         font-weight: 600;
-        color: #111827;
+        color: ${(props) => props.textColor};
     }
 
     .sidebar-brand-subtitle {
-        font-size: 11px;
-        line-height: 1.1;
-        color: rgba(17, 24, 39, 0.56);
-    }
-
-    .dark .sidebar-brand-title {
-        color: rgba(255, 255, 255, 0.92);
-    }
-
-    .dark .sidebar-brand-subtitle {
-        color: rgba(255, 255, 255, 0.52);
+        font-size: 10px;
+        line-height: 1.2;
+        font-weight: 700;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        color: ${(props) => props.textTertiaryColor};
     }
 
     .sidebar-rail.ant-menu {
@@ -647,11 +635,7 @@ const StyledIndexLayout = styled.div<StyledIndexLayoutProps>`
         line-height: 1.1;
         font-weight: 500;
         margin-top: 0;
-        color: rgba(17, 24, 39, 0.68);
-    }
-
-    .dark .sidebar-rail.ant-menu .menu-title {
-        color: rgba(255, 255, 255, 0.62);
+        color: ${(props) => props.textSecondaryColor};
     }
 
     .sidebar-rail.ant-menu .ant-menu-item .anticon {
@@ -659,11 +643,7 @@ const StyledIndexLayout = styled.div<StyledIndexLayoutProps>`
     }
 
     .sidebar-rail.ant-menu .ant-menu-title-content > a {
-        color: rgba(17, 24, 39, 0.78);
-    }
-
-    .dark .sidebar-rail.ant-menu .ant-menu-title-content > a {
-        color: rgba(255, 255, 255, 0.82);
+        color: ${(props) => props.textColor} !important;
     }
 
     .sidebar-rail.ant-menu .ant-menu-item-selected .menu-title {
@@ -671,6 +651,10 @@ const StyledIndexLayout = styled.div<StyledIndexLayoutProps>`
     }
 
     .sidebar-rail.ant-menu .ant-menu-item-selected > .ant-menu-title-content > a {
+        color: ${(props) => props.colorPrimary};
+    }
+
+    .sidebar-rail.ant-menu .ant-menu-item-selected .anticon {
         color: ${(props) => props.colorPrimary};
     }
 
@@ -689,16 +673,13 @@ const StyledIndexLayout = styled.div<StyledIndexLayoutProps>`
         font-weight: 700;
         letter-spacing: 0.4px;
         text-transform: uppercase;
-        color: rgba(17, 24, 39, 0.44);
-    }
-
-    .dark .sidebar-panel.ant-menu .ant-menu-item-group-title {
-        color: rgba(255, 255, 255, 0.44);
+        color: ${(props) => props.textTertiaryColor};
     }
 
     .sidebar-panel.ant-menu .ant-menu-item {
+        box-sizing: border-box;
         margin: 0 6px 4px;
-        width: calc(100% - 12px);
+        width: auto;
         height: 46px;
         border-radius: 14px;
     }
@@ -718,19 +699,16 @@ const StyledIndexLayout = styled.div<StyledIndexLayoutProps>`
         font-size: 14px;
         line-height: 1.2;
         font-weight: 500;
-        color: rgba(17, 24, 39, 0.78);
-    }
-
-    .dark .sidebar-panel.ant-menu .menu-title {
-        color: rgba(255, 255, 255, 0.76);
+        color: ${(props) => props.textSecondaryColor} !important;
     }
 
     .sidebar-panel.ant-menu .ant-menu-title-content > a {
-        color: rgba(17, 24, 39, 0.82);
+        color: ${(props) => props.textColor} !important;
     }
 
-    .dark .sidebar-panel.ant-menu .ant-menu-title-content > a {
-        color: rgba(255, 255, 255, 0.82);
+    .sidebar-rail.ant-menu .ant-menu-item,
+    .sidebar-panel.ant-menu .ant-menu-item {
+        color: ${(props) => props.textColor};
     }
 
     .sidebar-panel.ant-menu .ant-menu-item .anticon {
@@ -742,6 +720,10 @@ const StyledIndexLayout = styled.div<StyledIndexLayoutProps>`
     }
 
     .sidebar-panel.ant-menu .ant-menu-item-selected > .ant-menu-title-content > a {
+        color: ${(props) => props.colorPrimary};
+    }
+
+    .sidebar-panel.ant-menu .ant-menu-item-selected .anticon {
         color: ${(props) => props.colorPrimary};
     }
 

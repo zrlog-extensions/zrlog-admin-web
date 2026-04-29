@@ -17,7 +17,6 @@ import { getAppState } from "../base/ConfigProviderApp";
 import { useTheme } from "antd-style";
 import SpotlightSearch from "./spotlight-search";
 import { useLocation } from "react-router-dom";
-import { PageHeaderContext } from "../base/PageHeaderContext";
 
 const { Header, Content, Sider } = Layout;
 const { Text } = Typography;
@@ -101,7 +100,6 @@ const AdminManageLayout: FunctionComponent<AdminManageLayoutProps> = ({
 
     const getHeaderMeta = () => {
         const pathname = location.pathname.split(".")[0];
-        const searchParams = new URLSearchParams(location.search);
 
         if (pathname === "" || pathname === "/" || pathname === "/index") {
             return { title: getRes()["dashboard"], subtitle: getRes()["admin.management"] };
@@ -111,7 +109,7 @@ const AdminManageLayout: FunctionComponent<AdminManageLayoutProps> = ({
         }
         if (pathname.startsWith("/article")) {
             return {
-                title: searchParams.get("status") === "draft" ? getRes()["articleDraft"] : getRes()["blogManage"],
+                title: getRes()["blogManage"],
                 subtitle: getRes()["admin.management"],
             };
         }
@@ -142,11 +140,17 @@ const AdminManageLayout: FunctionComponent<AdminManageLayoutProps> = ({
         if (pathname.startsWith("/user")) {
             return { title: getRes()["admin.user.info"], subtitle: getRes()["admin.setting"] };
         }
-        if (pathname.startsWith("/website/version") || pathname.startsWith("/upgrade")) {
+        if (pathname.startsWith("/website/version")) {
             return { title: getRes()["admin.version"], subtitle: getRes()["admin.setting"] };
+        }
+        if (pathname.startsWith("/upgrade")) {
+            return { title: getRes()["upgradeWizard"], subtitle: getRes()["admin.setting"] };
         }
         if (pathname.startsWith("/website/template")) {
             return { title: getRes()["admin.template.manage"], subtitle: getRes()["admin.setting"] };
+        }
+        if (pathname.startsWith("/website/upgrade")) {
+            return { title: getRes()["admin.upgrade.manage"], subtitle: getRes()["admin.setting"] };
         }
         if (pathname.startsWith("/website/ai")) {
             return { title: getRes()["admin.ai.manage"], subtitle: getRes()["admin.setting"] };
@@ -158,7 +162,7 @@ const AdminManageLayout: FunctionComponent<AdminManageLayoutProps> = ({
             return { title: getRes()["admin.blog.manage"], subtitle: getRes()["admin.setting"] };
         }
         if (pathname.startsWith("/website/admin")) {
-            return { title: getRes()["admin.basic.manage"], subtitle: getRes()["admin.setting"] };
+            return { title: getRes()["admin.admin.manage"], subtitle: getRes()["admin.setting"] };
         }
         if (pathname.startsWith("/website")) {
             return { title: getRes()["admin.setting"], subtitle: getRes()["admin.management"] };
@@ -183,7 +187,6 @@ const AdminManageLayout: FunctionComponent<AdminManageLayoutProps> = ({
                 {showLabel && (
                     <span className="sidebar-brand-copy">
                         <span className="sidebar-brand-title">{getRes()["websiteTitle"]}</span>
-                        <span className="sidebar-brand-subtitle">Admin Console</span>
                     </span>
                 )}
             </a>
@@ -231,8 +234,12 @@ const AdminManageLayout: FunctionComponent<AdminManageLayoutProps> = ({
                     />
                 </div>
                 <div className="header-title-block">
-                    <Text className="header-title-eyebrow">{headerMeta.subtitle}</Text>
-                    <Text className="header-title-main" ellipsis>
+                    {headerMeta.subtitle ? (
+                        <Text type="secondary" className="header-title-eyebrow">
+                            {headerMeta.subtitle}
+                        </Text>
+                    ) : null}
+                    <Text strong className="header-title-main" ellipsis>
                         {headerMeta.title}
                     </Text>
                 </div>
@@ -242,7 +249,13 @@ const AdminManageLayout: FunctionComponent<AdminManageLayoutProps> = ({
 
     return (
         <PWAHandler>
-            <StyledIndexLayout compactMode={getAppState().compactMode} colorPrimary={getAppState().colorPrimary}>
+            <StyledIndexLayout
+                compactMode={getAppState().compactMode}
+                colorPrimary={getAppState().colorPrimary}
+                textColor={theme.colorText}
+                textSecondaryColor={theme.colorTextSecondary}
+                textTertiaryColor={theme.colorTextTertiary}
+            >
                 {systemNotification && systemNotification.length > 0 && (
                     <Alert
                         showIcon={true}
@@ -270,7 +283,7 @@ const AdminManageLayout: FunctionComponent<AdminManageLayoutProps> = ({
                         backdropFilter: "blur(20px) saturate(180%)",
                         WebkitBackdropFilter: "blur(20px) saturate(180%)",
                         paddingLeft: 0,
-                        paddingRight: getAppState().compactMode ? 12 : 16,
+                        boxSizing: "border-box",
                         borderBottom: getAppState().dark
                             ? "1px solid rgba(255,255,255,0.06)"
                             : "1px solid rgba(15,23,42,0.06)",
@@ -387,7 +400,7 @@ const AdminManageLayout: FunctionComponent<AdminManageLayoutProps> = ({
                                 left: 0,
                                 width: "100vw",
                                 height: `calc(100vh - ${getHeaderHeight()}px)`,
-                                backgroundColor: mobileMode ? "rgba(0,0,0,0.32)" : "rgba(15,23,42,0.08)",
+                                backgroundColor: getAppState().dark ? "rgba(8,12,20,0.22)" : "rgba(15,23,42,0.10)",
                                 zIndex: 999,
                                 transition: "opacity 0.2s cubic-bezier(0.2, 0, 0, 1)",
                             }}
@@ -413,9 +426,7 @@ const AdminManageLayout: FunctionComponent<AdminManageLayoutProps> = ({
                                 }}
                             >
                                 {loading && <MyLoadingComponent />}
-                                <PageHeaderContext.Provider value={{ title: headerMeta.title }}>
-                                    {children}
-                                </PageHeaderContext.Provider>
+                                {children}
                             </Content>
                         </Layout>
                     </Col>

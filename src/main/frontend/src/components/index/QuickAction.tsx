@@ -152,7 +152,6 @@ const QuickActionCard = ({ draftCount, embedded = false }: { draftCount: number;
             }
             bordered={false}
             className="dashboard-card"
-            style={{ marginTop: 24 }}
         >
             {content}
         </Card>

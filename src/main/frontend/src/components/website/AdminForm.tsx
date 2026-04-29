@@ -79,8 +79,6 @@ const BlogForm = ({
             }}
             onFinish={(nv) => onSubmit({ ...state, ...nv, ...getRealState() })}
         >
-            <Title level={4}>{getRes()["admin.admin.manage"]}</Title>
-            <Divider />
             <Form.Item name="admin_static_resource_base_url" label={getRes()["adminStaticResourceUrl"]}>
                 <Input style={{ maxWidth: 300 }} placeholder={getRes()["adminStaticResourceUrlTips"]} />
             </Form.Item>

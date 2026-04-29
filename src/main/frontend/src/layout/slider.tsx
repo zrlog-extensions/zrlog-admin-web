@@ -4,7 +4,7 @@ import { getRealRouteUrl, getRes } from "../utils/constants";
 import {
     ApiFilled,
     ApiOutlined,
-    ApartmentOutlined,
+    BarsOutlined,
     CommentOutlined,
     ContainerFilled,
     ContainerOutlined,
@@ -15,6 +15,7 @@ import {
     LinkOutlined,
     SettingFilled,
     SettingOutlined,
+    TagsFilled,
     TagsOutlined,
 } from "@ant-design/icons";
 import { Menu, MenuProps, Modal } from "antd";
@@ -222,15 +223,15 @@ const SliderMenu = ({ expanded = false }: SliderMenuProps) => {
                     key: "/article-type",
                     text: getRes()["admin.type.manage"],
                     link: "/article-type",
-                    selectIcon: <TagsOutlined style={{ fontSize: getIconSize() }} />,
+                    selectIcon: <TagsFilled style={{ fontSize: getIconSize() }} />,
                     icon: <TagsOutlined style={{ fontSize: getIconSize() }} />,
                 }),
                 getItem({
                     key: "/nav",
                     text: getRes()["admin.nav.manage"],
                     link: "/nav",
-                    selectIcon: <ApartmentOutlined style={{ fontSize: getIconSize() }} />,
-                    icon: <ApartmentOutlined style={{ fontSize: getIconSize() }} />,
+                    selectIcon: <BarsOutlined style={{ fontSize: getIconSize() }} />,
+                    icon: <BarsOutlined style={{ fontSize: getIconSize() }} />,
                 }),
                 getItem({
                     key: "/link",

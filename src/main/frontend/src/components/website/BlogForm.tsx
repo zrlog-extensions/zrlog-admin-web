@@ -6,7 +6,6 @@ import { getRes } from "../../utils/constants";
 import Button from "antd/es/button";
 import { useEffect, useState } from "react";
 import { Blog } from "./index";
-import Title from "antd/es/typography/Title";
 import TextArea from "antd/es/input/TextArea";
 
 const layout = {
@@ -44,8 +43,6 @@ const BlogForm = ({
             onValuesChange={(_k, v) => setState({ ...state, ...v })}
             onFinish={(nv) => onSubmit({ ...state, ...nv })}
         >
-            <Title level={4}>{getRes()["admin.blog.manage"]}</Title>
-            <Divider />
             <Form.Item name="host" label={getRes()["blogHost"]}>
                 <Input style={{ maxWidth: 300 }} placeholder="" />
             </Form.Item>

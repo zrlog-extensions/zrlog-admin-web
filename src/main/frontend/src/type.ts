@@ -62,8 +62,8 @@ export type StatisticsInfoState = {
     tagData: { text: string, count: number }[];
     auditLogs?: { timestamp: number, ip: string, action: string, type: string, os?: string, browser?: string, crawler?: boolean }[];
     loading: boolean;
-    usedCacheSpace: number;
-    usedDiskSpace: number;
+    usedCacheSpace: number | string;
+    usedDiskSpace: number | string;
 };
 
 export type Version = {

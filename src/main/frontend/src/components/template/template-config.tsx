@@ -10,7 +10,6 @@ import Switch from "antd/es/switch";
 import { colorPickerBgColors } from "../../utils/helpers";
 import { useAxiosBaseInstance } from "../../base/AppBase";
 import BaseDragger, { DraggerUploadResponse } from "@editor/dist/src/editor/common/BaseDragger";
-import BaseTitle from "../../base/BaseTitle";
 import { CameraOutlined } from "@ant-design/icons";
 import PreviewConfig from "./preview-config";
 import Editor from "@editor/dist/src/editor";
@@ -274,7 +273,6 @@ const TemplateConfig = ({
     return (
         <>
             {contextHolder}
-            <BaseTitle title={getRes()["templateConfig"]} />
             <Row>
                 <Col xs={24} style={{ maxWidth: isLarge() ? 900 : 600 }}>
                     <Form

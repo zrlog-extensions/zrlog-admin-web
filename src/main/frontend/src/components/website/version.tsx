@@ -1,6 +1,5 @@
 import { FunctionComponent, useState } from "react";
 import Card from "antd/es/card";
-import BaseTitle from "../../base/BaseTitle";
 import { markdownToHtmlSyncWithCallback } from "@editor/dist/src/editor/utils/marked-utils";
 import HtmlPreviewPanel from "@editor/dist/src/editor/html-preview-panel";
 import { getAppState } from "../../base/ConfigProviderApp";
@@ -29,7 +28,6 @@ const Version: FunctionComponent<VersionProps> = ({ data }) => {
 
     return (
         <>
-            <BaseTitle title={data.version} />
             <Card title={""} style={{ padding: 8, maxWidth: 600 }}>
                 <HtmlPreviewPanel htmlContent={changeLogStr} dark={getAppState().dark} />
             </Card>

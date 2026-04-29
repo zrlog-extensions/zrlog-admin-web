@@ -1,6 +1,5 @@
 import BaseTable, { PageDataSource } from "../../common/BaseTable";
 import { getRes } from "../../utils/constants";
-import BaseTitle from "../../base/BaseTitle";
 import CreateOrEditNav from "./create_or_edit_nav";
 import { EditOutlined } from "@ant-design/icons";
 import { getAppState } from "../../base/ConfigProviderApp";
@@ -43,7 +42,6 @@ const Nav = ({ data, offline }: { data: PageDataSource; offline: boolean }) => {
 
     return (
         <>
-            <BaseTitle title={getRes()["admin.nav.manage"]} />
             <BaseTable
                 defaultPageSize={10}
                 offline={offline}

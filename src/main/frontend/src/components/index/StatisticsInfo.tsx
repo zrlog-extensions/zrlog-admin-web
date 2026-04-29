@@ -23,7 +23,10 @@ const StatisticsInfo = ({ data, versionInfo }: { data: StatisticsInfoState; vers
     const theme = useTheme();
     const totalArticles = Math.max(data.articleCount, data.publishedCount + data.privateCount + data.draftCount);
 
-    const formatBytes = (bytes?: number) => {
+    const formatBytes = (bytes?: number | string) => {
+        if (typeof bytes === "string") {
+            return bytes.trim().length > 0 ? bytes : "0 B";
+        }
         if (!bytes || bytes <= 0) {
             return "0 B";
         }
@@ -159,7 +162,6 @@ const StatisticsInfo = ({ data, versionInfo }: { data: StatisticsInfoState; vers
 
     return (
         <Card
-            style={{ marginTop: 24 }}
             bordered={false}
             title={
                 <div style={{ display: "flex", alignItems: "center", gap: 8 }}>

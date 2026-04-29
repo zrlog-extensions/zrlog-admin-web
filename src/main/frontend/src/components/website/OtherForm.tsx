@@ -1,4 +1,3 @@
-import Title from "antd/es/typography/Title";
 import Divider from "antd/es/divider";
 import Form from "antd/es/form";
 import TextArea from "antd/es/input/TextArea";
@@ -45,8 +44,6 @@ const OtherForm = ({
             onValuesChange={(_k, v) => setState({ ...state, ...v })}
             onFinish={(nv) => onSubmit({ ...state, ...nv })}
         >
-            <Title level={4}>{getRes()["admin.other.manage"]}</Title>
-            <Divider />
             {getAppState().lang == "zh_CN" && (
                 <Form.Item name="icp" label="ICP备案信息">
                     <TextArea />

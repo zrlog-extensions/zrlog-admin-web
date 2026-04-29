@@ -11,7 +11,6 @@ import { Link, useLocation } from "react-router-dom";
 import AdminForm from "./AdminForm";
 import { FunctionComponent, useState } from "react";
 import { AdminCommonProps, AIProviderType } from "../../type";
-import BaseTitle from "../../base/BaseTitle";
 import { getPageDataCacheKeyByPath } from "../../utils/cache";
 import { useAxiosBaseInstance } from "../../base/AppBase";
 import { getAppState } from "../../base/ConfigProviderApp";
@@ -82,6 +81,45 @@ export type WebSiteProps = AdminCommonProps<WebSiteEntry> & {
 const WebSite: FunctionComponent<WebSiteProps> = ({ data, offline, offlineData, activeKey, updateCache }) => {
     const location = useLocation();
 
+    const navItems: Array<{ key: WebSiteProps["activeKey"]; text: string; summary: string }> = [
+        {
+            key: "basic",
+            text: getRes()["admin.basic.manage"],
+            summary: getRes()["admin.website.basic.summary"],
+        },
+        {
+            key: "blog",
+            text: getRes()["admin.blog.manage"],
+            summary: getRes()["admin.website.blog.summary"],
+        },
+        {
+            key: "admin",
+            text: getRes()["admin.admin.manage"],
+            summary: getRes()["admin.website.admin.summary"],
+        },
+        {
+            key: "template",
+            text: getRes()["admin.template.manage"],
+            summary: getRes()["admin.website.template.summary"],
+        },
+        {
+            key: "other",
+            text: getRes()["admin.other.manage"],
+            summary: getRes()["admin.website.other.summary"],
+        },
+        {
+            key: "ai",
+            text: getRes()["admin.ai.manage"],
+            summary: getRes()["admin.website.ai.summary"],
+        },
+        {
+            key: "upgrade",
+            text: getRes()["admin.upgrade.manage"],
+            summary: getRes()["admin.website.upgrade.summary"],
+        },
+    ];
+    const activeMeta = navItems.find((item) => item.key === activeKey) || navItems[0];
+
     const buildLink = (key: string, text: string) => {
         const toUrl = key === "basic" ? "/website" : "/website/" + key;
         return (
@@ -135,132 +173,149 @@ const WebSite: FunctionComponent<WebSiteProps> = ({ data, offline, offlineData, 
     };
 
     const getItemBody = () => {
-        if (activeKey === "basic") {
-            return (
-                <Row>
-                    <Col xs={24} style={{ maxWidth: 600 }}>
-                        <BasicForm
-                            loading={loading}
-                            offlineData={offlineData}
-                            onSubmit={(newData) => {
-                                onSubmit(newData).then((ok) => {
-                                    if (ok) {
-                                        reloadPage();
-                                    }
-                                });
-                            }}
-                            offline={offline}
-                            data={data as Basic}
-                        />
-                    </Col>
-                </Row>
-            );
-        } else if (activeKey === "blog") {
-            return (
-                <Row>
-                    <Col xs={24} style={{ maxWidth: 600 }}>
-                        <BlogForm
-                            loading={loading}
-                            offlineData={offlineData}
-                            onSubmit={(newData) => {
-                                onSubmit(newData).then((ok) => {
-                                    if (ok) {
-                                        reloadPage();
-                                    }
-                                });
-                            }}
-                            offline={offline}
-                            data={data as Blog}
-                        />
-                    </Col>
-                </Row>
-            );
-        } else if (activeKey === "admin") {
-            return (
-                <Row>
-                    <Col xs={24} style={{ maxWidth: 600 }}>
-                        <AdminForm
-                            loading={loading}
-                            offlineData={offlineData}
-                            onSubmit={(newData) => {
-                                onSubmit(newData).then((ok) => {
-                                    if (ok) {
-                                        reloadPage();
-                                    }
-                                });
-                            }}
-                            offline={offline}
-                            data={data as Admin}
-                        />
-                    </Col>
-                </Row>
-            );
-        } else if (activeKey === "template") {
-            return <Index data={data as TemplateEntry[]} />;
-        } else if (activeKey === "other") {
-            return (
-                <Row>
-                    <Col xs={24} style={{ maxWidth: 600 }}>
-                        <OtherForm
-                            loading={loading}
-                            onSubmit={(newData) => {
-                                onSubmit(newData).then((ok) => {
-                                    if (ok) {
-                                        reloadPage();
-                                    }
-                                });
-                            }}
-                            offlineData={offlineData}
-                            offline={offline}
-                            data={data as Other}
-                        />
-                    </Col>
-                </Row>
-            );
-        } else if (activeKey === "upgrade") {
-            return (
-                <Row>
-                    <Col xs={24} style={{ maxWidth: 600 }}>
-                        <UpgradeSettingForm
-                            loading={loading}
-                            offlineData={offlineData}
-                            onSubmit={(newData) => {
-                                onSubmit(newData).then(() => {
-                                    //ignore
-                                });
-                            }}
-                            offline={offline}
-                            data={data as Upgrade}
-                        />
-                    </Col>
-                </Row>
-            );
-        } else if (activeKey === "ai") {
-            return (
-                <Row>
-                    <Col xs={24} style={{ maxWidth: 600 }}>
-                        <AIForm
-                            loading={loading}
-                            offlineData={offlineData}
-                            onSubmit={(newData) => {
-                                onSubmit(newData).then(() => {
-                                    //ignore
-                                });
-                            }}
-                            offline={offline}
-                            data={data as AI}
-                        />
-                    </Col>
-                </Row>
-            );
-        }
-        return <></>;
+        const content = (() => {
+            if (activeKey === "basic") {
+                return (
+                    <Row>
+                        <Col xs={24} style={{ maxWidth: 600 }}>
+                            <BasicForm
+                                loading={loading}
+                                offlineData={offlineData}
+                                onSubmit={(newData) => {
+                                    onSubmit(newData).then((ok) => {
+                                        if (ok) {
+                                            reloadPage();
+                                        }
+                                    });
+                                }}
+                                offline={offline}
+                                data={data as Basic}
+                            />
+                        </Col>
+                    </Row>
+                );
+            } else if (activeKey === "blog") {
+                return (
+                    <Row>
+                        <Col xs={24} style={{ maxWidth: 600 }}>
+                            <BlogForm
+                                loading={loading}
+                                offlineData={offlineData}
+                                onSubmit={(newData) => {
+                                    onSubmit(newData).then((ok) => {
+                                        if (ok) {
+                                            reloadPage();
+                                        }
+                                    });
+                                }}
+                                offline={offline}
+                                data={data as Blog}
+                            />
+                        </Col>
+                    </Row>
+                );
+            } else if (activeKey === "admin") {
+                return (
+                    <Row>
+                        <Col xs={24} style={{ maxWidth: 600 }}>
+                            <AdminForm
+                                loading={loading}
+                                offlineData={offlineData}
+                                onSubmit={(newData) => {
+                                    onSubmit(newData).then((ok) => {
+                                        if (ok) {
+                                            reloadPage();
+                                        }
+                                    });
+                                }}
+                                offline={offline}
+                                data={data as Admin}
+                            />
+                        </Col>
+                    </Row>
+                );
+            } else if (activeKey === "template") {
+                return <Index data={data as TemplateEntry[]} />;
+            } else if (activeKey === "other") {
+                return (
+                    <Row>
+                        <Col xs={24} style={{ maxWidth: 600 }}>
+                            <OtherForm
+                                loading={loading}
+                                onSubmit={(newData) => {
+                                    onSubmit(newData).then((ok) => {
+                                        if (ok) {
+                                            reloadPage();
+                                        }
+                                    });
+                                }}
+                                offlineData={offlineData}
+                                offline={offline}
+                                data={data as Other}
+                            />
+                        </Col>
+                    </Row>
+                );
+            } else if (activeKey === "upgrade") {
+                return (
+                    <Row>
+                        <Col xs={24} style={{ maxWidth: 600 }}>
+                            <UpgradeSettingForm
+                                loading={loading}
+                                offlineData={offlineData}
+                                onSubmit={(newData) => {
+                                    onSubmit(newData).then(() => {
+                                        //ignore
+                                    });
+                                }}
+                                offline={offline}
+                                data={data as Upgrade}
+                            />
+                        </Col>
+                    </Row>
+                );
+            } else if (activeKey === "ai") {
+                return (
+                    <Row>
+                        <Col xs={24} style={{ maxWidth: 600 }}>
+                            <AIForm
+                                loading={loading}
+                                offlineData={offlineData}
+                                onSubmit={(newData) => {
+                                    onSubmit(newData).then(() => {
+                                        //ignore
+                                    });
+                                }}
+                                offline={offline}
+                                data={data as AI}
+                            />
+                        </Col>
+                    </Row>
+                );
+            }
+            return <></>;
+        })();
+
+        return (
+            <>
+                <div
+                    style={{
+                        marginBottom: 20,
+                        fontSize: 13,
+                        lineHeight: 1.7,
+                        color: getAppState().dark ? "rgba(255,255,255,0.58)" : "rgba(15,23,42,0.58)",
+                    }}
+                >
+                    {activeMeta.summary}
+                </div>
+                {content}
+            </>
+        );
     };
 
     return (
         <>
             {contextHolder}
-            <BaseTitle title={getRes()["admin.setting"]} />
             <Tabs
                 activeKey={activeKey}
                 items={[

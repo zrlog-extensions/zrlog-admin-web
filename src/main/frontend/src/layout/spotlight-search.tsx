@@ -1,7 +1,7 @@
 import {
     SearchOutlined,
     SettingOutlined,
-    AppstoreOutlined,
+    BarsOutlined,
     DashboardOutlined,
     UserOutlined,
     EditOutlined,
@@ -9,10 +9,11 @@ import {
     CommentOutlined,
     KeyOutlined,
     DatabaseOutlined,
-    FolderAddFilled,
     ApiOutlined,
     InfoCircleOutlined,
     InboxOutlined,
+    LinkOutlined,
+    TagsOutlined,
 } from "@ant-design/icons";
 import { Modal, Input, List, Space, Tag, Spin, Grid } from "antd";
 import { useEffect, useState, useRef } from "react";
@@ -84,7 +85,7 @@ const SpotlightSearch = ({ compact = false }: { compact?: boolean }) => {
             id: "category",
             title: getRes()["admin.type.manage"],
             path: "/article-type",
-            icon: <FolderAddFilled />,
+            icon: <TagsOutlined />,
             keywords: ["category", "type", "分类", "类别"],
             type: "route",
         },
@@ -100,7 +101,7 @@ const SpotlightSearch = ({ compact = false }: { compact?: boolean }) => {
             id: "nav",
             title: getRes()["admin.nav.manage"],
             path: "/nav",
-            icon: <AppstoreOutlined />,
+            icon: <BarsOutlined />,
             keywords: ["nav", "menu", "导航", "菜单"],
             type: "route",
         },
@@ -108,7 +109,7 @@ const SpotlightSearch = ({ compact = false }: { compact?: boolean }) => {
             id: "link",
             title: getRes()["admin.link.manage"],
             path: "/link",
-            icon: <AppstoreOutlined />,
+            icon: <LinkOutlined />,
             keywords: ["link", "friend", "友链", "链接"],
             type: "route",
         },

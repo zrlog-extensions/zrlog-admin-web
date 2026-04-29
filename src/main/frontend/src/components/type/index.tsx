@@ -1,6 +1,5 @@
 import { getRes } from "../../utils/constants";
 import BaseTable, { PageDataSource } from "../../common/BaseTable";
-import BaseTitle from "../../base/BaseTitle";
 import { getAppState } from "../../base/ConfigProviderApp";
 import { EditOutlined } from "@ant-design/icons";
 import { Button } from "antd";
@@ -48,7 +47,6 @@ const Type = ({ data, offline }: { data: PageDataSource; offline: boolean }) => 
 
     return (
         <>
-            <BaseTitle title={getRes()["admin.type.manage"]} />
             <BaseTable
                 defaultPageSize={10}
                 offline={offline}
