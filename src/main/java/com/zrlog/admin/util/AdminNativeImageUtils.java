@@ -46,7 +46,8 @@ public class AdminNativeImageUtils {
                 TemplateValuePreviewResponse.class,
                 AIResponseEntry.class, AIResponseEntry.AIContentEntry.class,
                 AIWebSiteInfo.class, AIWebSiteInfoWithAIMessages.class, ArticleActivityData.class,
-                AIWebSiteInfoResponse.class, AIWebSiteInfoResponse.AIProvider.class));
+                AIWebSiteInfoResponse.class, AIWebSiteInfoResponse.AIProvider.class,
+                ArticleStatusCountResponse.class));
     }
 
     private static void adminJson() {
