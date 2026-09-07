@@ -1,5 +1,6 @@
 package com.zrlog.admin.business.service;
 
+import com.hibegin.common.util.FileUtils;
 import com.hibegin.common.util.IOUtil;
 import com.hibegin.common.util.LoggerUtil;
 import com.hibegin.http.server.api.HttpRequest;
@@ -13,8 +14,11 @@ import com.zrlog.common.Constants;
 import com.zrlog.common.vo.AdminTokenVO;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
@@ -26,6 +30,27 @@ import java.util.logging.Logger;
 public class UploadService {
 
     private static final Logger LOGGER = LoggerUtil.getLogger(UploadService.class);
+    private final DbFileService dbFileService = new DbFileService();
+
+    public UploadFileResponse saveUploadedFile(File file, String dir, HttpRequest request,
+                                               AdminTokenVO adminTokenVO) throws IOException, SQLException {
+        return saveUploadedFile(file, dir, null, request, adminTokenVO);
+    }
+
+    public UploadFileResponse saveUploadedFile(File file, String dir, String name, HttpRequest request,
+                                               AdminTokenVO adminTokenVO) throws IOException, SQLException {
+        String resolvedDir = UploadFileUtils.resolveUploadDir(dir);
+        String uri = UploadFileUtils.generatorUri(resolvedDir, file, name);
+        String temporaryUri = buildTemporaryUri(resolvedDir, file, name);
+        if (temporaryUri != null) {
+            try (FileInputStream inputStream = new FileInputStream(file)) {
+                return dbFileService.toDbFile(temporaryUri, IOUtil.getByteByInputStream(inputStream));
+            }
+        }
+        String finalFilePath = PathUtil.getStaticFile(uri).toString();
+        FileUtils.moveOrCopyFile(file.toString(), finalFilePath, true);
+        return getCloudUrl(uri, finalFilePath, request, adminTokenVO);
+    }
 
     public UploadFileResponse getCloudUrl(String uri, String finalFilePath, HttpRequest request, AdminTokenVO adminTokenVO) {
         String contextPath = request.getContextPath();
@@ -61,14 +86,42 @@ public class UploadService {
     public UploadFileResponse saveThumbnailBytes(byte[] bytes, String extension, HttpRequest request,
                                                  AdminTokenVO adminTokenVO) {
         String uri = buildGeneratedThumbnailUri(bytes, extension);
-        UploadFileResponse uploadFileResponse = saveBytesToUri(bytes, uri, request, adminTokenVO);
-        return new UploadFileResponse(uploadFileResponse.getUrl() + "?h=-1&w=-1");
+        return saveBytesToUri(bytes, uri, request, adminTokenVO);
     }
 
     public UploadFileResponse saveBytes(byte[] bytes, String extension, String dir, HttpRequest request,
                                         AdminTokenVO adminTokenVO) {
         String uri = UploadFileUtils.generatorUri(dir, "upload." + normalizeExtension(extension));
         return saveBytesToUri(bytes, uri, request, adminTokenVO);
+    }
+
+    String buildTemporaryUri(String dir, File file) {
+        return buildTemporaryUri(dir, file, null);
+    }
+
+    String buildTemporaryUri(String dir, File file, String name) {
+        String normalizedDir = normalizeTemporaryDir(dir);
+        if (normalizedDir == null) {
+            return null;
+        }
+        String uri = UploadFileUtils.generatorUri(normalizedDir, file, name);
+        String suffix = uri.substring(AdminConstants.ATTACHED_FOLDER.length() - 1).replaceAll("/{2,}", "/");
+        return AdminConstants.ADMIN_DB_ATTACHED_TMP + (suffix.startsWith("/") ? suffix : "/" + suffix);
+    }
+
+    String normalizeTemporaryDir(String dir) {
+        if (dir == null || dir.contains("..")) {
+            return null;
+        }
+        String normalized = dir.replace("\\", "/").replaceAll("/{2,}", "/");
+        if (normalized.equals(AdminConstants.ADMIN_DB_ATTACHED_TMP)
+                || normalized.equals(AdminConstants.ADMIN_DB_ATTACHED_TMP + "/")) {
+            return "/";
+        }
+        if (normalized.startsWith(AdminConstants.ADMIN_DB_ATTACHED_TMP + "/")) {
+            return normalized.substring(AdminConstants.ADMIN_DB_ATTACHED_TMP.length());
+        }
+        return null;
     }
 
     private UploadFileResponse saveBytesToUri(byte[] bytes, String uri, HttpRequest request, AdminTokenVO adminTokenVO) {

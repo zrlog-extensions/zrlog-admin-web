@@ -87,6 +87,9 @@ public class AdminTypeAndUtilContractTest {
         String fromNestedDir = UploadFileUtils.generatorUri("nested\\dir//child", file);
         String fromUnsafeDir = UploadFileUtils.generatorUri("../bad", file);
         String fromNullDir = UploadFileUtils.generatorUri(null, file);
+        String fromEmptyDir = UploadFileUtils.generatorUri(" ", file);
+        String fromRequestedName = UploadFileUtils.generatorUri("images", file, "cover-final.png");
+        String fromNestedRequestedName = UploadFileUtils.generatorUri("images", file, "../cover-final.png");
         String fromName = UploadFileUtils.generatorUri("docs", "readme.md");
 
         assertTrue(fromFile.startsWith("/attached/images/"));
@@ -97,7 +100,10 @@ public class AdminTypeAndUtilContractTest {
         assertTrue(fromNestedDir.startsWith("/attached/nested/dir/child/"));
         assertTrue(fromUnsafeDir.startsWith("/attached/"));
         assertTrue(fromUnsafeDir.matches("/attached/\\d{8}/.*\\.png"));
-        assertTrue(fromNullDir.matches("/attached/\\d{8}/.*\\.png"));
+        assertTrue(fromNullDir.startsWith("/attached/thumbnail/"));
+        assertTrue(fromEmptyDir.startsWith("/attached/thumbnail/"));
+        assertTrue(fromRequestedName.endsWith("/cover-final.png"));
+        assertTrue(fromNestedRequestedName.endsWith("/cover-final.png"));
         assertTrue(fromName.startsWith("/attached/docs/"));
         assertTrue(fromName.endsWith(".md"));
     }
@@ -209,7 +215,7 @@ public class AdminTypeAndUtilContractTest {
                         return files.get(args[0]);
                     }
                     if ("getParaToStr".equals(method.getName())) {
-                        return "request-dir";
+                        return "dir".equals(args[0]) ? "request-dir" : null;
                     }
                     if ("toString".equals(method.getName())) {
                         return "HttpRequestProxy";

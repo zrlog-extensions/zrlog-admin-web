@@ -2,6 +2,7 @@ package com.zrlog.admin.business.service;
 
 import com.hibegin.http.server.api.HttpRequest;
 import com.hibegin.http.server.util.PathUtil;
+import com.zrlog.admin.business.AdminConstants;
 import com.zrlog.admin.business.rest.response.UploadFileResponse;
 import com.zrlog.admin.support.UploadFallbackZrLogConfig;
 import com.zrlog.common.Constants;
@@ -16,6 +17,8 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 public class UploadServiceTest {
@@ -62,18 +65,18 @@ public class UploadServiceTest {
     }
 
     @Test
-    public void shouldSaveThumbnailBytesWithStableMd5NameAndDimensions() throws Exception {
+    public void shouldSaveThumbnailBytesWithStableMd5Name() throws Exception {
         withRootPath();
         Constants.zrLogConfig = new UploadFallbackZrLogConfig();
 
         UploadFileResponse response = new UploadService().saveThumbnailBytes(
                 "abc".getBytes(StandardCharsets.UTF_8), "jpg", request(""), null);
-        String uri = response.getUrl().substring(0, response.getUrl().indexOf("?"));
+        String uri = response.getUrl();
         File file = PathUtil.getStaticFile(uri);
 
         assertTrue(uri.contains("/attached/thumbnail/"));
         assertTrue(uri.endsWith("/900150983cd24fb0d6963f7d28e17f72.jpg"));
-        assertEquals("?h=-1&w=-1", response.getUrl().substring(response.getUrl().indexOf("?")));
+        assertFalse(response.getUrl().contains("?h="));
         assertEquals("abc", Files.readString(file.toPath()));
     }
 
@@ -84,6 +87,34 @@ public class UploadServiceTest {
         assertEquals("png", service.normalizeExtension(null));
         assertEquals("png", service.normalizeExtension(" "));
         assertEquals("webp", service.normalizeExtension("webp"));
+    }
+
+    @Test
+    public void shouldNormalizeTemporaryUploadDirectories() throws Exception {
+        UploadService service = new UploadService();
+
+        assertEquals("/", service.normalizeTemporaryDir(AdminConstants.ADMIN_DB_ATTACHED_TMP));
+        assertEquals("/", service.normalizeTemporaryDir(AdminConstants.ADMIN_DB_ATTACHED_TMP + "/"));
+        assertEquals("/nested/path", service.normalizeTemporaryDir(AdminConstants.ADMIN_DB_ATTACHED_TMP + "\\nested//path"));
+        assertNull(service.normalizeTemporaryDir("/attached/normal"));
+        assertNull(service.normalizeTemporaryDir(AdminConstants.ADMIN_DB_ATTACHED_TMP + "/../escape"));
+        assertNull(service.normalizeTemporaryDir(null));
+    }
+
+    @Test
+    public void shouldBuildTemporaryUriUnderAdminDbAttachmentRoot() throws Exception {
+        File file = temporaryFolder.newFile("cover.PNG");
+        Files.writeString(file.toPath(), "image", StandardCharsets.UTF_8);
+        UploadService service = new UploadService();
+
+        String rootUri = service.buildTemporaryUri(AdminConstants.ADMIN_DB_ATTACHED_TMP, file);
+        String nestedUri = service.buildTemporaryUri(AdminConstants.ADMIN_DB_ATTACHED_TMP + "/article-cover", file);
+
+        assertTrue(rootUri.startsWith(AdminConstants.ADMIN_DB_ATTACHED_TMP + "/"));
+        assertTrue(rootUri.endsWith(".png"));
+        assertTrue(nestedUri.startsWith(AdminConstants.ADMIN_DB_ATTACHED_TMP + "/article-cover/"));
+        assertTrue(nestedUri.endsWith(".png"));
+        assertNull(service.buildTemporaryUri("/attached/normal", file));
     }
 
     private void withRootPath() throws Exception {

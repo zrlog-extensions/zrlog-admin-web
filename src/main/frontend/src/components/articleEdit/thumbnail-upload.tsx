@@ -54,7 +54,6 @@ const ThumbnailUpload: FunctionComponent<ThumbnailUploadProps> = ({
             bodyAspectRatio={aspectRatio}
             cardSize="default"
             cardStyle={{ width: "100%" }}
-            buildUploadUrl={(type) => `/api/admin/upload/thumbnail?dir=${type}`}
             type={"thumbnail"}
             title={title}
             resourcePicker={{

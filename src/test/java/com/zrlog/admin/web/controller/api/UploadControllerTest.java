@@ -6,7 +6,9 @@ import com.hibegin.http.server.util.PathUtil;
 import com.hibegin.http.server.web.Controller;
 import com.zrlog.admin.business.AdminConstants;
 import com.zrlog.admin.business.rest.response.UploadFileResponse;
+import com.zrlog.admin.business.service.DbFileService;
 import com.zrlog.admin.support.UploadFallbackZrLogConfig;
+import com.zrlog.admin.support.InMemoryZrLogDatabase;
 import com.zrlog.common.Constants;
 import com.zrlog.common.exception.ArgsException;
 import com.zrlog.common.rest.response.ApiStandardResponse;
@@ -24,8 +26,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThrows;
 import static org.junit.Assert.assertTrue;
 
@@ -77,52 +79,72 @@ public class UploadControllerTest {
 
     @Test
     @SuppressWarnings("unchecked")
-    public void shouldStoreThumbnailAndDeleteTemporaryUploadFile() throws Exception {
+    public void shouldStoreDeprecatedThumbnailUploadThroughCommonPath() throws Exception {
         withRootPath();
         Constants.zrLogConfig = new UploadFallbackZrLogConfig();
         File file = temporaryFolder.newFile("thumb.jpg");
         Files.writeString(file.toPath(), "thumb", StandardCharsets.UTF_8);
-        UploadController controller = controller(Map.of("dir", "thumbnail"), Map.of("file", file));
+        UploadController controller = controller(new HashMap<>(), Map.of("file", file));
 
         ApiStandardResponse<UploadFileResponse> response =
                 (ApiStandardResponse<UploadFileResponse>) controller.thumbnail();
         String url = response.getData().getUrl();
-        String uri = url.substring("/blog".length(), url.indexOf("?"));
+        String uri = url.substring("/blog".length());
 
         assertTrue(url.startsWith("/blog/attached/thumbnail/"));
-        assertTrue(url.endsWith("?h=-1&w=-1"));
+        assertFalse(url.contains("?h="));
         assertEquals("thumb", Files.readString(PathUtil.getStaticFile(uri).toPath()));
         assertFalse(file.exists());
     }
 
     @Test
-    public void shouldNormalizeTemporaryUploadDirectories() throws Exception {
-        File file = temporaryFolder.newFile("cover.png");
-        Files.writeString(file.toPath(), "image", StandardCharsets.UTF_8);
-        UploadController controller = new UploadController();
+    @SuppressWarnings("unchecked")
+    public void shouldStoreDeprecatedThumbnailUploadInDbTemporaryDirectory() throws Exception {
+        try (InMemoryZrLogDatabase ignored = InMemoryZrLogDatabase.open()) {
+            File file = temporaryFolder.newFile("thumb.png");
+            Files.writeString(file.toPath(), "thumb", StandardCharsets.UTF_8);
+            String dir = AdminConstants.ADMIN_DB_ATTACHED_TMP + "/article-cover";
+            UploadController controller = controller(Map.of("dir", dir), Map.of("imgFile", file));
 
-        assertEquals("/", controller.normalizeTemporaryDir(AdminConstants.ADMIN_DB_ATTACHED_TMP));
-        assertEquals("/", controller.normalizeTemporaryDir(AdminConstants.ADMIN_DB_ATTACHED_TMP + "/"));
-        assertEquals("/nested/path", controller.normalizeTemporaryDir(AdminConstants.ADMIN_DB_ATTACHED_TMP + "\\nested//path"));
-        assertNull(controller.normalizeTemporaryDir("/attached/normal"));
-        assertNull(controller.normalizeTemporaryDir(AdminConstants.ADMIN_DB_ATTACHED_TMP + "/../escape"));
-        assertNull(controller.normalizeTemporaryDir(null));
+            ApiStandardResponse<UploadFileResponse> response =
+                    (ApiStandardResponse<UploadFileResponse>) controller.thumbnail();
+            String uri = response.getData().getUrl();
+
+            assertTrue(uri.startsWith(dir + "/"));
+            assertArrayEquals("thumb".getBytes(StandardCharsets.UTF_8), new DbFileService().loadDbFile(uri));
+        }
     }
 
     @Test
-    public void shouldBuildTemporaryUriUnderAdminDbAttachmentRoot() throws Exception {
-        File file = temporaryFolder.newFile("cover.PNG");
+    @SuppressWarnings("unchecked")
+    public void shouldUseThumbnailAsDefaultUploadDirectory() throws Exception {
+        withRootPath();
+        Constants.zrLogConfig = new UploadFallbackZrLogConfig();
+        File file = temporaryFolder.newFile("default.png");
         Files.writeString(file.toPath(), "image", StandardCharsets.UTF_8);
-        UploadController controller = new UploadController();
+        UploadController controller = controller(new HashMap<>(), Map.of("imgFile", file));
 
-        String rootUri = controller.buildTemporaryUri(AdminConstants.ADMIN_DB_ATTACHED_TMP, file);
-        String nestedUri = controller.buildTemporaryUri(AdminConstants.ADMIN_DB_ATTACHED_TMP + "/article-cover", file);
+        ApiStandardResponse<UploadFileResponse> response =
+                (ApiStandardResponse<UploadFileResponse>) controller.index();
 
-        assertTrue(rootUri.startsWith(AdminConstants.ADMIN_DB_ATTACHED_TMP + "/"));
-        assertTrue(rootUri.endsWith(".png"));
-        assertTrue(nestedUri.startsWith(AdminConstants.ADMIN_DB_ATTACHED_TMP + "/article-cover/"));
-        assertTrue(nestedUri.endsWith(".png"));
-        assertNull(controller.buildTemporaryUri("/attached/normal", file));
+        assertTrue(response.getData().getUrl().startsWith("/blog/attached/thumbnail/"));
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    public void shouldUseRequestedUploadNameWhenProvided() throws Exception {
+        withRootPath();
+        Constants.zrLogConfig = new UploadFallbackZrLogConfig();
+        File file = temporaryFolder.newFile("source.png");
+        Files.writeString(file.toPath(), "image", StandardCharsets.UTF_8);
+        UploadController controller = controller(Map.of("dir", "image", "name", "cover-final.png"), Map.of("imgFile", file));
+
+        ApiStandardResponse<UploadFileResponse> response =
+                (ApiStandardResponse<UploadFileResponse>) controller.index();
+
+        assertTrue(response.getData().getUrl().startsWith("/blog/attached/image/"));
+        assertTrue(response.getData().getUrl().endsWith("/cover-final.png"));
+        assertTrue(Files.exists(PathUtil.getStaticFile(response.getData().getUrl().substring("/blog".length()).toString()).toPath()));
     }
 
     private void withRootPath() throws Exception {

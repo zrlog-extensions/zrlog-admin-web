@@ -236,11 +236,18 @@ paths:
         - name: dir
           in: query
           required: false
-          description: "`/attached` 下的逻辑子目录；保留的 admin 临时附件目录不在支持范围内"
+          description: "`/attached` 下的逻辑子目录；未传时使用 `thumbnail`；保留的 admin 临时附件目录不在支持范围内"
           schema:
             type: string
-            default: ""
-          example: image
+            default: thumbnail
+          example: thumbnail
+        - name: name
+          in: query
+          required: false
+          description: "可选目标文件名；只使用 basename，未传或不合法时由服务端生成内容摘要文件名"
+          schema:
+            type: string
+          example: cover.png
       requestBody:
         required: true
         description: "`imgFile` 与兼容字段 `file` 至少提供一个；同时提供时使用 `imgFile`。"
