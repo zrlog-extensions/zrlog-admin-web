@@ -18,6 +18,9 @@ import com.zrlog.admin.business.rest.response.UploadFileResponse;
 import com.zrlog.admin.business.service.ArticlePinningService;
 import com.zrlog.admin.business.service.MessageCenterOperationService;
 import com.zrlog.admin.business.service.WebSiteService;
+import com.zrlog.admin.business.service.ArticlePublishingService;
+import com.zrlog.admin.business.service.ArticlePublishingService.PublishCheckPersistenceGuard;
+import com.zrlog.admin.business.service.ArticlePublishingService.PublishCheckTask;
 import com.zrlog.admin.support.InMemoryZrLogDatabase;
 import com.zrlog.admin.util.AdminSseEmitter;
 import com.zrlog.admin.web.token.AdminTokenThreadLocal;
@@ -341,14 +344,14 @@ public class AdminArticleControllerDatabaseTest {
     }
 
     @Test
-    public void shouldRecordPublishCheckNoticesThroughControllerWrappers() throws Exception {
+    public void shouldRecordPublishCheckNoticesThroughPublishingService() throws Exception {
         try (InMemoryZrLogDatabase db = InMemoryZrLogDatabase.open()) {
             db.putWebsite("admin_cache:message_center_operation_notices", "[]");
-            AdminArticleController controller = controller(Map.of(), null, new ResponseRecorder());
+            ArticlePublishingService publishingService = new ArticlePublishingService();
 
-            invoke(controller, "recordPublishCheckSuccess", 7L, "Checked Article",
+            publishingService.recordPublishCheckSuccess(7L, "Checked Article",
                     Map.of("score", 90, "items", List.of("ok")));
-            invoke(controller, "recordPublishCheckError", 8L, "Broken Article", "bad check");
+            publishingService.recordPublishCheckError(8L, "Broken Article", "bad check");
             String stored = String.valueOf(db.queryOne(
                     "select value from website where name=?", "admin_cache:message_center_operation_notices")
                     .get("value"));
@@ -432,7 +435,7 @@ public class AdminArticleControllerDatabaseTest {
     @Test
     public void shouldShortCircuitPublishCheckAndEmitReadyStatesWithoutCallingAi() throws Exception {
         try (InMemoryZrLogDatabase ignored = InMemoryZrLogDatabase.open()) {
-            AdminArticleController controller = controller(Map.of(), null, new ResponseRecorder());
+            ArticlePublishingService publishingService = new ArticlePublishingService();
             CreateArticleRequest request = new CreateArticleRequest();
             request.setTransparentPublish(true);
             request.setRubbish(false);
@@ -442,15 +445,15 @@ public class AdminArticleControllerDatabaseTest {
             global.setAiConfigured(true);
             AdminPageDataResponse<ArticleGlobalResponse> detail = new AdminPageDataResponse<>(global);
 
-            assertEquals(true, invoke(controller, "shouldUseTransparentPublishStream", request));
-            assertNull(invoke(controller, "startPublishCheck", detail, request));
+            assertTrue(publishingService.shouldUseTransparentPublishStream(request));
+            assertNull(publishingService.startPublishCheck(detail, request));
 
             request.setPrivacy(true);
             global.setPublishCheckEnabled(true);
             global.setAiConfigured(false);
 
-            assertEquals(false, invoke(controller, "shouldUseTransparentPublishStream", request));
-            assertNull(invoke(controller, "startPublishCheck", detail, request));
+            assertFalse(publishingService.shouldUseTransparentPublishStream(request));
+            assertNull(publishingService.startPublishCheck(detail, request));
 
             String successPayload = emitPublishCheck(
                     CompletableFuture.completedFuture(new PublishCheckResponse(
@@ -489,8 +492,7 @@ public class AdminArticleControllerDatabaseTest {
             CountDownLatch generationFinished = new CountDownLatch(1);
             AtomicBoolean commitAttempted = new AtomicBoolean(false);
             AtomicBoolean persistenceCalled = new AtomicBoolean(false);
-            AdminArticleController.PublishCheckPersistenceGuard guard =
-                    new AdminArticleController.PublishCheckPersistenceGuard();
+            PublishCheckPersistenceGuard guard = new PublishCheckPersistenceGuard();
             CompletableFuture<PublishCheckResponse> future = CompletableFuture.supplyAsync(() -> {
                 generationStarted.countDown();
                 try {
@@ -512,7 +514,7 @@ public class AdminArticleControllerDatabaseTest {
                     generationFinished.countDown();
                 }
             });
-            AdminArticleController.PublishCheckTask task = new AdminArticleController.PublishCheckTask(
+            PublishCheckTask task = new PublishCheckTask(
                     future, guard, 42L, "Late publish check");
 
             assertTrue(generationStarted.await(1, TimeUnit.SECONDS));
@@ -543,8 +545,7 @@ public class AdminArticleControllerDatabaseTest {
             CountDownLatch generationStarted = new CountDownLatch(1);
             CountDownLatch releaseGeneration = new CountDownLatch(1);
             CountDownLatch generationFinished = new CountDownLatch(1);
-            AdminArticleController.PublishCheckPersistenceGuard guard =
-                    new AdminArticleController.PublishCheckPersistenceGuard();
+            PublishCheckPersistenceGuard guard = new PublishCheckPersistenceGuard();
             CompletableFuture<PublishCheckResponse> future = CompletableFuture.supplyAsync(() -> {
                 generationStarted.countDown();
                 try {
@@ -554,7 +555,7 @@ public class AdminArticleControllerDatabaseTest {
                     generationFinished.countDown();
                 }
             });
-            AdminArticleController.PublishCheckTask task = new AdminArticleController.PublishCheckTask(
+            PublishCheckTask task = new PublishCheckTask(
                     future, guard, 43L, "Late failed publish check");
 
             assertTrue(generationStarted.await(1, TimeUnit.SECONDS));
@@ -574,11 +575,10 @@ public class AdminArticleControllerDatabaseTest {
     @Test(timeout = 5000)
     public void shouldEmitCommittedPublishCheckWhenCommitWinsTimeoutRace() throws Exception {
         try (InMemoryZrLogDatabase ignored = InMemoryZrLogDatabase.open()) {
-            AdminArticleController.PublishCheckPersistenceGuard guard =
-                    new AdminArticleController.PublishCheckPersistenceGuard();
+            PublishCheckPersistenceGuard guard = new PublishCheckPersistenceGuard();
             PublishCheckResponse response = guard.commit(AdminArticleControllerDatabaseTest::publishCheckResponse);
             CompletableFuture<PublishCheckResponse> future = new CompletableFuture<>();
-            AdminArticleController.PublishCheckTask task = new AdminArticleController.PublishCheckTask(
+            PublishCheckTask task = new PublishCheckTask(
                     future, guard, null, "Committed publish check");
 
             String payload = emitPublishCheck(task, true, 20);
@@ -595,8 +595,8 @@ public class AdminArticleControllerDatabaseTest {
         try (InMemoryZrLogDatabase ignored = InMemoryZrLogDatabase.open()) {
             CompletableFuture<PublishCheckResponse> future =
                     CompletableFuture.completedFuture(publishCheckResponse());
-            AdminArticleController.PublishCheckTask task = new AdminArticleController.PublishCheckTask(
-                    future, new AdminArticleController.PublishCheckPersistenceGuard(), null, null);
+            PublishCheckTask task = new PublishCheckTask(
+                    future, new PublishCheckPersistenceGuard(), null, null);
 
             String payload = emitPublishCheck(task, false, null, 2);
 
@@ -610,8 +610,8 @@ public class AdminArticleControllerDatabaseTest {
             db.putWebsite("admin_cache:message_center_operation_notices", "[]");
             CompletableFuture<PublishCheckResponse> future = new CompletableFuture<>();
             future.completeExceptionally(new IllegalStateException("provider unavailable"));
-            AdminArticleController.PublishCheckTask task = new AdminArticleController.PublishCheckTask(
-                    future, new AdminArticleController.PublishCheckPersistenceGuard(), 44L, "Failed publish check");
+            PublishCheckTask task = new PublishCheckTask(
+                    future, new PublishCheckPersistenceGuard(), 44L, "Failed publish check");
 
             String payload = emitPublishCheck(task, true, null, 2);
             String storedNotices = String.valueOf(db.queryOne(
@@ -641,8 +641,7 @@ public class AdminArticleControllerDatabaseTest {
             global.setAiConfigured(true);
             AdminPageDataResponse<ArticleGlobalResponse> detail = new AdminPageDataResponse<>(global);
 
-            AdminArticleController.PublishCheckTask task = (AdminArticleController.PublishCheckTask)
-                    invoke(controller, "startPublishCheck", detail, request);
+            PublishCheckTask task = new ArticlePublishingService().startPublishCheck(detail, request);
 
             assertNotNull(task);
             String payload = emitPublishCheck(task, true, null);
@@ -755,16 +754,16 @@ public class AdminArticleControllerDatabaseTest {
 
     private static String emitPublishCheck(CompletableFuture<PublishCheckResponse> future, boolean wait,
                                            Integer timeoutMillis) throws Exception {
-        return emitPublishCheck(new AdminArticleController.PublishCheckTask(
-                future, new AdminArticleController.PublishCheckPersistenceGuard(), null, null), wait, timeoutMillis);
+        return emitPublishCheck(new PublishCheckTask(
+                future, new PublishCheckPersistenceGuard(), null, null), wait, timeoutMillis);
     }
 
-    private static String emitPublishCheck(AdminArticleController.PublishCheckTask task, boolean wait,
+    private static String emitPublishCheck(PublishCheckTask task, boolean wait,
                                            Integer timeoutMillis) throws Exception {
         return emitPublishCheck(task, wait, timeoutMillis, 1);
     }
 
-    private static String emitPublishCheck(AdminArticleController.PublishCheckTask task, boolean wait,
+    private static String emitPublishCheck(PublishCheckTask task, boolean wait,
                                            Integer timeoutMillis, int attempts) throws Exception {
         AdminArticleController controller = controller(Map.of(), null, new ResponseRecorder());
         try (PipedInputStream inputStream = new PipedInputStream();

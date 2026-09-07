@@ -9,10 +9,12 @@ import com.hibegin.http.server.util.PathUtil;
 import com.zrlog.admin.business.AdminConstants;
 import com.zrlog.admin.business.rest.request.ReplaceArticleResourceUrlRequest;
 import com.zrlog.admin.business.rest.response.FileEntryVO;
+import com.zrlog.admin.business.rest.response.FileManagerResponse;
 import com.zrlog.admin.business.rest.response.FileReferenceVO;
 import com.zrlog.admin.business.rest.response.ReplaceArticleResourceUrlResponse;
 import com.zrlog.admin.business.rest.response.UploadFileResponse;
 import com.zrlog.admin.business.type.FileDirectoryAction;
+import com.zrlog.admin.business.type.AdminAuditAction;
 import com.zrlog.admin.business.type.FileEntryAccess;
 import com.zrlog.admin.business.type.FileEntryAction;
 import com.zrlog.admin.business.util.FileEntryUtils;
@@ -33,6 +35,64 @@ public class FileManagerService {
     public static final String ATTACHED_ROOT = "/attached";
     public static final String EXTERNAL_ROOT = "/external";
     private final FileManagerReferenceService referenceService = new FileManagerReferenceService();
+
+    public FileManagerResponse page(String path, String key, String resourceType) throws SQLException {
+        FileManagerResponse response = new FileManagerResponse();
+        response.setShortcuts(getShortcuts());
+        if (Objects.equals(resourceType, "broken")) {
+            response.setEntries(listBrokenLocalResourceReferences(key));
+            response.setDirectoryActions(Collections.emptyList());
+        } else {
+            response.setEntries(StringUtils.isEmpty(key) ? list(path) : search(key));
+            response.setDirectoryActions(StringUtils.isEmpty(key)
+                    ? getDirectoryActions(path) : Collections.emptyList());
+        }
+        return response;
+    }
+
+    public ReplaceArticleResourceUrlResponse replaceArticleResourceUrlAndRecord(AdminTokenVO user,
+                                                                                 ReplaceArticleResourceUrlRequest body,
+                                                                                 HttpRequest request)
+            throws SQLException {
+        ReplaceArticleResourceUrlResponse response = replaceArticleResourceUrl(user, body);
+        new AdminAuditService().record(request, AdminAuditAction.REPLACE_ARTICLE_RESOURCE_URL,
+                body.getFromUrl() + " -> " + body.getToUrl());
+        new MessageCenterOperationService().recordReplaceArticleResourceUrl(response);
+        return response;
+    }
+
+    public UploadFileResponse reuploadMissingLocalResourceAndRecord(String path, File uploadFile,
+                                                                    HttpRequest request, AdminTokenVO user)
+            throws IOException {
+        UploadFileResponse response = reuploadMissingLocalResource(path, uploadFile, request, user);
+        new AdminAuditService().record(request, AdminAuditAction.REUPLOAD_MISSING_FILE, path);
+        return response;
+    }
+
+    public boolean deleteAndRecord(String path, HttpRequest request) throws SQLException {
+        boolean deleted = delete(path);
+        if (deleted) {
+            new AdminAuditService().record(request, AdminAuditAction.DELETE_FILE, path);
+        }
+        return deleted;
+    }
+
+    public boolean renameAndRecord(String path, String newName, boolean syncArticleReferences,
+                                   AdminTokenVO user, HttpRequest request) throws SQLException {
+        boolean renamed = rename(path, newName, syncArticleReferences, user);
+        if (renamed) {
+            new AdminAuditService().record(request, AdminAuditAction.RENAME_FILE, path + " -> " + newName);
+        }
+        return renamed;
+    }
+
+    public boolean mkdirAndRecord(String path, HttpRequest request) {
+        boolean created = mkdir(path);
+        if (created) {
+            new AdminAuditService().record(request, AdminAuditAction.CREATE_DIRECTORY, path);
+        }
+        return created;
+    }
 
     public List<FileEntryVO> getShortcuts() {
         List<FileEntryVO> shortcuts = new ArrayList<>();

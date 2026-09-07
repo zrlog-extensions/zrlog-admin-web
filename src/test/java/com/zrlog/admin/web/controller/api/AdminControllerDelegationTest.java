@@ -40,6 +40,7 @@ import com.zrlog.admin.business.rest.response.UpdateRecordResponse;
 import com.zrlog.admin.business.rest.response.UserBasicInfoResponse;
 import com.zrlog.admin.business.rest.response.UserInfoResponse;
 import com.zrlog.admin.business.service.AdminCommentService;
+import com.zrlog.admin.business.service.AdminDashboardService;
 import com.zrlog.admin.business.service.LinkPreviewService;
 import com.zrlog.admin.business.service.MessageCenterService;
 import com.zrlog.admin.business.service.MfaService;
@@ -604,7 +605,7 @@ public class AdminControllerDelegationTest {
 
     @Test
     public void shouldAttachDashboardCardDataByCardId() throws Exception {
-        AdminController controller = new AdminController();
+        AdminDashboardService service = new AdminDashboardService();
         AdminDashboardConfigResponse config = new AdminDashboardConfigResponse();
         AdminDashboardCardResponse welcome = card("welcome");
         AdminDashboardCardResponse quickAction = card("quickAction");
@@ -623,11 +624,11 @@ public class AdminControllerDelegationTest {
         statisticsInfo.setAuditLogs(List.of(auditLog));
         ArticleActivityData activityData = new ArticleActivityData("2026-06-29", 3L);
 
-        Method method = AdminController.class.getDeclaredMethod("attachDashboardCardData",
+        Method method = AdminDashboardService.class.getDeclaredMethod("attachCardData",
                 AdminDashboardConfigResponse.class, StatisticsInfoResponse.class, String.class, List.class,
                 String.class, List.class);
         method.setAccessible(true);
-        method.invoke(controller, config, statisticsInfo, "Welcome", List.of("Tip"), "3.6.0",
+        method.invoke(service, config, statisticsInfo, "Welcome", List.of("Tip"), "3.6.0",
                 List.of(activityData));
 
         AdminDashboardWelcomeDataResponse welcomeData = (AdminDashboardWelcomeDataResponse) welcome.getData();
@@ -646,15 +647,15 @@ public class AdminControllerDelegationTest {
 
     @Test
     public void shouldResolveDashboardCardEnabledState() throws Exception {
-        AdminController controller = new AdminController();
-        Method method = AdminController.class.getDeclaredMethod("isCardEnabled", AdminDashboardConfigResponse.class,
+        AdminDashboardService service = new AdminDashboardService();
+        Method method = AdminDashboardService.class.getDeclaredMethod("isCardEnabled", AdminDashboardConfigResponse.class,
                 String.class);
         method.setAccessible(true);
 
-        assertEquals(true, method.invoke(controller, new Object[]{null, "activity"}));
+        assertEquals(true, method.invoke(service, new Object[]{null, "activity"}));
         AdminDashboardConfigResponse noCards = new AdminDashboardConfigResponse();
         noCards.setCards(null);
-        assertEquals(true, method.invoke(controller, noCards, "activity"));
+        assertEquals(true, method.invoke(service, noCards, "activity"));
 
         AdminDashboardConfigResponse config = new AdminDashboardConfigResponse();
         AdminDashboardCardResponse disabled = card("activity");
@@ -663,9 +664,9 @@ public class AdminControllerDelegationTest {
         enabled.setEnabled(true);
         config.setCards(List.of(disabled, enabled));
 
-        assertEquals(false, method.invoke(controller, config, "activity"));
-        assertEquals(true, method.invoke(controller, config, "auditTrail"));
-        assertEquals(true, method.invoke(controller, config, "missing"));
+        assertEquals(false, method.invoke(service, config, "activity"));
+        assertEquals(true, method.invoke(service, config, "auditTrail"));
+        assertEquals(true, method.invoke(service, config, "missing"));
     }
 
     private static void setControllerRequest(Controller controller, HttpRequest request) throws Exception {

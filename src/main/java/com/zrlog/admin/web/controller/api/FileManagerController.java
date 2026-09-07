@@ -1,6 +1,5 @@
 package com.zrlog.admin.web.controller.api;
 
-import com.hibegin.common.util.StringUtils;
 import com.hibegin.http.HttpMethod;
 import com.hibegin.http.annotation.RequestMethod;
 import com.hibegin.http.annotation.ResponseBody;
@@ -12,10 +11,7 @@ import com.zrlog.admin.business.rest.response.FileEntryVO;
 import com.zrlog.admin.business.rest.response.FileManagerResponse;
 import com.zrlog.admin.business.rest.response.ReplaceArticleResourceUrlResponse;
 import com.zrlog.admin.business.rest.response.UploadFileResponse;
-import com.zrlog.admin.business.service.AdminAuditService;
 import com.zrlog.admin.business.service.FileManagerService;
-import com.zrlog.admin.business.service.MessageCenterOperationService;
-import com.zrlog.admin.business.type.AdminAuditAction;
 import com.zrlog.admin.business.util.FileEntryUtils;
 import com.zrlog.admin.web.annotation.RefreshCache;
 import com.zrlog.admin.web.token.AdminTokenThreadLocal;
@@ -29,7 +25,6 @@ import java.io.File;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.List;
-import java.util.Objects;
 
 public class FileManagerController extends BaseController {
 
@@ -40,16 +35,7 @@ public class FileManagerController extends BaseController {
         String path = request.getParaToStr("path", "");
         String key = request.getParaToStr("key", "");
         String resourceType = request.getParaToStr("resourceType", "");
-        FileManagerResponse response = new FileManagerResponse();
-        response.setShortcuts(fileManagerService.getShortcuts());
-        if (Objects.equals(resourceType, "broken")) {
-            response.setEntries(fileManagerService.listBrokenLocalResourceReferences(key));
-            response.setDirectoryActions(List.of());
-        } else {
-            response.setEntries(StringUtils.isEmpty(key) ? fileManagerService.list(path) : fileManagerService.search(key));
-            response.setDirectoryActions(StringUtils.isEmpty(key) ? fileManagerService.getDirectoryActions(path) : List.of());
-        }
-        return new AdminPageDataResponse<>(response, "", request.getUri());
+        return new AdminPageDataResponse<>(fileManagerService.page(path, key, resourceType), "", request.getUri());
     }
 
     @ResponseBody
@@ -76,10 +62,8 @@ public class FileManagerController extends BaseController {
             throw new PermissionErrorException();
         }
         ReplaceArticleResourceUrlRequest body = getRequestBodyWithNullCheck(ReplaceArticleResourceUrlRequest.class);
-        ReplaceArticleResourceUrlResponse response = fileManagerService.replaceArticleResourceUrl(AdminTokenThreadLocal.getUser(), body);
-        new AdminAuditService().record(request, AdminAuditAction.REPLACE_ARTICLE_RESOURCE_URL,
-                body.getFromUrl() + " -> " + body.getToUrl());
-        new MessageCenterOperationService().recordReplaceArticleResourceUrl(response);
+        ReplaceArticleResourceUrlResponse response = fileManagerService.replaceArticleResourceUrlAndRecord(
+                AdminTokenThreadLocal.getUser(), body, request);
         return new ApiStandardResponse<>(response);
     }
 
@@ -101,9 +85,8 @@ public class FileManagerController extends BaseController {
         if (uploadFile == null || !uploadFile.exists()) {
             throw new ArgsException("imgFile");
         }
-        UploadFileResponse response = fileManagerService.reuploadMissingLocalResource(
+        UploadFileResponse response = fileManagerService.reuploadMissingLocalResourceAndRecord(
                 path, uploadFile, request, AdminTokenThreadLocal.getUser());
-        new AdminAuditService().record(request, AdminAuditAction.REUPLOAD_MISSING_FILE, path);
         return new ApiStandardResponse<>(response);
     }
 
@@ -114,11 +97,7 @@ public class FileManagerController extends BaseController {
         if (path.isEmpty()) {
             throw new ArgsException("path");
         }
-        boolean ok = fileManagerService.delete(path);
-        if (ok) {
-            new AdminAuditService().record(request, AdminAuditAction.DELETE_FILE, path);
-        }
-        return new ApiStandardResponse<>(ok);
+        return new ApiStandardResponse<>(fileManagerService.deleteAndRecord(path, request));
     }
 
     @RequestMethod(method = HttpMethod.POST)
@@ -130,11 +109,8 @@ public class FileManagerController extends BaseController {
             throw new ArgsException("newName");
         }
         boolean syncArticleReferences = request.getParaToBool("syncArticleReferences", false);
-        boolean ok = fileManagerService.rename(path, newName, syncArticleReferences, AdminTokenThreadLocal.getUser());
-        if (ok) {
-            new AdminAuditService().record(request, AdminAuditAction.RENAME_FILE, path + " -> " + newName);
-        }
-        return new ApiStandardResponse<>(ok);
+        return new ApiStandardResponse<>(fileManagerService.renameAndRecord(
+                path, newName, syncArticleReferences, AdminTokenThreadLocal.getUser(), request));
     }
 
     @RequestMethod(method = HttpMethod.POST)
@@ -144,11 +120,7 @@ public class FileManagerController extends BaseController {
         if (path.isEmpty()) {
             throw new ArgsException("path");
         }
-        boolean ok = fileManagerService.mkdir(path);
-        if (ok) {
-            new AdminAuditService().record(request, AdminAuditAction.CREATE_DIRECTORY, path);
-        }
-        return new ApiStandardResponse<>(ok);
+        return new ApiStandardResponse<>(fileManagerService.mkdirAndRecord(path, request));
     }
 
     @ResponseBody

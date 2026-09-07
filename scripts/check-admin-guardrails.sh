@@ -164,6 +164,18 @@ scan "Admin SQL portability candidates" \
     src/main/java/com/zrlog/admin/web \
     --glob '*.java'
 
+section "Controller persistence boundary"
+CONTROLLER_PERSISTENCE_MATCHES="$(rg -n \
+    'import com\.zrlog\.model|\.(query|queryList|queryFirst|updateByKV|deleteById)\(' \
+    src/main/java/com/zrlog/admin/web/controller \
+    --glob '*.java' || true)"
+if [ -n "$CONTROLLER_PERSISTENCE_MATCHES" ]; then
+    printf '%s\n' "$CONTROLLER_PERSISTENCE_MATCHES"
+    echo "Move persistence and query logic from controllers into business services." >&2
+    exit 1
+fi
+echo "OK"
+
 section "Build artifact diff candidates"
 BUILD_ARTIFACT_DIFF="$(git diff --name-only -- src/main/resources/admin src/main/frontend/build static/changelog || true)"
 if [ -n "$BUILD_ARTIFACT_DIFF" ]; then

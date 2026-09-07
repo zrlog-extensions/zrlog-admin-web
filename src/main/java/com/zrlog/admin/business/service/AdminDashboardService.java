@@ -14,12 +14,20 @@ import com.zrlog.admin.business.rest.response.AdminDashboardCardConfigResponse;
 import com.zrlog.admin.business.rest.response.AdminDashboardCardResponse;
 import com.zrlog.admin.business.rest.response.AdminDashboardConfigResponse;
 import com.zrlog.admin.business.rest.response.FirstUseChecklistResponse;
+import com.zrlog.admin.business.rest.response.AdminDashboardAuditTrailDataResponse;
+import com.zrlog.admin.business.rest.response.AdminDashboardDataInsightsResponse;
+import com.zrlog.admin.business.rest.response.AdminDashboardQuickActionDataResponse;
+import com.zrlog.admin.business.rest.response.AdminDashboardWelcomeDataResponse;
+import com.zrlog.admin.business.rest.response.ArticleActivityData;
+import com.zrlog.admin.business.rest.response.IndexResponse;
+import com.zrlog.admin.business.rest.response.StatisticsInfoResponse;
 import com.zrlog.business.plugin.PluginCorePlugin;
 import com.zrlog.business.service.WebsiteKvService;
 import com.zrlog.common.Constants;
 import com.zrlog.common.exception.ArgsException;
 import com.zrlog.common.vo.AdminTokenVO;
 import com.zrlog.util.I18nUtil;
+import com.zrlog.util.BlogBuildInfoUtil;
 import com.zrlog.util.ThreadUtils;
 
 import java.io.InputStream;
@@ -92,6 +100,79 @@ public class AdminDashboardService {
             throw new SQLException("Unable to persist first-use checklist status");
         }
         return new FirstUseChecklistResponse(FIRST_USE_CHECKLIST_VERSION, FIRST_USE_CHECKLIST_DISMISSED);
+    }
+
+    public IndexResponse loadIndex(HttpRequest request, AdminTokenVO adminTokenVO) {
+        List<String> tips = loadWelcomeTips();
+        Collections.shuffle(tips);
+        AdminDashboardConfigResponse config = getConfig(request, adminTokenVO, true);
+        boolean auditTrailEnabled = isCardEnabled(config, "auditTrail");
+        boolean activityEnabled = isCardEnabled(config, "activity");
+        ExecutorService executor = ThreadUtils.newFixedThreadPool(20);
+        try {
+            CompletableFuture<StatisticsInfoResponse> statistics =
+                    new AdminStatisticsService().statisticsInfo(executor, auditTrailEnabled);
+            CompletableFuture<List<ArticleActivityData>> activity = activityEnabled
+                    ? new AdminArticleService().activityDataList(executor)
+                    : CompletableFuture.completedFuture(Collections.emptyList());
+            CompletableFuture.allOf(statistics, activity).join();
+            attachCardData(config, statistics.join(),
+                    I18nUtil.getAdminBackendStringFromRes("admin.index.welcomeTip"),
+                    Collections.singletonList(tips.get(0)), BlogBuildInfoUtil.getVersionInfo(), activity.join());
+            return new IndexResponse(config, getFirstUseChecklist());
+        } finally {
+            executor.shutdown();
+        }
+    }
+
+    void attachCardData(AdminDashboardConfigResponse config, StatisticsInfoResponse statistics,
+                        String welcomeTip, List<String> tips, String versionInfo,
+                        List<ArticleActivityData> activity) {
+        if (config == null || config.getCards() == null) {
+            return;
+        }
+        for (AdminDashboardCardResponse item : config.getCards()) {
+            if (!Objects.equals(ITEM_KIND_CARD, item.getKind())) {
+                continue;
+            }
+            if (Objects.equals("welcome", item.getId())) {
+                item.setData(new AdminDashboardWelcomeDataResponse(welcomeTip, tips, versionInfo));
+            } else if (Objects.equals("quickAction", item.getId())) {
+                item.setData(new AdminDashboardQuickActionDataResponse(statistics.getDraftCount()));
+            } else if (Objects.equals("statistics", item.getId())) {
+                item.setData(statistics);
+            } else if (Objects.equals("activity", item.getId())) {
+                item.setData(activity);
+            } else if (Objects.equals("auditTrail", item.getId())) {
+                item.setData(new AdminDashboardAuditTrailDataResponse(statistics.getAuditLogs(), false));
+            } else if (Objects.equals("dataInsights", item.getId())) {
+                item.setData(new AdminDashboardDataInsightsResponse(statistics.getTypeData(), statistics.getTagData()));
+            }
+        }
+    }
+
+    boolean isCardEnabled(AdminDashboardConfigResponse config, String cardId) {
+        if (config == null || config.getCards() == null) {
+            return true;
+        }
+        for (AdminDashboardCardResponse item : config.getCards()) {
+            if (Objects.equals(ITEM_KIND_CARD, item.getKind()) && Objects.equals(cardId, item.getId())) {
+                return !Objects.equals(item.getEnabled(), false);
+            }
+        }
+        return true;
+    }
+
+    List<String> loadWelcomeTips() {
+        List<String> tips = new ArrayList<>();
+        for (int i = 1; i <= 20; i++) {
+            String tip = I18nUtil.getAdminBackendStringFromRes("admin.index.welcomeTips." + i);
+            if (tip == null || tip.trim().isEmpty()) {
+                break;
+            }
+            tips.add(tip);
+        }
+        return tips;
     }
 
     public AdminDashboardConfigResponse getConfig(HttpRequest request, AdminTokenVO adminTokenVO, boolean preloadSurfaces) {

@@ -2,11 +2,16 @@ package com.zrlog.admin.business.service;
 
 import com.hibegin.common.util.*;
 import com.hibegin.http.server.util.PathUtil;
+import com.hibegin.http.server.api.HttpRequest;
 import com.zrlog.admin.business.AdminConstants;
 import com.zrlog.admin.business.rest.response.UpdateRecordResponse;
 import com.zrlog.admin.business.rest.response.UploadTemplateResponse;
+import com.zrlog.admin.business.rest.response.DeleteResponse;
+import com.zrlog.admin.business.rest.response.TemplateDownloadResponse;
+import com.zrlog.admin.business.type.AdminAuditAction;
 import com.zrlog.admin.web.controller.api.TemplateController;
 import com.zrlog.business.service.TemplateInfoHelper;
+import com.zrlog.business.template.HtmlTemplateProcessor;
 import com.zrlog.business.template.util.TemplateDownloadUtils;
 import com.zrlog.business.type.TemplateType;
 import com.zrlog.common.Constants;
@@ -14,6 +19,7 @@ import com.zrlog.common.vo.BaseTemplateVO;
 import com.zrlog.common.vo.TemplateVO;
 import com.zrlog.model.WebSite;
 import com.zrlog.util.I18nUtil;
+import com.zrlog.util.BlogBuildInfoUtil;
 import com.zrlog.util.StaticFileCacheUtils;
 import com.zrlog.util.ZrLogUtil;
 import org.jsoup.Jsoup;
@@ -46,6 +52,59 @@ public class TemplateService {
     private static final long MAX_TEMPLATE_UNCOMPRESSED_SIZE = 100L * 1024 * 1024;
     private static final int COPY_BUFFER_SIZE = 16 * 1024;
     private static final String SHORT_TEMPLATE_PATTERN = "[A-Za-z0-9][A-Za-z0-9._-]{0,127}";
+
+    public boolean apply(String template, HttpRequest request) throws SQLException {
+        boolean updated = new WebSite().updateByKV("template", template);
+        new AdminAuditService().record(request, AdminAuditAction.APPLY_TEMPLATE, template);
+        return updated;
+    }
+
+    public DeleteResponse delete(String shortTemplate, HttpRequest request) {
+        File file = PathUtil.safeAppendFilePath(
+                PathUtil.getStaticPath() + Constants.TEMPLATE_BASE_PATH, shortTemplate);
+        boolean deleted = file.exists() && FileUtils.deleteFile(file.toString());
+        if (deleted) {
+            new AdminAuditService().record(request, AdminAuditAction.DELETE_TEMPLATE, shortTemplate);
+        }
+        return new DeleteResponse(deleted);
+    }
+
+    public UploadTemplateResponse uploadAndRecord(String shortTemplate, boolean overwrite, File file,
+                                                  HttpRequest request) throws IOException {
+        UploadTemplateResponse response = upload(shortTemplate, overwrite, file);
+        if (response.getError() == 0 && response.getData() != null) {
+            new AdminAuditService().record(request, AdminAuditAction.UPLOAD_TEMPLATE,
+                    response.getData().getShortTemplate());
+        }
+        return response;
+    }
+
+    public UpdateRecordResponse saveAndRecord(String template, Map<String, Object> settings,
+                                              HttpRequest request) throws SQLException, IOException {
+        UpdateRecordResponse response = save(template, settings);
+        new AdminAuditService().record(request, AdminAuditAction.UPDATE_TEMPLATE_CONFIG, template);
+        return response;
+    }
+
+    public TemplateVO loadTemplateConfig(String templateName, HttpRequest request) {
+        TemplateVO template = loadTemplateConfig(templateName);
+        template.getConfig().values().forEach(value -> {
+            if (Objects.equals(value.getContentType(), "html") && value.getValue() instanceof String) {
+                value.setPreviewValue(previewValue((String) value.getValue(), request));
+            }
+        });
+        return template;
+    }
+
+    public String previewValue(String value, HttpRequest request) {
+        return new HtmlTemplateProcessor(request, null, "/").transform(value);
+    }
+
+    public TemplateDownloadResponse templateCenter(String protocol, String host, String contextPath) {
+        return new TemplateDownloadResponse("https://store.zrlog.com/template/index.html?from=" + protocol
+                + "://" + host + contextPath + AdminConstants.ADMIN_URI_BASE_PATH + "/template&v="
+                + BlogBuildInfoUtil.getVersion() + "&id=" + BlogBuildInfoUtil.getBuildId() + "&upgrade-v3=true");
+    }
 
     private boolean isNeedClean(String contentType) {
         return !Objects.equals(contentType, "html") && !Objects.equals(contentType, "yml");

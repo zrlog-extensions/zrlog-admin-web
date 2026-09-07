@@ -18,20 +18,17 @@ import com.zrlog.business.plugin.type.StaticSiteType;
 import com.zrlog.common.Constants;
 import com.zrlog.common.controller.BaseController;
 import com.zrlog.common.rest.response.ApiStandardResponse;
-import com.zrlog.util.BlogBuildInfoUtil;
 import com.zrlog.util.I18nUtil;
-import com.zrlog.util.ThreadUtils;
 
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.*;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutorService;
 
 public class AdminController extends BaseController {
 
     private final UserService userService = new UserService();
     private final PasskeyService passkeyService = new PasskeyService();
+    private final AdminDashboardService dashboardService = new AdminDashboardService();
 
     @ResponseBody
     @RequestMethod(method = HttpMethod.POST)
@@ -103,69 +100,8 @@ public class AdminController extends BaseController {
 
     @ResponseBody
     public AdminPageDataResponse<IndexResponse> index() throws SQLException {
-        List<String> tips = loadWelcomeTips();
-        Collections.shuffle(tips);
-        AdminDashboardService dashboardService = new AdminDashboardService();
-        AdminDashboardConfigResponse dashboardConfig = dashboardService.getConfig(request, AdminTokenThreadLocal.getUser(), true);
-        boolean auditTrailEnabled = isCardEnabled(dashboardConfig, "auditTrail");
-        boolean activityEnabled = isCardEnabled(dashboardConfig, "activity");
-        ExecutorService executor = ThreadUtils.newFixedThreadPool(20);
-        try {
-            List<CompletableFuture<?>> futures = new ArrayList<>();
-            CompletableFuture<StatisticsInfoResponse> statisticsInfo = new AdminStatisticsService().statisticsInfo(executor, auditTrailEnabled);
-            futures.add(statisticsInfo);
-            CompletableFuture<List<ArticleActivityData>> dataList = activityEnabled
-                    ? new AdminArticleService().activityDataList(executor)
-                    : CompletableFuture.completedFuture(Collections.emptyList());
-            futures.add(dataList);
-            CompletableFuture.allOf(futures.toArray(new CompletableFuture[0])).join();
-            attachDashboardCardData(dashboardConfig, statisticsInfo.join(),
-                    I18nUtil.getAdminBackendStringFromRes("admin.index.welcomeTip"),
-                    new ArrayList<>(Collections.singletonList(tips.get(0))),
-                    BlogBuildInfoUtil.getVersionInfo(), dataList.join());
-            return new AdminPageDataResponse<>(new IndexResponse(dashboardConfig,
-                    dashboardService.getFirstUseChecklist()), "", request.getUri());
-        } finally {
-            executor.shutdown();
-        }
-    }
-
-    private void attachDashboardCardData(AdminDashboardConfigResponse config, StatisticsInfoResponse statisticsInfo,
-                                         String welcomeTip, List<String> tips, String versionInfo,
-                                         List<ArticleActivityData> activityData) {
-        if (config == null || config.getCards() == null) {
-            return;
-        }
-        for (AdminDashboardCardResponse item : config.getCards()) {
-            if (!Objects.equals("card", item.getKind())) {
-                continue;
-            }
-            if (Objects.equals("welcome", item.getId())) {
-                item.setData(new AdminDashboardWelcomeDataResponse(welcomeTip, tips, versionInfo));
-            } else if (Objects.equals("quickAction", item.getId())) {
-                item.setData(new AdminDashboardQuickActionDataResponse(statisticsInfo.getDraftCount()));
-            } else if (Objects.equals("statistics", item.getId())) {
-                item.setData(statisticsInfo);
-            } else if (Objects.equals("activity", item.getId())) {
-                item.setData(activityData);
-            } else if (Objects.equals("auditTrail", item.getId())) {
-                item.setData(new AdminDashboardAuditTrailDataResponse(statisticsInfo.getAuditLogs(), false));
-            } else if (Objects.equals("dataInsights", item.getId())) {
-                item.setData(new AdminDashboardDataInsightsResponse(statisticsInfo.getTypeData(), statisticsInfo.getTagData()));
-            }
-        }
-    }
-
-    private boolean isCardEnabled(AdminDashboardConfigResponse config, String cardId) {
-        if (config == null || config.getCards() == null) {
-            return true;
-        }
-        for (AdminDashboardCardResponse item : config.getCards()) {
-            if (Objects.equals("card", item.getKind()) && Objects.equals(cardId, item.getId())) {
-                return !Objects.equals(item.getEnabled(), false);
-            }
-        }
-        return true;
+        return new AdminPageDataResponse<>(dashboardService.loadIndex(request, AdminTokenThreadLocal.getUser()),
+                "", request.getUri());
     }
 
     @ResponseBody
@@ -173,13 +109,13 @@ public class AdminController extends BaseController {
         AdminDashboardConfigResponse config;
         String message = "";
         if (request.getMethod() == HttpMethod.POST) {
-            config = new AdminDashboardService().saveConfig(
+            config = dashboardService.saveConfig(
                     getRequestBodyWithNullCheck(com.zrlog.admin.business.rest.request.AdminDashboardConfigRequest.class),
                     request, AdminTokenThreadLocal.getUser());
             new AdminAuditService().record(request, AdminAuditAction.UPDATE_DASHBOARD_CONFIG);
             message = I18nUtil.getAdminBackendStringFromRes("admin.common.update.success");
         } else {
-            config = new AdminDashboardService().getConfig(request, AdminTokenThreadLocal.getUser());
+            config = dashboardService.getConfig(request, AdminTokenThreadLocal.getUser());
         }
         return new ApiStandardResponse<>(config, message);
     }
@@ -188,18 +124,6 @@ public class AdminController extends BaseController {
     @RequestMethod(method = HttpMethod.POST)
     public ApiStandardResponse<FirstUseChecklistResponse> dismissFirstUseChecklist() throws SQLException {
         FirstUseChecklistRequest body = getRequestBodyWithNullCheck(FirstUseChecklistRequest.class);
-        return new ApiStandardResponse<>(new AdminDashboardService().dismissFirstUseChecklist(body.getVersion()));
-    }
-
-    private List<String> loadWelcomeTips() {
-        List<String> tips = new ArrayList<>();
-        for (int i = 1; i <= 20; i++) {
-            String tip = I18nUtil.getAdminBackendStringFromRes("admin.index.welcomeTips." + i);
-            if (tip == null || tip.trim().isEmpty()) {
-                break;
-            }
-            tips.add(tip);
-        }
-        return tips;
+        return new ApiStandardResponse<>(dashboardService.dismissFirstUseChecklist(body.getVersion()));
     }
 }

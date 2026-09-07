@@ -27,6 +27,7 @@ import com.zrlog.data.dto.ArticleBasicDTO;
 import com.zrlog.data.service.DistributedLock;
 import com.zrlog.data.util.SocialPreviewUtils;
 import com.zrlog.model.Log;
+import com.zrlog.model.WebSite;
 import com.zrlog.util.I18nUtil;
 import com.zrlog.util.ParseUtil;
 import com.zrlog.util.ThreadUtils;
@@ -48,6 +49,14 @@ import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 public class AdminArticleService {
+
+    public int resolveAdminPageSize(int requestedSize) {
+        if (requestedSize > 0) {
+            return requestedSize;
+        }
+        String configuredSize = new WebSite().getStringValueByName("admin_article_page_size");
+        return StringUtils.isNotEmpty(configuredSize) ? (int) Double.parseDouble(configuredSize) : 10;
+    }
 
     private static final Logger LOGGER = LoggerUtil.getLogger(AdminArticleService.class);
     private final ArticleVersionService articleVersionService = new ArticleVersionService(this);
